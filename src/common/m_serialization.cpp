@@ -8,11 +8,10 @@
 #include "m_serialization.h"
 
 Serialization::Serialization() {
-	// TODO Auto-generated constructor stub
 
 }
 
 Serialization::~Serialization() {
-	// TODO Auto-generated destructor stub
+
 }
 

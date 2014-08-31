@@ -9,12 +9,10 @@
 
 ThreadPool::ThreadPool(int nthreads,int capacity)
 :nthreads_(nthreads),queue_(new CircleQueue<Task>(capacity)) {
-	// TODO Auto-generated constructor stub
 
 }
 
 ThreadPool::~ThreadPool() {
-	// TODO Auto-generated destructor stub
 	delete queue_;
 }
 

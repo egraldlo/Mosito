@@ -9,12 +9,11 @@
 
 Affinitizer::Affinitizer(int totalcpus, int corespercpu)
 :totalcpus_(totalcpus),corespercpu_(corespercpu) {
-	// TODO Auto-generated constructor stub
 
 }
 
 Affinitizer::~Affinitizer() {
-	// TODO Auto-generated destructor stub
+
 }
 
 void Affinitizer::affinitize(int threadid) {

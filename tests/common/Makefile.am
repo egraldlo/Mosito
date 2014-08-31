@@ -12,4 +12,5 @@ libtest_common_a_SOURCES = \
 	m_synchronize_test.cpp \
 	m_task_test.cpp \
 	m_thread_pool_test.cpp \
-	m_tree_node_test.cpp
+	m_tree_node_test.cpp \
+	m_trees_test.cpp

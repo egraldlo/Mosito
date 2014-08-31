@@ -8,11 +8,10 @@
 #include "m_data_type.h"
 
 DataType::DataType() {
-	// TODO Auto-generated constructor stub
 
 }
 
 DataType::~DataType() {
-	// TODO Auto-generated destructor stub
+
 }
 
