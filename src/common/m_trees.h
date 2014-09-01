@@ -75,7 +75,10 @@ public:
 	Heap(long size);
 	virtual ~Heap();
 
-	void heaplify();
+	void heaplify(int array[], int i, int len);
+	void heapSort(int array[], int len);
+
+	void print(int n);
 
 	void rebuild();
 	void addOne();
@@ -87,6 +90,7 @@ private:
 	 * TODO: here we can define it as template
 	 *  */
 	int *array_;
+	int *out_;
 };
 
 #endif /* M_TREES_H_ */

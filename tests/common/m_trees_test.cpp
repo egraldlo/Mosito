@@ -53,6 +53,9 @@ int m_losertrees_test() {
 }
 
 int m_heap_test() {
-
+	int in[10]={2,5,1,41,454,6,9,67,32,11};
+	Heap *heap=new Heap(10);
+	heap->heapSort(in,10);
+	heap->print(10);
 	return 0;
 }

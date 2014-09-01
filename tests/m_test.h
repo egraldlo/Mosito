@@ -56,7 +56,8 @@ int main() {
 //	addd->initilize();
 //	cout<<*(double *)ad->eval()<<endl;
 
-	m_losertrees_test();
+//	m_losertrees_test();
+	m_heap_test();
 	return 0;
 }
 

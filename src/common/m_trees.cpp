@@ -110,10 +110,55 @@ int LoserTree::replay(int i,
 }
 
 Heap::Heap(long size)
-:size_(size) {
+:size_(size),out_(new int[size]) {
 
 }
 
 Heap::~Heap() {
 
+}
+
+void Heap::heaplify(int array[], int i, int len) {
+	/* child of the ith node. */
+	int child=2*i+1;
+	/* child is the offset, and len is the length, so here child can not
+	 * be equaled to len, so child<len is the condition.
+	 *  */
+	while(child<len) {
+		/* array[child] < array[child+1], then we use array[child+1] to
+		 * compare with the i. if child+1=len, child is the last one.
+		 * and only one child.
+		 *  */
+		if(child+1<len && array[child]<array[child+1])
+			child++;
+		if(array[i]>array[child])
+			break;
+		else{
+			int temp=array[i];
+			array[i]=array[child];
+			array[child]=temp;
+
+			i=child;
+			/* begin with left child. */
+			child=i*2+1;
+		}
+	}
+}
+
+void Heap::heapSort(int array[], int len) {
+	/* initialize the heap */
+	for(int i=(len-2)/2;i>=0;i--) {
+		heaplify(array,i,len);
+	}
+
+	for(int i=0;i<len;i++) {
+		out_[i]=array[0];
+		array[0]=array[len-i-1];
+		heaplify(array,0,len-i-1);
+	}
+}
+
+void Heap::print(int n) {
+	for(int i=0;i<n;i++)
+		cout<<"out_["<<i<<"]: "<<out_[i]<<endl;
 }
