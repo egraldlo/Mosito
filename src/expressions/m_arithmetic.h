@@ -17,7 +17,7 @@
 
 typedef void* (*AddFunc)(void *,void *);
 
-class Literal: public LeftExpression {
+class Literal: public LeafExpression {
 public:
 	Literal(){};
 	virtual ~Literal(){};

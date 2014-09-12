@@ -15,3 +15,18 @@ DataType::~DataType() {
 
 }
 
+Column::Column() {
+
+}
+
+Column::~Column() {
+
+}
+
+IntegerColumn::IntegerColumn() {
+
+}
+
+IntegerColumn::~IntegerColumn() {
+
+}

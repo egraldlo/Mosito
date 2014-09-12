@@ -8,6 +8,8 @@
 #ifndef M_TREE_NODE_H_
 #define M_TREE_NODE_H_
 
+#include "m_buffer.h"
+
 class TreeNode {
 public:
 	TreeNode(){};
@@ -21,7 +23,7 @@ public:
 	virtual ~Iterator(){};
 
 	virtual bool prelude()=0;
-	virtual bool excute()=0;
+	virtual bool execute(Block *)=0;
 	virtual bool postlude()=0;
 
 };
@@ -37,10 +39,10 @@ public:
 
 };
 
-class LeftNode: public TreeNode {
+class LeafNode: public TreeNode {
 public:
-	LeftNode(){};
-	virtual ~LeftNode(){};
+	LeafNode(){};
+	virtual ~LeafNode(){};
 
 };
 

@@ -24,7 +24,8 @@ public:
 
 public:
 	data_type return_type;
-	int references;
+	/* references will be a vector, because it can be presented as vector<column>. */
+	vector<Column *> references;
 	void *val;
 };
 
@@ -44,10 +45,10 @@ public:
 	virtual void initilize(){};
 };
 
-class LeftExpression: public Expression, public LeftNode {
+class LeafExpression: public Expression, public LeafNode {
 public:
-	LeftExpression(){};
-	virtual ~LeftExpression(){};
+	LeafExpression(){};
+	virtual ~LeafExpression(){};
 
 	virtual void initilize(){};
 };

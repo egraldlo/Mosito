@@ -13,4 +13,6 @@ libcommon_a_SOURCES = \
 	m_circle_queue.cpp				m_circle_queue.h \
 	m_task.cpp						m_task.h \
 	m_affinitizer.cpp				m_affinitizer.h \
-	m_trees.cpp						m_trees.h
+	m_trees.cpp						m_trees.h \
+	m_buffer.cpp					m_buffer.h \
+	m_configuration.cpp				m_configuration.h

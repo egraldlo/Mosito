@@ -16,4 +16,16 @@ public:
 	virtual ~DataType();
 };
 
+class Column {
+public:
+	Column();
+	virtual ~Column();
+};
+
+class IntegerColumn: public Column {
+public:
+	IntegerColumn();
+	virtual ~IntegerColumn();
+};
+
 #endif /* M_DATA_TYPE_H_ */
