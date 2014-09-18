@@ -39,6 +39,8 @@ public:
 	bool execute(Block *);
 	bool postlude();
 
+	void display();
+
 private:
 	/* here we can package the vector<Expression *> as schema */
 	vector<Expression *> expressions_;

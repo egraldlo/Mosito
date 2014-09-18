@@ -15,4 +15,5 @@ libcommon_a_SOURCES = \
 	m_affinitizer.cpp				m_affinitizer.h \
 	m_trees.cpp						m_trees.h \
 	m_buffer.cpp					m_buffer.h \
-	m_configuration.cpp				m_configuration.h
+	m_configuration.cpp				m_configuration.h \
+	m_schema.cpp					m_schema.h 

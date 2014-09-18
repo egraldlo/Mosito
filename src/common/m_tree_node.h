@@ -14,7 +14,6 @@ class TreeNode {
 public:
 	TreeNode(){};
 	virtual ~TreeNode(){};
-
 };
 
 class Iterator {

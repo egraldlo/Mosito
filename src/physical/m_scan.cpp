@@ -14,6 +14,10 @@ ScanSerObj::ScanSerObj(string file_path)
 
 }
 
+ScanSerObj::~ScanSerObj() {
+
+}
+
 Scan::Scan(vector<Expression* > expressions, ScanSerObj *scan_ser_obj)
 :expressions_(expressions), scan_ser_obj_(scan_ser_obj){
 	//TODO: this expression can be merged into scan_ser_obj
@@ -31,7 +35,7 @@ bool Scan::prelude() {
 
 bool Scan::execute(Block *block) {
 	int size=0;
-	if((size=fread(buffer_,BLOCK_SIZE,1,splits_stream_))!=0) {
+	if((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
 		block->storeBlock(buffer_,size);
 		return true;
 	}

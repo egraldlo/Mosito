@@ -15,4 +15,5 @@ libtest_common_a_SOURCES = \
 	m_tree_node_test.cpp \
 	m_trees_test.cpp \
 	m_buffer_test.cpp \
-	m_configuration_test.cpp
+	m_configuration_test.cpp \
+	m_schema_test.cpp

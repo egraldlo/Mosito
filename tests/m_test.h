@@ -14,6 +14,7 @@
 
 #include "common/m_thread_pool_test.cpp"
 #include "common/m_trees_test.cpp"
+#include "../tests/physical/m_debug_test.cpp"
 
 #include <arpa/inet.h>
 
@@ -28,7 +29,6 @@ int main() {
 //	tp->test();
 //	tp->test_circle();
 //
-//	sleep(100);
 //	Literal *a1=new Literal();
 //	Literal *a2=new Literal();
 //	int i=1;
@@ -57,7 +57,10 @@ int main() {
 //	cout<<*(double *)ad->eval()<<endl;
 
 //	m_losertrees_test();
-	m_heap_test();
+//	m_heap_test();
+
+	string path="/home/claims/sortmergejoin/T4G0P0";
+	physical::debug_test(path);
 	return 0;
 }
 

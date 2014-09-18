@@ -18,7 +18,7 @@ BufferIterator::~BufferIterator() {
 
 void *BufferIterator::getNext() {
 	unsigned tuple_size=buffer_->getActualSize();
-	void *ret=buffer_->start_+current_++*tuple_size;
+	void *ret=buffer_->start_+(++current_)*tuple_size;
 	if(ret<buffer_->free_) {
 		return ret;
 	}
@@ -37,8 +37,8 @@ Buffer::~Buffer() {
 
 }
 
-Block::Block(unsigned size)
-:Buffer(size){
+Block::Block(unsigned size, unsigned tuple_size)
+:Buffer(size),tuple_size_(tuple_size){
 
 }
 

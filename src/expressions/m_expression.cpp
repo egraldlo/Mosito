@@ -8,11 +8,18 @@
 #include "m_expression.h"
 
 Expression::Expression() {
-	// TODO Auto-generated constructor stub
 
 }
 
 Expression::~Expression() {
-	// TODO Auto-generated destructor stub
+
 }
 
+void Expression::display() {
+	if(return_type==t_int) {
+		cout<<*(int *)val<<endl;
+	}
+	if(return_type==t_long) {
+		cout<<*(unsigned long*)val<<endl;
+	}
+}

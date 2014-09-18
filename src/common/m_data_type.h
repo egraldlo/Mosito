@@ -8,7 +8,7 @@
 #ifndef M_DATA_TYPE_H_
 #define M_DATA_TYPE_H_
 
-enum data_type{t_int,t_double};
+enum data_type{t_int,t_double,t_long};
 
 class DataType {
 public:
@@ -16,16 +16,10 @@ public:
 	virtual ~DataType();
 };
 
-class Column {
+class IntegerType: public DataType {
 public:
-	Column();
-	virtual ~Column();
-};
-
-class IntegerColumn: public Column {
-public:
-	IntegerColumn();
-	virtual ~IntegerColumn();
+	IntegerType();
+	virtual ~IntegerType();
 };
 
 #endif /* M_DATA_TYPE_H_ */

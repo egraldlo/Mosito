@@ -1,0 +1,32 @@
+/*
+ * m_schema.h
+ *
+ *  Created on: 2014-9-18
+ *      Author: casa
+ */
+
+#ifndef M_SCHEMA_H_
+#define M_SCHEMA_H_
+
+#include "../common/m_data_type.h"
+#include "../../src/expressions/m_expression.h"
+
+#include <vector>
+using namespace std;
+
+class Schema {
+public:
+	Schema();
+	Schema(vector<Expression*> *);
+	virtual ~Schema();
+
+	void *get_addr(void *, int);
+	int get_bytes();
+
+private:
+	vector<DataType*> v_d_;
+	int* offset_;
+	int bytes_;
+};
+
+#endif /* M_SCHEMA_H_ */

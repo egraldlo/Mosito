@@ -20,7 +20,7 @@ Project::~Project() {
 
 bool Project::prelude() {
 	child_->prelude();
-	buffer_=new Block(BLOCK_SIZE);
+	buffer_=new Block(BLOCK_SIZE,0);
 	return true;
 }
 
@@ -34,13 +34,17 @@ bool Project::execute(Block *block) {
 			}
 		}
 		if((src=buffer_iterator_->getNext())!=0) {
-			/* we can at here print the tuple, use the src */
+			/* we can at here print the tuple, use the src
+			 * TODO: construct a Row(which will be constructed) with the expressions.
+			 * */
 			block->storeTuple(desc,src);
 		}
 		else{
 			if(child_->execute(buffer_)) {
 				buffer_iterator_=buffer_->createIterator();
-				/* we can at here print the tuple, use the src */
+				/* we can at here print the tuple, use the src
+				 * TODO: construct a Row(which will be constructed) with the expressions.
+				 * */
 				block->storeTuple(desc,src);
 			}
 			else {

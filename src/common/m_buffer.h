@@ -34,7 +34,7 @@ protected:
 
 class Block: public Buffer {
 public:
-	Block(unsigned size);
+	Block(unsigned size, unsigned tuple_size);
 	virtual ~Block();
 
 	BufferIterator *createIterator();

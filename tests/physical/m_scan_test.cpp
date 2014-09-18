@@ -12,7 +12,7 @@
 namespace physical {
 
 int scan_test(){
-	Buffer *buffer=new Block(BLOCK_SIZE);
+	Buffer *buffer=new Block(BLOCK_SIZE,0);
 	Expression *e1;
 	Expression *e2;
 	Expression *e3;

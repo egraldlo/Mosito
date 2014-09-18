@@ -17,16 +17,6 @@
 
 typedef void* (*AddFunc)(void *,void *);
 
-class Literal: public LeafExpression {
-public:
-	Literal(){};
-	virtual ~Literal(){};
-
-	virtual void initilize(){val=malloc(8);};
-	void* eval(){return val;};
-
-};
-
 class ADD: public BinaryExpression {
 public:
 	ADD(Expression *left, Expression *right);
@@ -34,6 +24,8 @@ public:
 
 	virtual void initilize();
 	void* eval();
+
+	void display(){};
 
 public:
 	Expression *left,*right;

@@ -10,9 +10,11 @@
 
 class Executor {
 public:
+	/* constructor can be private, but here we know that we only use getInstance. */
 	Executor();
 	virtual ~Executor();
 
+	/* the only interface we use to create or get the instance. */
 	static Executor *getInstance();
 
 private:
