@@ -15,11 +15,15 @@ Expression::~Expression() {
 
 }
 
-void Expression::display() {
+void Expression::display(void *attr) {
+	val=attr;
+	/*
+	 * TODO: add a spliter ' | '.
+	 * */
 	if(return_type==t_int) {
-		cout<<*(int *)val<<endl;
+		cout<<*(int *)val<<" | ";
 	}
 	if(return_type==t_long) {
-		cout<<*(unsigned long*)val<<endl;
+		cout<<*(unsigned long*)val<<" | ";
 	}
 }

@@ -11,6 +11,7 @@
 #include "../../src/expressions/m_expression.h"
 #include "../common/m_configuration.h"
 #include "../common/m_schema.h"
+#include "m_query_plan.h"
 
 #include <stdio.h>
 
@@ -19,9 +20,9 @@ using namespace std;
 
 namespace physical {
 
-class Debug: public UnaryNode, public Iterator {
+class Debug: public UnaryNode, public QueryPlan {
 public:
-	Debug(vector<Expression *> expressions, Iterator *child);
+	Debug(vector<Expression *> expressions, QueryPlan *child);
 	virtual ~Debug();
 
 	bool prelude();
@@ -30,9 +31,11 @@ public:
 
 	void display(void *);
 
+	vector<Expression *> output();
+
 private:
 	vector<Expression *> expressions_;
-	Iterator *child_;
+	QueryPlan *child_;
 
 	Block *buffer_;
 

@@ -26,6 +26,8 @@ public:
 
 	virtual bool storeTuple(void *, void *)=0;
 
+	virtual bool reset()=0;
+
 protected:
 	char *start_;
 	char *free_;
@@ -45,6 +47,8 @@ public:
 
 	bool storeTuple(void *, void *);
 
+	bool reset();
+
 public:
 	/* can be used to serialization */
 	bool storeBlock(void *, unsigned);
@@ -59,6 +63,14 @@ public:
 	virtual ~BufferIterator();
 
 	void* getNext();
+
+public:
+	inline int get_size() {
+		/* "4" is the tail length.
+		 * TODO: tail info can be more rich.
+		 *  */
+		return *(int *)(buffer_->start_+buffer_->size_-4);
+	};
 
 private:
 	Buffer *buffer_;

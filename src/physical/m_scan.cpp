@@ -10,7 +10,7 @@
 namespace physical {
 
 ScanSerObj::ScanSerObj(string file_path)
-:file_path_(file_path){
+:file_path_(file_path) {
 
 }
 
@@ -28,6 +28,7 @@ Scan::~Scan() {
 }
 
 bool Scan::prelude() {
+	/* TODO: output_ must be compute. */
 	splits_stream_=fopen(scan_ser_obj_->file_path_.c_str(),"rb");
 	buffer_=new char[BLOCK_SIZE];
 	return true;
@@ -37,6 +38,9 @@ bool Scan::execute(Block *block) {
 	int size=0;
 	if((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
 		block->storeBlock(buffer_,size);
+		cout<<"size: "<<size<<endl;
+		cout<<"count: "<<*(int *)(buffer_+size-4)<<endl;
+		getchar();
 		return true;
 	}
 	else {
@@ -47,6 +51,10 @@ bool Scan::execute(Block *block) {
 bool Scan::postlude() {
 	fclose(splits_stream_);
 	return true;
+}
+
+vector<Expression *> Scan::output() {
+	return expressions_;
 }
 
 }

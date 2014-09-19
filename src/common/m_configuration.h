@@ -11,12 +11,25 @@
 /* provide INT_MIN, INT_MAX etc. */
 #include <limits.h>
 
+/* block size of pipeline. */
 #define BLOCK_SIZE 64*1024
+/* this is the heap size to sort the stream. */
+#define HEAP_SIZE 100
+/* buffer the data which is from the heap. */
+#define HEAP_SORT_BUFFER_INIT_SIZE 16
 
 class Configuration {
 public:
 	Configuration();
 	virtual ~Configuration();
+
+private:
+	/*
+	 * TODO: add the set and get method.
+	 * */
+	unsigned block_size_;
+	unsigned heap_size_;
+	unsigned heap_sort_buffer_init_size_;
 };
 
 #endif /* M_CONFIGURATION_H_ */

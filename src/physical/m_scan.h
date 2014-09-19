@@ -11,6 +11,7 @@
 #include "../../src/expressions/m_expression.h"
 #include "../common/m_tree_node.h"
 #include "../common/m_configuration.h"
+#include "m_query_plan.h"
 
 #include <stdio.h>
 
@@ -30,7 +31,7 @@ private:
 
 };
 
-class Scan :public LeafNode, public Iterator {
+class Scan :public LeafNode, public QueryPlan {
 public:
 	Scan(vector<Expression* > expressions, ScanSerObj *scan_ser_obj);
 	virtual ~Scan();
@@ -41,8 +42,9 @@ public:
 
 	void display();
 
+	vector<Expression *> output();
+
 private:
-	/* here we can package the vector<Expression *> as schema */
 	vector<Expression *> expressions_;
 	ScanSerObj *scan_ser_obj_;
 	FILE *splits_stream_;

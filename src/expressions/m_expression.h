@@ -26,7 +26,7 @@ public:
 
 	virtual void* eval()=0;
 	virtual void initilize()=0;
-	virtual void display();
+	virtual void display(void *);
 
 public:
 //protected:
@@ -36,6 +36,10 @@ public:
 	 * if "a+2" a belongs the references but 2 is not.
 	 *  */
 	vector<Column *> references;
+	/*
+	 * for evaluation.
+	 * TODO: some good way.
+	 *  */
 	void *val;
 };
 

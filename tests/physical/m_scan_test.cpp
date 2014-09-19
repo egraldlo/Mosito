@@ -26,7 +26,7 @@ int scan_test(){
 	ve.push_back(e5);
 	string file_path="";
 	ScanSerObj *scan_ser_obj=new ScanSerObj(file_path);
-	Iterator *scan=new Scan(ve,scan_ser_obj);
+	QueryPlan *scan=new Scan(ve,scan_ser_obj);
 	return 0;
 }
 

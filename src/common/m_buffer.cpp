@@ -18,12 +18,13 @@ BufferIterator::~BufferIterator() {
 
 void *BufferIterator::getNext() {
 	unsigned tuple_size=buffer_->getActualSize();
-	void *ret=buffer_->start_+(++current_)*tuple_size;
-	if(ret<buffer_->free_) {
-		return ret;
-	}
-	else {
+	void *ret=buffer_->start_+(current_++)*tuple_size;
+	/* "ret<buffer_->free_" is wrong, we must use tuple count.*/
+	if(current_==get_size()) {
 		return 0;
+	}
+	else{
+		return ret;
 	}
 }
 
@@ -64,6 +65,11 @@ void *Block::allocateTuple() {
 bool Block::storeTuple(void *desc, void *src) {
 	memcpy(desc,src,tuple_size_);
 	free_+=tuple_size_;
+	return true;
+}
+
+bool Block::reset() {
+	free_=start_;
 	return true;
 }
 

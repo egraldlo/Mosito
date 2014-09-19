@@ -13,5 +13,5 @@ test_LDADD = common/libtest_common.a \
 				 ../src/physical/libphysical.a \
 				 ../src/common/libcommon.a
 		 
-SUBDIRS = common executor expressions logical optimizer physical
-DIST_SUBDIRS = common executor expressions logical optimizer physical 
+SUBDIRS = common executor expressions logical optimizer physical storage
+DIST_SUBDIRS = common executor expressions logical optimizer physical storage 

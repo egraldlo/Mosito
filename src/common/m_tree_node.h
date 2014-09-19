@@ -10,21 +10,13 @@
 
 #include "m_buffer.h"
 
+#include <vector>
+using namespace std;
+
 class TreeNode {
 public:
 	TreeNode(){};
 	virtual ~TreeNode(){};
-};
-
-class Iterator {
-public:
-	Iterator(){};
-	virtual ~Iterator(){};
-
-	virtual bool prelude()=0;
-	virtual bool execute(Block *)=0;
-	virtual bool postlude()=0;
-
 };
 
 class BinaryNode: public TreeNode {

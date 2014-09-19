@@ -9,9 +9,9 @@
 
 namespace physical {
 
-Debug::Debug(vector<Expression *> expressions, Iterator *child)
-:expressions_(expressions), child_(child){
-	schema_=new Schema(&expressions);
+Debug::Debug(vector<Expression *> expressions, QueryPlan *child)
+:expressions_(expressions), child_(child) {
+
 }
 
 Debug::~Debug() {
@@ -20,6 +20,9 @@ Debug::~Debug() {
 
 bool Debug::prelude() {
 	child_->prelude();
+	/* TODO: output_ must be compute. */
+	vector<Expression *> input_=child_->output();
+	schema_=new Schema(&input_);
 	buffer_=new Block(BLOCK_SIZE,schema_->get_bytes());
 	return true;
 }
@@ -30,14 +33,7 @@ bool Debug::execute(Block *) {
 	while(child_->execute(buffer_)) {
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
-//			display(tuple);
-			cout<<" | "<<*(unsigned long *)(schema_->get_addr(tuple,0));
-			cout<<" | "<<*(int *)(schema_->get_addr(tuple,1));
-			cout<<" | "<<*(int *)(schema_->get_addr(tuple,2));
-			cout<<" | "<<*(int *)(schema_->get_addr(tuple,3));
-			cout<<" | "<<*(int *)(schema_->get_addr(tuple,4));
-			cout<<" | "<<*(int *)(schema_->get_addr(tuple,5))<<endl;
-			getchar();
+			display(tuple);
 		}
 	}
 	return true;
@@ -50,9 +46,13 @@ bool Debug::postlude() {
 
 void Debug::display(void *tuple) {
 	for(unsigned i=0;i<expressions_.size();i++) {
-		expressions_[i]->display();
-		cout<<" | "<<endl;
+		expressions_[i]->display(schema_->get_addr(tuple,i));
 	}
+	cout<<endl;
+}
+
+vector<Expression *> Debug::output() {
+	return child_->output();
 }
 
 }

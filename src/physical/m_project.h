@@ -11,25 +11,31 @@
 #include "../../src/expressions/m_expression.h"
 #include "../common/m_tree_node.h"
 #include "../common/m_configuration.h"
+#include "../common/m_schema.h"
+#include "m_query_plan.h"
 
 namespace physical {
 
-class Project: public UnaryNode, public Iterator {
+class Project: public UnaryNode, public QueryPlan {
 public:
-	/* this can be written as physialplan child */
-	Project(vector<Expression *> expressions, Iterator *child);
+	/* this can be written as physical plan child */
+	Project(vector<Expression *> expressions, QueryPlan *child);
 	virtual ~Project();
 
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
 
+	vector<Expression *> output();
+
 private:
 	vector<Expression *> expressions_;
-	Iterator *child_;
+	QueryPlan *child_;
 
 	Block *buffer_;
 	BufferIterator *buffer_iterator_;
+
+	Schema *schema_;
 };
 
 }

@@ -14,6 +14,7 @@ AC_CONFIG_FILES([
   src/logical/Makefile
   src/optimizer/Makefile  
   src/physical/Makefile
+  src/storage/Makefile
   tests/Makefile
   tests/common/Makefile
   tests/executor/Makefile
@@ -21,6 +22,7 @@ AC_CONFIG_FILES([
   tests/logical/Makefile
   tests/optimizer/Makefile
   tests/physical/Makefile
+  tests/storage/Makefile
 ])
 AC_OUTPUT
 
