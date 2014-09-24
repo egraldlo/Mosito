@@ -8,6 +8,8 @@
 #ifndef M_TREES_H_
 #define M_TREES_H_
 
+#include "../common/m_configuration.h"
+
 #include <iostream>
 using namespace std;
 
@@ -72,25 +74,30 @@ private:
 
 class Heap {
 public:
-	Heap(long size);
+	Heap(int size, int tuple_size);
 	virtual ~Heap();
 
-	void heaplify(int array[], int i, int len);
-	void heapSort(int array[], int len);
+	bool init_phase(void *);
+
+	void heap_again();
+	void heap_sort();
+
+	void heap_adjust(void *);
+	void* heap_get_top();
 
 	void print(int n);
 
-	void rebuild();
-	void addOne();
-
 private:
-	/* here we firstly define it as long type */
-	long size_;
-	/* array can be simulated as array.
-	 * TODO: here we can define it as template
-	 *  */
-	int *array_;
+	/* the waterline of the array_. */
+	int waterline_;
+	/*
+	 * here we allocate a memory space to store the pointer.
+	 * */
+	void **array_;
 	int *out_;
+	/* the buffer which can store the data by increasing 2 times. */
+	FlexBuffer *flex_buffer_;
+	vector<string> file_path_list_;
 };
 
 #endif /* M_TREES_H_ */

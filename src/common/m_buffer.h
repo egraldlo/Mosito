@@ -57,6 +57,20 @@ private:
 	unsigned tuple_size_;
 };
 
+/*
+ * FlexBuffer can be resized by 2 times.
+ * */
+class FlexBuffer: public Block {
+public:
+	FlexBuffer(unsigned size, unsigned tuple_size);
+	virtual ~FlexBuffer();
+
+	bool double_buffer();
+
+private:
+	double increasing_factor_;
+};
+
 class BufferIterator {
 public:
 	BufferIterator(Buffer *buffer);

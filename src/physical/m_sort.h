@@ -8,6 +8,7 @@
 #ifndef M_SORT_H_
 #define M_SORT_H_
 
+#include "../../src/common/m_trees.h"
 #include "../expressions/m_sort_order.h"
 #include "../common/m_configuration.h"
 #include "../common/m_tree_node.h"
@@ -43,6 +44,8 @@ private:
 	Block *buffer_;
 
 	Schema *schema_;
+
+	Heap *heap_;
 };
 
 }

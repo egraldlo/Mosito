@@ -17,6 +17,7 @@
 #define HEAP_SIZE 100
 /* buffer the data which is from the heap. */
 #define HEAP_SORT_BUFFER_INIT_SIZE 16
+#define HEAP_SORT_BUFFER_INCREASING_FACTOR 2
 
 class Configuration {
 public:

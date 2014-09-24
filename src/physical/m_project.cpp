@@ -37,6 +37,11 @@ bool Project::execute(Block *block) {
 			if(child_->execute(buffer_)) {
 				buffer_iterator_=buffer_->createIterator();
 			}
+			else {
+				/*
+				 * TODO:
+				 *  */
+			}
 		}
 		if((src=buffer_iterator_->getNext())!=0) {
 			/* we can at here print the tuple, use the src

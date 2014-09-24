@@ -109,21 +109,50 @@ int LoserTree::replay(int i,
 		return 0;
 }
 
-Heap::Heap(long size)
-:size_(size),out_(new int[size]) {
-
+Heap::Heap(int size, int tuple_size) {
+	array_=new void*[HEAP_SIZE];
+	/*
+	 * the following buffer_ can be increase by 2 times.
+	 * the function we use here is realloc(), but we can use memory pool.
+	 *  */
+	flex_buffer_=new FlexBuffer(size, tuple_size);
 }
 
 Heap::~Heap() {
 
 }
 
-void Heap::heaplify(int array[], int i, int len) {
-	/* child of the ith node. */
+bool Heap::init_phase(BufferIterator* &bi) {
+	/*
+	 * the tuple count is not larger than HEAP_SIZE
+	 * return false, else return true;
+	 *  */
+	if(bi->get_size()<=HEAP_SIZE) {
+		void *tuple=0;
+		while((tuple==bi->getNext())!=0) {
+			array_[waterline_++]=tuple;
+		}
+		return false;
+	}
+	void *tuple=0;
+	while((tuple==bi->getNext())!=0) {
+		array_[waterline_++]=tuple;
+	}
+	return true;
+}
+
+void Heap::heap_sort() {
+	for(unsigned i=(waterline_-2)/2;i>=0;i--) {
+		heap_again(i,waterline_);
+	}
+}
+
+void Heap::heap_again(int i, int len) {
+	/* left child of the i-th node. */
 	int child=2*i+1;
 	/* child is the offset, and len is the length, so here child can not
 	 * be equaled to len, so child<len is the condition.
-	 *  */
+	 * */
 	while(child<len) {
 		/* array[child] < array[child+1], then we use array[child+1] to
 		 * compare with the i. if child+1=len, child is the last one.
@@ -131,9 +160,10 @@ void Heap::heaplify(int array[], int i, int len) {
 		 *  */
 		if(child+1<len && array[child]<array[child+1])
 			child++;
+		/* TODO: how should we go to compare by using the schema and SortOrder vector */
 		if(array[i]>array[child])
 			break;
-		else{
+		else {
 			int temp=array[i];
 			array[i]=array[child];
 			array[child]=temp;
@@ -145,17 +175,27 @@ void Heap::heaplify(int array[], int i, int len) {
 	}
 }
 
-void Heap::heapSort(int array[], int len) {
-	/* initialize the heap */
-	for(int i=(len-2)/2;i>=0;i--) {
-		heaplify(array,i,len);
+void Heap::heap_adjust(void *tuple) {
+	void *desc=0;
+	void *top=heap_get_top();
+	if((desc=flex_buffer_->allocateTuple())!=0) {
+		flex_buffer_->storeTuple(desc,top);
 	}
+	else {
+		flex_buffer_->double_buffer();
+		flex_buffer_->storeTuple(desc,top);
+	}
+	/* compare the top and tuple */
 
-	for(int i=0;i<len;i++) {
-		out_[i]=array[0];
-		array[0]=array[len-i-1];
-		heaplify(array,0,len-i-1);
-	}
+	/*
+	 * check whether the heap size is 0,
+	 * if 0, rebuild the heap, persist the sorted file.
+	 * else, next get top.
+	 *  */
+}
+
+void *Heap::heap_get_top() {
+	return array_[0];
 }
 
 void Heap::print(int n) {

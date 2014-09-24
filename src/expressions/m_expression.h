@@ -81,7 +81,7 @@ public:
 	Column(){};
 	virtual ~Column(){};
 
-	void *eval(){};
+	void *eval(){return 0;};
 	void initilize(){};
 };
 
