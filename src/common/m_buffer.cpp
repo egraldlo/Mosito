@@ -79,19 +79,19 @@ bool Block::storeBlock(void *src, unsigned size) {
 	return true;
 }
 
-FlexBuffer::FlexBuffer(unsigned size, unsigned tuple_size)
-:Block(size, tuplesize){
+FlexBlock::FlexBlock(unsigned size, unsigned tuple_size)
+:Block(size, tuple_size){
 
 }
 
-FlexBuffer::~FlexBuffer() {
+FlexBlock::~FlexBlock() {
 
 }
 
-bool FlexBuffer::double_buffer() {
+bool FlexBlock::double_buffer() {
 	unsigned used=size_;
 	size_*=increasing_factor_;
-	start_=realloc(start_,size_);
+	start_=(char *)realloc(start_,size_);
 	free_=start_+used;
 	/* TODO: add realloc error solution. */
 	return true;

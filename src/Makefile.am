@@ -10,5 +10,5 @@ mosito_SOURCES = m_server.cpp
 
 mosito_LDADD = executor/libexecutor.a 
 		 
-SUBDIRS = common executor expressions logical optimizer physical storage
-DIST_SUBDIRS = common executor expressions logical optimizer physical storage
+SUBDIRS = common executor expressions logical optimizer physical storage sql
+DIST_SUBDIRS = common executor expressions logical optimizer physical storage sql

@@ -15,7 +15,7 @@ using namespace std;
 
 static int print_id=0;
 
-static void print_d(void *){
+static void print_d_1(void *){
 	int print_=print_id++;
 	int i=2;
 	while(i-->0){
@@ -41,16 +41,16 @@ public:
 	void test_circle(){
 		ThreadPool *tp=new ThreadPool(5,10);
 		tp->init_thread_pool();
-		tp->add_into_thread_pool(&print_d,0);
-		tp->add_into_thread_pool(&print_d,0);
+		tp->add_into_thread_pool(&print_d_1,0);
+		tp->add_into_thread_pool(&print_d_1,0);
 		tp->add_into_thread_pool(&print_dd,0);
 		tp->add_into_thread_pool(&print_dd,0);
 		tp->add_into_thread_pool(&print_dd,0);
 		tp->add_into_thread_pool(&print_dd,0);
 		tp->add_into_thread_pool(&print_dd,0);
-		tp->add_into_thread_pool(&print_d,0);
-		tp->add_into_thread_pool(&print_d,0);
-		tp->add_into_thread_pool(&print_d,0);
+		tp->add_into_thread_pool(&print_d_1,0);
+		tp->add_into_thread_pool(&print_d_1,0);
+		tp->add_into_thread_pool(&print_d_1,0);
 	};
 
 	void test(){

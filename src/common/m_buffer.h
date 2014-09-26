@@ -9,6 +9,7 @@
 #define M_BUFFER_H_
 
 #include <string.h>
+#include <stdlib.h>
 
 class BufferIterator;
 
@@ -58,12 +59,12 @@ private:
 };
 
 /*
- * FlexBuffer can be resized by 2 times.
+ * FlexBlock can be resized by 2 times.
  * */
-class FlexBuffer: public Block {
+class FlexBlock: public Block {
 public:
-	FlexBuffer(unsigned size, unsigned tuple_size);
-	virtual ~FlexBuffer();
+	FlexBlock(unsigned size, unsigned tuple_size);
+	virtual ~FlexBlock();
 
 	bool double_buffer();
 

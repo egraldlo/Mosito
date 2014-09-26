@@ -1,3 +1,6 @@
+#ifndef FUNCTION_CPP_
+#define FUNCTION_CPP_
+
 #include <iostream>
 #include <malloc.h>
 #include <stdlib.h>
@@ -1507,5 +1510,4 @@ void GetCorrectString(char *dest, const char *src)
 	dest[j] = '\0';
 }
 
-
-
+#endif

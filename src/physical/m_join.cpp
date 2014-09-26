@@ -10,12 +10,59 @@
 namespace physical {
 
 Join::Join() {
-	// TODO Auto-generated constructor stub
 
 }
 
 Join::~Join() {
-	// TODO Auto-generated destructor stub
+
+}
+
+HashJoin::HashJoin() {
+
+}
+
+HashJoin::~HashJoin() {
+
+}
+
+SortMergeJoin::SortMergeJoin(
+		  vector<Expression *> leftKeys,
+		  vector<Expression *> rightKeys,
+		  vector<Expression *> conditions,
+		  QueryPlan *left,
+		  QueryPlan *right,
+		  JoinType join_type) {
+
+}
+
+SortMergeJoin::~SortMergeJoin() {
+
+}
+
+bool SortMergeJoin::prelude() {
+
+	return true;
+}
+
+bool SortMergeJoin::execute(Block *block) {
+
+	return true;
+}
+
+bool SortMergeJoin::postlude() {
+	return true;
+}
+
+vector<Expression *> SortMergeJoin::output() {
+	return left_->output();
+}
+
+NestLoopJoin::NestLoopJoin() {
+
+}
+
+NestLoopJoin::~NestLoopJoin() {
+
 }
 
 } /* namespace physical */

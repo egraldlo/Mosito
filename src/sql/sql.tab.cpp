@@ -48,9 +48,6 @@
 /* Using locations.  */
 #define YYLSP_NEEDED 1
 
-
-
-
 /* Copy the first part of user declarations.  */
 
 /* Line 172 of glr.c  */
@@ -74,11 +71,8 @@ int errorNumber = 0;			// 2014-3-6---声明SQL解析错误数---by余楷
 int readInputForLexer( char *buffer, int *numBytesRead, int maxBytesToRead );
 char linebuf[500];
 
-
 /* Line 172 of glr.c  */
 #line 80 "sql.tab.cpp"
-
-
 
 #include "sql.tab.hpp"
 
@@ -108,7 +102,6 @@ char linebuf[500];
 static YYSTYPE yyval_default;
 
 /* Copy the second part of user declarations.  */
-
 
 /* Line 243 of glr.c  */
 #line 115 "sql.tab.cpp"

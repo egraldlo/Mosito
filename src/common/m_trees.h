@@ -9,8 +9,10 @@
 #define M_TREES_H_
 
 #include "../common/m_configuration.h"
+#include "m_buffer.h"
 
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class LoserTree {
@@ -77,12 +79,17 @@ public:
 	Heap(int size, int tuple_size);
 	virtual ~Heap();
 
-	bool init_phase(void *);
-
-	void heap_again();
+	/* full the heap at first. */
+	bool init_phase(BufferIterator *&bi);
+	/* sort the heap after init_phase. */
 	void heap_sort();
 
+
+	void heap_again(int, int);
+
+	/* compare the void * and rebuild the heap. */
 	void heap_adjust(void *);
+	/* get the array_[0] from the heap. */
 	void* heap_get_top();
 
 	void print(int n);
@@ -96,7 +103,7 @@ private:
 	void **array_;
 	int *out_;
 	/* the buffer which can store the data by increasing 2 times. */
-	FlexBuffer *flex_buffer_;
+	FlexBlock *flex_buffer_;
 	vector<string> file_path_list_;
 };
 

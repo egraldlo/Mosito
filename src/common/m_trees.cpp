@@ -115,7 +115,7 @@ Heap::Heap(int size, int tuple_size) {
 	 * the following buffer_ can be increase by 2 times.
 	 * the function we use here is realloc(), but we can use memory pool.
 	 *  */
-	flex_buffer_=new FlexBuffer(size, tuple_size);
+	flex_buffer_=new FlexBlock(size, tuple_size);
 }
 
 Heap::~Heap() {
@@ -158,15 +158,15 @@ void Heap::heap_again(int i, int len) {
 		 * compare with the i. if child+1=len, child is the last one.
 		 * and only one child.
 		 *  */
-		if(child+1<len && array[child]<array[child+1])
+		if(child+1<len && array_[child]<array_[child+1])
 			child++;
 		/* TODO: how should we go to compare by using the schema and SortOrder vector */
-		if(array[i]>array[child])
+		if(array_[i]>array_[child])
 			break;
 		else {
-			int temp=array[i];
-			array[i]=array[child];
-			array[child]=temp;
+			void *temp=array_[i];
+			array_[i]=array_[child];
+			array_[child]=temp;
 
 			i=child;
 			/* begin with left child. */

@@ -14,7 +14,8 @@
 
 #include "common/m_thread_pool_test.cpp"
 #include "common/m_trees_test.cpp"
-#include "../tests/physical/m_debug_test.cpp"
+#include "physical/m_debug_test.cpp"
+#include "sql/m_sql_parser_test.cpp"
 
 #include <arpa/inet.h>
 
@@ -59,8 +60,10 @@ int main() {
 //	m_losertrees_test();
 //	m_heap_test();
 
-	string path="/home/claims/sortmergejoin/T4G0P0";
-	physical::debug_test(path);
+//	string path="/home/claims/sortmergejoin/T4G0P0";
+//	physical::debug_test(path);
+
+	sql();
 	return 0;
 }
 

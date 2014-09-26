@@ -7,3 +7,8 @@
 
 #include "../../src/sql/m_sql_parser.h"
 
+int sql(){
+	SqlParser *sp=new SqlParser();
+	sp->execute();
+	return 0;
+}
