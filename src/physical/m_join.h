@@ -31,11 +31,14 @@ public:
 	HashJoin();
 	virtual ~HashJoin();
 
-	bool prelude(){};
-	bool execute(Block *){};
-	bool postlude(){};
+	bool prelude(){return true;};
+	bool execute(Block *){return true;};
+	bool postlude(){return true;};
 
-	vector<Expression *> output(){};
+	vector<Expression *> output(){
+		vector<Expression *> ret;
+		return ret;
+	};
 
 private:
 
@@ -72,11 +75,14 @@ public:
 	NestLoopJoin();
 	virtual ~NestLoopJoin();
 
-	bool prelude(){};
-	bool execute(Block *){};
-	bool postlude(){};
+	bool prelude(){return true;};
+	bool execute(Block *){return true;};
+	bool postlude(){return true;};
 
-	vector<Expression *> output(){};
+	vector<Expression *> output(){
+		vector<Expression *> ret;
+		return ret;
+	};
 
 private:
 

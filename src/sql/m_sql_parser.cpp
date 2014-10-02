@@ -52,6 +52,8 @@ void SqlParser::execute() {
 //						struct Node *cur=(struct Node *)(curt->next);
 ////						departwc(cur,querynode->from_list);
 //					}
+
+					cout<<"just check!!!"<<endl;
 					QueryPlan *plan=ast_2_lp(node);
 //					QueryPlan *root=new physical::Debug(,plan);
 			}
@@ -76,6 +78,7 @@ Node * SqlParser::getparsetreeroot(){
 	memset(globalInputText, 0, sizeof(globalInputText));
 	printf("Claims>");
 	while(1){
+		fflush(stdin);
 		char c=getchar();
 		globalInputText[charnum++]=c;
 		if(c==';'){
@@ -95,7 +98,7 @@ Node * SqlParser::getparsetreeroot(){
 
 QueryPlan *SqlParser::ast_2_lp(Node *tree) {
 	QueryPlan *plan=0;
-	//Query_stmt *node=(Query_stmt *)parsetree;
+//	Query_stmt *node=(Query_stmt *)tree;
 	//Query_stmt is a key datastructure.
 	switch(tree->type) {
 		case t_query_stmt: {
@@ -117,11 +120,25 @@ QueryPlan *SqlParser::osgwf_2_lp(Node *tree) {
 		order=sgwf;
 	}
 	else {
+		cout<<"I am in 2_lp;"<<endl;
 		/*
 		 * TODO: add sort logical plan.
 		 *  */
+		Orderby_list *ol=(Orderby_list *)(node->orderby_list);
+		Groupby_expr *ge=(Groupby_expr *)(ol->next);
+		switch(ge->args->type) {
+		case t_name:
+		case t_column:
+		case t_name_name:
+			Columns *col=(Columns *)(ge->args);
+			cout<<"in sort: "<<col->parameter2<<endl;
+		}
 	}
 	return order;
 }
 
+QueryPlan *sgwf_2_lp(Node *node) {
+	QueryPlan *select=0;
 
+	return select;
+}

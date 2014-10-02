@@ -8,9 +8,11 @@
 #ifndef M_JOIN_H_
 #define M_JOIN_H_
 
+#include "m_logical_plan.h"
+
 namespace logical {
 
-class Join {
+class Join: public LogicalPlan {
 public:
 	Join();
 	virtual ~Join();
