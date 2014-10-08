@@ -8,16 +8,33 @@
 #ifndef M_TREES_H_
 #define M_TREES_H_
 
+#include "../expressions/m_sort_order.h"
 #include "../common/m_configuration.h"
+#include "../common/m_schema.h"
 #include "m_buffer.h"
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <sstream>
 using namespace std;
+
+class Comparator {
+public:
+	Comparator(Schema *schema, vector<SortOrderRef *> vs);
+	virtual ~Comparator();
+
+	bool compare(void *, void *);
+
+private:
+	Schema *schema_;
+	vector<SortOrderRef *> vs_;
+};
 
 class LoserTree {
 public:
 	LoserTree();
+	LoserTree(Comparator *comparator);
 	virtual ~LoserTree();
 
 	/* here we define the winner function as function pointer.
@@ -72,25 +89,34 @@ private:
 	 * TODO: here we can define it as template.
 	 *  */
 	int *L;
+
+	Comparator *comparator_;
 };
 
 class Heap {
 public:
 	Heap(int size, int tuple_size);
+	Heap(int size, int tuple_size, Comparator *comparator);
 	virtual ~Heap();
 
 	/* full the heap at first. */
-	bool init_phase(BufferIterator *&bi);
+	bool init_phase(BufferIterator &bi);
 	/* sort the heap after init_phase. */
 	void heap_sort();
 
-
 	void heap_again(int, int);
+
+	bool heap_empty();
 
 	/* compare the void * and rebuild the heap. */
 	void heap_adjust(void *);
+
 	/* get the array_[0] from the heap. */
 	void* heap_get_top();
+
+	bool cleanup();
+
+	vector<string> get_files();
 
 	void print(int n);
 
@@ -105,6 +131,14 @@ private:
 	/* the buffer which can store the data by increasing 2 times. */
 	FlexBlock *flex_buffer_;
 	vector<string> file_path_list_;
+
+	Comparator *comparator_;
+
+	/* whether the heap has data. */
+	bool init_flag_;
+
+	unsigned file_off_;
+	vector<string> files_;
 };
 
 #endif /* M_TREES_H_ */

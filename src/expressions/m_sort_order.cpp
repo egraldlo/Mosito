@@ -15,3 +15,12 @@ SortOrder::SortOrder(Expression *expression, direction direction)
 SortOrder::~SortOrder() {
 
 }
+
+SortOrderRef::SortOrderRef(int off, direction dir)
+:offset_(off), direction_(dir){
+
+}
+
+SortOrderRef::~SortOrderRef() {
+
+}

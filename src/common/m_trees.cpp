@@ -7,7 +7,58 @@
 
 #include "m_trees.h"
 
+Comparator::Comparator(Schema *schema, vector<SortOrderRef *> vs)
+:schema_(schema),vs_(vs){
+
+}
+
+Comparator::~Comparator() {
+
+}
+
+bool Comparator::compare(void *left, void *right) {
+	int flag;
+
+	for(unsigned i=0;i<vs_.size();i++) {
+		void *l=schema_->get_addr(left,vs_[i]->offset_);
+		void *r=schema_->get_addr(right,vs_[i]->offset_);
+
+		if(schema_->getDataType(i)->eq(l,r)) {
+			flag=0;
+		}
+		else if((schema_->getDataType(i)->ls(l,r))&&(vs_[i]->direction_==ascending)) {
+			flag=1;
+		}
+		else if((schema_->getDataType(i)->ls(l,r))&&(vs_[i]->direction_==descending)) {
+			flag=2;
+		}
+		else if((schema_->getDataType(i)->gt(l,r))&&(vs_[i]->direction_==descending)) {
+			flag=1;
+		}
+		else if((schema_->getDataType(i)->gt(l,r))&&(vs_[i]->direction_==ascending)) {
+			flag=2;
+		}
+		else {
+			/* TODO: a log system must be used here. */
+			cout<<"compare error!"<<endl;
+		}
+
+		if(flag==0)
+			continue;
+		if(flag==1)
+			return true;
+		if(flag==2)
+			return false;
+	}
+	return true;
+}
+
 LoserTree::LoserTree() {
+
+}
+
+LoserTree::LoserTree(Comparator *comparator)
+:comparator_(comparator){
 
 }
 
@@ -116,33 +167,50 @@ Heap::Heap(int size, int tuple_size) {
 	 * the function we use here is realloc(), but we can use memory pool.
 	 *  */
 	flex_buffer_=new FlexBlock(size, tuple_size);
+	init_flag_=false;
+}
+
+Heap::Heap(int size, int tuple_size, Comparator *comparator) {
+	array_=new void*[HEAP_SIZE];
+	/*
+	 * the following buffer_ can be increase by 2 times.
+	 * the function we use here is realloc(), but we can use memory pool.
+	 *  */
+	flex_buffer_=new FlexBlock(size, tuple_size);
+	init_flag_=false;
+
+	comparator_=comparator;
 }
 
 Heap::~Heap() {
 
 }
 
-bool Heap::init_phase(BufferIterator* &bi) {
+bool Heap::init_phase(BufferIterator &bi) {
 	/*
 	 * the tuple count is not larger than HEAP_SIZE
 	 * return false, else return true;
 	 *  */
-	if(bi->get_size()<=HEAP_SIZE) {
+	init_flag_=true;
+	if(bi.get_size()<=HEAP_SIZE) {
 		void *tuple=0;
-		while((tuple==bi->getNext())!=0) {
+		while((tuple=bi.getNext())!=0) {
 			array_[waterline_++]=tuple;
 		}
 		return false;
 	}
 	void *tuple=0;
-	while((tuple==bi->getNext())!=0) {
-		array_[waterline_++]=tuple;
+	while((tuple=bi.getNext())!=0) {
+		if(waterline_<HEAP_SIZE)
+			array_[waterline_++]=tuple;
+		else
+			break;
 	}
 	return true;
 }
 
 void Heap::heap_sort() {
-	for(unsigned i=(waterline_-2)/2;i>=0;i--) {
+	for(int i=(waterline_-2)/2;i>=0;i--) {
 		heap_again(i,waterline_);
 	}
 }
@@ -158,10 +226,10 @@ void Heap::heap_again(int i, int len) {
 		 * compare with the i. if child+1=len, child is the last one.
 		 * and only one child.
 		 *  */
-		if(child+1<len && array_[child]<array_[child+1])
+		if(child+1<len && comparator_->compare(array_[child], array_[child+1]))
 			child++;
 		/* TODO: how should we go to compare by using the schema and SortOrder vector */
-		if(array_[i]>array_[child])
+		if(comparator_->compare(array_[i], array_[child]))
 			break;
 		else {
 			void *temp=array_[i];
@@ -175,23 +243,70 @@ void Heap::heap_again(int i, int len) {
 	}
 }
 
+bool Heap::heap_empty() {
+	return init_flag_;
+}
+
 void Heap::heap_adjust(void *tuple) {
 	void *desc=0;
 	void *top=heap_get_top();
-	if((desc=flex_buffer_->allocateTuple())!=0) {
-		flex_buffer_->storeTuple(desc,top);
+	while((desc=flex_buffer_->allocateTuple())==0) {
+		flex_buffer_->double_buffer();
+	}
+	flex_buffer_->storeTuple(desc,top);
+
+	/* compare the top and tuple */
+	if(comparator_->compare(tuple, top)==false) {
+		array_[0]=tuple;
+		heap_again(0, waterline_);
 	}
 	else {
-		flex_buffer_->double_buffer();
+		waterline_--;
+		array_[0]=array_[waterline_];
+		array_[waterline_]=tuple;
+		if(tuple==0) {
+			fflush(stdin);
+			getchar();
+		}
+		if(waterline_==0) {
+			stringstream fname;
+			fname<<"sort_"<<file_off_++;
+			files_.push_back(fname.str());
+			flex_buffer_->persist(fname.str());
+			flex_buffer_->reset();
+			waterline_=HEAP_SIZE;
+		}
+		else {
+			heap_again(0, waterline_);
+		}
+	}
+	if(waterline_==10) {
+		BufferIterator *bi=flex_buffer_->createIterator();
+		void *sta;
+		while((sta=bi->getNext())!=0){
+			cout<<"|"<<*(unsigned long *)sta<<" | "<<*(int *)(sta+8)<<" | "<<*(int *)(sta+12)<<" | "<<*(int *)(sta+16)<<" | "<<*(int *)(sta+20)<<" | "<<*(int *)(sta+24)<<" | "<<endl;
+			usleep(100000);
+		}
+	}
+	cout<<"waterline_: "<<waterline_<<endl;
+}
+
+bool Heap::cleanup() {
+	void *desc=0;
+	while(waterline_!=0) {
+		heap_again(0,waterline_--);
+		void *top=heap_get_top();
+		while((desc=flex_buffer_->allocateTuple())==0) {
+			flex_buffer_->double_buffer();
+		}
 		flex_buffer_->storeTuple(desc,top);
 	}
-	/* compare the top and tuple */
 
-	/*
-	 * check whether the heap size is 0,
-	 * if 0, rebuild the heap, persist the sorted file.
-	 * else, next get top.
-	 *  */
+	stringstream fname;
+	fname<<"sort_"<<file_off_++;
+	files_.push_back(fname.str());
+	flex_buffer_->persist(fname.str());
+	return true;
 }
 
 void *Heap::heap_get_top() {

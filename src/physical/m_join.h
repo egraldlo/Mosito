@@ -12,7 +12,9 @@ enum JoinType{inner, left, right, full};
 
 #include "../../src/expressions/m_expression.h"
 #include "../../src/common/m_buffer.h"
+#include "../common/m_configuration.h"
 #include "../common/m_tree_node.h"
+#include "../common/m_schema.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -63,8 +65,15 @@ public:
 private:
 	vector<Expression *> left_keys_;
 	vector<Expression *> right_keys_;
+	vector<Expression *> conditions_;
+
 	QueryPlan *left_;
 	QueryPlan *right_;
+
+	JoinType join_type_;
+
+	Schema *left_schema_;
+	Schema *right_schema_;
 
 	FlexBlock *left_flex_block_;
 	FlexBlock *right_flex_block_;

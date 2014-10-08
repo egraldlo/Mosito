@@ -10,6 +10,10 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+
+#include <string>
+using namespace std;
 
 class BufferIterator;
 
@@ -63,10 +67,12 @@ private:
  * */
 class FlexBlock: public Block {
 public:
-	FlexBlock(unsigned size, unsigned tuple_size);
+	FlexBlock(unsigned size, unsigned tuple_size, double increasing_factor=2);
 	virtual ~FlexBlock();
 
 	bool double_buffer();
+
+	bool persist(string );
 
 private:
 	double increasing_factor_;
@@ -87,7 +93,7 @@ public:
 		return *(int *)(buffer_->start_+buffer_->size_-4);
 	};
 
-private:
+//private:
 	Buffer *buffer_;
 	unsigned current_;
 };

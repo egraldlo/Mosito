@@ -33,10 +33,6 @@ Schema::~Schema() {
 
 }
 
-void *Schema::get_addr(void *start, int seq) {
-	return start+offset_[seq];
-}
-
 int Schema::get_bytes() {
 	return bytes_;
 }

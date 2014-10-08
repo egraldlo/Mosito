@@ -8,6 +8,7 @@
 #ifndef M_CATALOG_H_
 #define M_CATALOG_H_
 
+#include "../../src/expressions/m_expression.h"
 #include "../logical/m_logical_plan.h"
 
 #include <string>

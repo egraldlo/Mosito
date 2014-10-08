@@ -7,6 +7,8 @@
 
 #include "m_buffer.h"
 
+#include <iostream>
+
 BufferIterator::BufferIterator(Buffer *buffer)
 :buffer_(buffer), current_(0) {
 
@@ -18,9 +20,10 @@ BufferIterator::~BufferIterator() {
 
 void *BufferIterator::getNext() {
 	unsigned tuple_size=buffer_->getActualSize();
-	void *ret=buffer_->start_+(current_++)*tuple_size;
+	void *ret=buffer_->start_+current_*tuple_size;
 	/* "ret<buffer_->free_" is wrong, we must use tuple count.*/
-	if(current_==get_size()) {
+	if(++current_==get_size()) {
+		cout<<"return 0"<<endl;
 		return 0;
 	}
 	else{
@@ -79,8 +82,8 @@ bool Block::storeBlock(void *src, unsigned size) {
 	return true;
 }
 
-FlexBlock::FlexBlock(unsigned size, unsigned tuple_size)
-:Block(size, tuple_size){
+FlexBlock::FlexBlock(unsigned size, unsigned tuple_size, double increasing_factor)
+:Block(size, tuple_size),increasing_factor_(increasing_factor){
 
 }
 
@@ -90,9 +93,16 @@ FlexBlock::~FlexBlock() {
 
 bool FlexBlock::double_buffer() {
 	unsigned used=size_;
-	size_*=increasing_factor_;
+	size_=size_*increasing_factor_;
 	start_=(char *)realloc(start_,size_);
 	free_=start_+used;
 	/* TODO: add realloc error solution. */
+	return true;
+}
+
+bool FlexBlock::persist(string filename) {
+	FILE *file=fopen(filename.c_str(),"wb+");
+	fwrite(start_,free_-start_,1,file);
+	fclose(file);
 	return true;
 }

@@ -31,7 +31,9 @@ SortMergeJoin::SortMergeJoin(
 		  vector<Expression *> conditions,
 		  QueryPlan *left,
 		  QueryPlan *right,
-		  JoinType join_type) {
+		  JoinType join_type)
+:left_keys_(leftKeys),right_keys_(rightKeys),conditions_(conditions),
+ left_(left),right_(right),join_type_(join_type){
 
 }
 
@@ -40,6 +42,19 @@ SortMergeJoin::~SortMergeJoin() {
 }
 
 bool SortMergeJoin::prelude() {
+	left_->prelude();
+	right_->prelude();
+
+	left_schema_=new Schema(&(left_->output()));
+	right_schema_=new Schema(&(right_->output()));
+
+	unsigned left_tuple_size_=left_schema_->get_bytes();
+	unsigned right_tuple_size_=right_schema_->get_bytes();
+
+	left_flex_block_=new FlexBlock(BLOCK_SIZE,left_tuple_size_);
+	right_flex_block_=new FlexBlock(BLOCK_SIZE,right_tuple_size_);
+
+
 
 	return true;
 }

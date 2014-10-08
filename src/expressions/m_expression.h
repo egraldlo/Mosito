@@ -30,6 +30,7 @@ public:
 
 public:
 //protected:
+	unsigned expr_id;
 	data_type return_type;
 	/*
 	 * references will be a vector, because it can be presented as vector<column>.

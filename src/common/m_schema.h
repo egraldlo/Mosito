@@ -20,7 +20,16 @@ public:
 	Schema(vector<Expression*> *);
 	virtual ~Schema();
 
-	void *get_addr(void *, int);
+	/* get a data type from the v_d_. */
+	inline DataType* getDataType(int off) {
+		return v_d_[off];
+	}
+
+	/* get the seq-th column from the tuple which has the address start. */
+	inline void *get_addr(void *start, int seq) {
+		return start+offset_[seq];
+	}
+
 	int get_bytes();
 
 private:

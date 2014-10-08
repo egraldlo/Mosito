@@ -20,7 +20,16 @@ public:
 	/* ugly code, not public member. */
 	Expression *expression_;
 
-private:
+	direction direction_;
+};
+
+class SortOrderRef {
+public:
+	SortOrderRef(int, direction);
+	virtual ~SortOrderRef();
+
+	/* ugly code, not public member. */
+	int offset_;
 	direction direction_;
 };
 
