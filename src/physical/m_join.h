@@ -75,8 +75,17 @@ private:
 	Schema *left_schema_;
 	Schema *right_schema_;
 
+	Block *left_block_;
+	Block *right_block_;
+
 	FlexBlock *left_flex_block_;
 	FlexBlock *right_flex_block_;
+
+	BufferIterator *lb_itr_;
+	BufferIterator *rb_itr_;
+
+	BufferIterator *lfb_itr_;
+	BufferIterator *rfb_itr_;
 };
 
 class NestLoopJoin: public Join {

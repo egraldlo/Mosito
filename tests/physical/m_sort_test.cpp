@@ -44,10 +44,14 @@ int sort_test(string path) {
 	vs.push_back(&so1);
 	QueryPlan *sort=new Sort(vs,scan,false);
 
-	QueryPlan *debug=new Debug(ve,sort);
-	debug->prelude();
-	debug->execute(0);
-	debug->postlude();
+	sort->prelude();
+	sort->execute(0);
+	sort->postlude();
+
+//	QueryPlan *debug=new Debug(ve,sort);
+//	debug->prelude();
+//	debug->execute(0);
+//	debug->postlude();
 
 	return 0;
 }

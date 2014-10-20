@@ -22,6 +22,9 @@ void *BufferIterator::getNext() {
 	unsigned tuple_size=buffer_->getActualSize();
 	void *ret=buffer_->start_+current_*tuple_size;
 	/* "ret<buffer_->free_" is wrong, we must use tuple count.*/
+	cout<<"get_size(): "<<get_size()<<endl;
+	if(get_size()==0)
+		getchar();
 	if(++current_==get_size()) {
 		cout<<"return 0"<<endl;
 		return 0;
@@ -33,7 +36,7 @@ void *BufferIterator::getNext() {
 
 Buffer::Buffer(unsigned size)
 :size_(size),start_(0),free_(0){
-	start_=new char[size_];
+	start_=(char *)malloc(size_);
 	free_=start_;
 }
 
@@ -72,6 +75,7 @@ bool Block::storeTuple(void *desc, void *src) {
 }
 
 bool Block::reset() {
+	size_=HEAP_SORT_BUFFER_INIT_SIZE;
 	free_=start_;
 	return true;
 }
@@ -92,7 +96,7 @@ FlexBlock::~FlexBlock() {
 }
 
 bool FlexBlock::double_buffer() {
-	unsigned used=size_;
+	unsigned used=free_-start_;
 	size_=size_*increasing_factor_;
 	start_=(char *)realloc(start_,size_);
 	free_=start_+used;
@@ -100,7 +104,16 @@ bool FlexBlock::double_buffer() {
 	return true;
 }
 
-bool FlexBlock::persist(string filename) {
+PersistFlexBlock::PersistFlexBlock(unsigned size, unsigned tuple_size, double increasing_factor)
+:FlexBlock(size,tuple_size,increasing_factor){
+
+}
+
+PersistFlexBlock::~PersistFlexBlock() {
+
+}
+
+bool PersistFlexBlock::persist(string filename) {
 	FILE *file=fopen(filename.c_str(),"wb+");
 	fwrite(start_,free_-start_,1,file);
 	fclose(file);

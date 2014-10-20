@@ -51,15 +51,25 @@ bool SortMergeJoin::prelude() {
 	unsigned left_tuple_size_=left_schema_->get_bytes();
 	unsigned right_tuple_size_=right_schema_->get_bytes();
 
-	left_flex_block_=new FlexBlock(BLOCK_SIZE,left_tuple_size_);
-	right_flex_block_=new FlexBlock(BLOCK_SIZE,right_tuple_size_);
+	left_block_=new Block(BLOCK_SIZE,left_tuple_size_);
+	right_block_=new Block(BLOCK_SIZE,right_tuple_size_);
 
-
+	left_flex_block_=new FlexBlock(INIT_FLEX_BLOCK_SIZE,left_tuple_size_);
+	right_flex_block_=new FlexBlock(INIT_FLEX_BLOCK_SIZE,right_tuple_size_);
 
 	return true;
 }
 
 bool SortMergeJoin::execute(Block *block) {
+	while(true) {
+		if(1)
+		left_->execute(left_block_);
+		right_->execute(right_block_);
+
+		lb_itr_=left_block_->createIterator();
+		rb_itr_=right_block_->createIterator();
+
+	}
 
 	return true;
 }

@@ -30,7 +30,9 @@ void int_to_int(void *src, void *des) {
 }
 
 void int_to_double(void *src, void *des){
-	*(double* )des=*(int *)src;
+	double *temp=reinterpret_cast<double *>(src);
+	*(double *)des=*temp;
+//	*(double* )des=*(int *)src;
 }
 
 void double_to_double(void *src, void *des) {

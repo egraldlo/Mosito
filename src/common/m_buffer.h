@@ -15,6 +15,8 @@
 #include <string>
 using namespace std;
 
+#include "m_configuration.h"
+
 class BufferIterator;
 
 class Buffer {
@@ -72,10 +74,16 @@ public:
 
 	bool double_buffer();
 
-	bool persist(string );
-
-private:
+protected:
 	double increasing_factor_;
+};
+
+class PersistFlexBlock: public FlexBlock {
+public:
+	PersistFlexBlock(unsigned size, unsigned tuple_size, double increasing_factor=2);
+	virtual ~PersistFlexBlock();
+
+	bool persist(string );
 };
 
 class BufferIterator {
@@ -93,7 +101,7 @@ public:
 		return *(int *)(buffer_->start_+buffer_->size_-4);
 	};
 
-//private:
+private:
 	Buffer *buffer_;
 	unsigned current_;
 };

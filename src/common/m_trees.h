@@ -118,8 +118,6 @@ public:
 
 	vector<string> get_files();
 
-	void print(int n);
-
 private:
 	/* the waterline of the array_. */
 	int waterline_;
@@ -129,7 +127,7 @@ private:
 	void **array_;
 	int *out_;
 	/* the buffer which can store the data by increasing 2 times. */
-	FlexBlock *flex_buffer_;
+	PersistFlexBlock *flex_buffer_;
 	vector<string> file_path_list_;
 
 	Comparator *comparator_;

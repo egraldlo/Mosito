@@ -38,9 +38,9 @@ bool Scan::execute(Block *block) {
 	int size=0;
 	if((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
 		block->storeBlock(buffer_,size);
-		cout<<"size: "<<size<<endl;
-		cout<<"count: "<<*(int *)(buffer_+size-4)<<endl;
-		getchar();
+//		cout<<"size: "<<size<<endl;
+//		cout<<"count: "<<*(int *)(buffer_+size-4)<<endl;
+//		getchar();
 		return true;
 	}
 	else {
