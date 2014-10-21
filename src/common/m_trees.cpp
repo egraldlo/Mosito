@@ -67,9 +67,7 @@ LoserTree::LoserTree(Comparator *comparator)
 LoserTree::~LoserTree() {
 }
 
-void LoserTree::initialize(void* A[], int size,
-	int (*winner)(void* A[], int left, int right),
-	int (*loser)(void* A[], int left, int right)) {
+void LoserTree::initialize(void* A[], int size) {
 	/* initialize some arguments */
 	n=size;
 	L=A;
@@ -90,19 +88,19 @@ void LoserTree::initialize(void* A[], int size,
 	cout<<"offset: "<<offset<<endl;
 
 	for(i=2;i<=lowExt;i+=2) {
-		play((i+offset)/2,i-1,i,winner,loser);
+		play((i+offset)/2,i-1,i);
 	}
 
 	/* if n is odd number, a parent node and leaf node must be compared. */
 	if(n%2) {
-		play(n/2,B[(n-1)/2],lowExt+1,winner,loser);
+		play(n/2,B[(n-1)/2],lowExt+1);
 		i=lowExt+3;
 	}
 	else
 		i=lowExt+2;
 
 	for(;i<=n;i+=2) {
-		play((i-lowExt+n-1)/2,i-1,i,winner,loser);
+		play((i-lowExt+n-1)/2,i-1,i);
 	}
 
 //	for(int i=0;i<6;i++){
@@ -115,29 +113,25 @@ void LoserTree::initialize(void* A[], int size,
  *  left: left child node
  * right: right child node
  *  */
-void LoserTree::play(int p, int left, int right,
-	int (*winner)(void* A[], int left, int right),
-	int (*loser)(void* A[], int left, int right)) {
+void LoserTree::play(int p, int left, int right) {
 	/* loser node will be put in the parent position */
-	B[p]=loser(L,left,right);
+	B[p]=lose(L,left,right);
 	int temp1,temp2;
-	temp1=winner(L,left,right);
+	temp1=win(L,left,right);
 
 	/* if parent is in the right child location, it must be recursively play with
 	 * the parent node, until it reach the forefathers.
 	 *  */
 	while(p>1 && p%2) {
-		temp2=winner(L,temp1,B[p/2]);
-		B[p/2]=loser(L,temp1,B[p/2]);
+		temp2=win(L,temp1,B[p/2]);
+		B[p/2]=lose(L,temp1,B[p/2]);
 		temp1=temp2;
 		p/=2;
 	}
 	B[p/2]=temp1;
 }
 
-int LoserTree::replay(int i,
-	int (*winner)(void* A[], int left, int right),
-	int (*loser)(void* A[], int left, int right)) {
+int LoserTree::replay(int i) {
 	/* find the parent node. */
 	int p;
 	if(i<=lowExt)
@@ -145,19 +139,18 @@ int LoserTree::replay(int i,
 	else
 		p=(i-lowExt+n-1)/2;
 
-	B[0]=winner(L,i,B[p]);
-	B[p]=loser(L,i,B[p]);
+	B[0]=win(L,i,B[p]);
+	B[p]=lose(L,i,B[p]);
 
 	/* recursively compared with parents. */
 	for(;(p/2)>=1;p/=2) {
 		int temp;
-		temp=winner(L,B[p/2],B[0]);
-		B[p/2]=loser(L,B[p/2],B[0]);
+		temp=win(L,B[p/2],B[0]);
+		B[p/2]=lose(L,B[p/2],B[0]);
 		B[0]=temp;
 	}
 
-	if(L[B[0]]==0)
-//		if(L[B[0]]==10000000)
+	if(L[B[0]]==0)//todo: change L
 		return 1;
 	else
 		return 0;

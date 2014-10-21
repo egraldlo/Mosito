@@ -60,23 +60,45 @@ bool Sort::prelude() {
 	cout<<"hello?"<<endl;
 	heap_->cleanup();
 
-	vector<string> files=heap_->get_files();
 	/* loser tree buffer to merge the sequential data. */
+	vector<string> files=heap_->get_files();
 	unsigned files_no=files.size();
+	void** filesArray=new void*[files_no+1];
+	files_=new FILE*[files_no];
 	lt_buffer_=new Block*[files_no];
 	lt_buffer_iterator_=new BufferIterator*[files_no];
 	for(unsigned i=0;i<files_no;i++) {
-
+		files_[i]=fopen(files[i].c_str(),"rb+");
 		lt_buffer_[i]=new Block(LOOSE_TREE_BUFFER_SIZE, schema_->get_bytes());
+		fread(lt_buffer_[i]->getAddr(),1,LOOSE_TREE_BUFFER_SIZE,files_[i]);
 		lt_buffer_iterator_[i]=lt_buffer_[i]->createIterator();
+		filesArray[i+1]=lt_buffer_iterator_[i]->getNext();//todo: some bug in getNext();
 	}
+	lt_->initialize(filesArray,files_no);
 	return true;
 }
 
 bool Sort::execute(Block *block) {
 	void *tuple=0;
+	void *temp=0;
 	while((tuple=block->allocateTuple())!=0) {
+		int winner=lt_->Winner();
+		if((temp=lt_buffer_iterator_[winner-1]->getNext())==0) {
+			/* the data in buffer is used up. */
+			memset(lt_buffer_[winner-1]->getAddr(),'\0',LOOSE_TREE_BUFFER_SIZE);
+			lt_buffer_[winner-1]->reset();
+			if(fread(lt_buffer_[winner-1]->getAddr(),1,LOOSE_TREE_BUFFER_SIZE,files_[winner-1])
+					!=LOOSE_TREE_BUFFER_SIZE) {
+				/* we must handle with the last tuple to end, like we can set the last to be max. */
+				/* todo: find a good solution. */
 
+			}
+			temp=lt_buffer_iterator_[winner-1]->reset();
+		}
+		memcpy(tuple,lt_->Win(),schema_->get_bytes());
+		lt_->Load(winner,temp);
+		if(lt_->replay(winner)!=0)
+			break;
 	}
 	return true;
 }

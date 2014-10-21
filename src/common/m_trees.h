@@ -55,15 +55,10 @@ public:
 			return right;
 	}
 
-	void initialize(void* A[], int size,
-			int (*winner)(void* A[], int left, int right),
-			int (*loser)(void* A[], int left, int right));
-	void play(int p, int left, int right,
-			int (*winner)(void* A[], int left, int right),
-			int (*loser)(void* A[], int left, int right));
-	int replay(int i,
-			int (*winner)(void* A[], int left, int right),
-			int (*loser)(void* A[], int left, int right));
+	void initialize(void* A[], int size);
+	void play(int p, int left, int right);
+
+	int replay(int i);
 
 	int Winner() {
 		return B[0];

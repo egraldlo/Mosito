@@ -25,6 +25,10 @@ public:
 	Buffer(unsigned size);
 	virtual ~Buffer();
 
+	inline void* getAddr() {
+		return start_;
+	}
+
 	virtual BufferIterator *createIterator()=0;
 
 	virtual unsigned getActualSize()=0;
@@ -74,6 +78,8 @@ public:
 
 	bool double_buffer();
 
+	bool reset();
+
 protected:
 	double increasing_factor_;
 };
@@ -92,6 +98,8 @@ public:
 	virtual ~BufferIterator();
 
 	void* getNext();
+
+	void reset();
 
 public:
 	inline int get_size() {

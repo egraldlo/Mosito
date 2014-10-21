@@ -34,6 +34,10 @@ void *BufferIterator::getNext() {
 	}
 }
 
+void BufferIterator::reset() {
+	current_=0;
+}
+
 Buffer::Buffer(unsigned size)
 :size_(size),start_(0),free_(0){
 	start_=(char *)malloc(size_);
@@ -75,7 +79,6 @@ bool Block::storeTuple(void *desc, void *src) {
 }
 
 bool Block::reset() {
-	size_=HEAP_SORT_BUFFER_INIT_SIZE;
 	free_=start_;
 	return true;
 }
@@ -101,6 +104,12 @@ bool FlexBlock::double_buffer() {
 	start_=(char *)realloc(start_,size_);
 	free_=start_+used;
 	/* TODO: add realloc error solution. */
+	return true;
+}
+
+bool FlexBlock::reset() {
+	size_=HEAP_SORT_BUFFER_INIT_SIZE;
+	free_=start_;
 	return true;
 }
 

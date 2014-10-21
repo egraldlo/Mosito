@@ -18,6 +18,8 @@
 #include <vector>
 using namespace std;
 
+#include <stdio.h>
+
 namespace physical {
 
 /* sort iterator is designed to support internal sort and external sort. */
@@ -47,6 +49,7 @@ private:
 	Heap *heap_;
 	LoserTree *lt_;
 
+	FILE** files_;
 	Block** lt_buffer_;
 	BufferIterator** lt_buffer_iterator_;
 };
