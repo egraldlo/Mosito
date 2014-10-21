@@ -67,9 +67,9 @@ LoserTree::LoserTree(Comparator *comparator)
 LoserTree::~LoserTree() {
 }
 
-void LoserTree::initialize(int A[], int size,
-	int (*winner)(int A[], int left, int right),
-	int (*loser)(int A[], int left, int right)) {
+void LoserTree::initialize(void* A[], int size,
+	int (*winner)(void* A[], int left, int right),
+	int (*loser)(void* A[], int left, int right)) {
 	/* initialize some arguments */
 	n=size;
 	L=A;
@@ -116,8 +116,8 @@ void LoserTree::initialize(int A[], int size,
  * right: right child node
  *  */
 void LoserTree::play(int p, int left, int right,
-	int (*winner)(int A[], int left, int right),
-	int (*loser)(int A[], int left, int right)) {
+	int (*winner)(void* A[], int left, int right),
+	int (*loser)(void* A[], int left, int right)) {
 	/* loser node will be put in the parent position */
 	B[p]=loser(L,left,right);
 	int temp1,temp2;
@@ -136,8 +136,8 @@ void LoserTree::play(int p, int left, int right,
 }
 
 int LoserTree::replay(int i,
-	int (*winner)(int A[], int left, int right),
-	int (*loser)(int A[], int left, int right)) {
+	int (*winner)(void* A[], int left, int right),
+	int (*loser)(void* A[], int left, int right)) {
 	/* find the parent node. */
 	int p;
 	if(i<=lowExt)
@@ -156,7 +156,8 @@ int LoserTree::replay(int i,
 		B[0]=temp;
 	}
 
-	if(L[B[0]]==10000000)
+	if(L[B[0]]==0)
+//		if(L[B[0]]==10000000)
 		return 1;
 	else
 		return 0;
@@ -335,4 +336,8 @@ bool Heap::cleanup() {
 
 void *Heap::heap_get_top() {
 	return array_[0];
+}
+
+vector<string> Heap::get_files() {
+	return files_;
 }

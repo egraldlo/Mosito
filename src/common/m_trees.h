@@ -41,39 +41,39 @@ public:
 	 * because this can adjust to template class, this needs
 	 * user definition.
 	 *  */
-	static int win(int A[], int left, int right) {
-		if(A[left]<=A[right])
+	int win(void* A[], int left, int right) {
+		if(comparator_->compare(A[left],A[right]))
 			return left;
 		else
 			return right;
 	}
 
-	static int lose(int A[], int left, int right) {
-		if(A[left]>A[right])
+	int lose(void* A[], int left, int right) {
+		if(!comparator_->compare(A[left],A[right]))
 			return left;
 		else
 			return right;
 	}
 
-	void initialize(int A[], int size,
-			int (*winner)(int A[], int left, int right),
-			int (*loser)(int A[], int left, int right));
+	void initialize(void* A[], int size,
+			int (*winner)(void* A[], int left, int right),
+			int (*loser)(void* A[], int left, int right));
 	void play(int p, int left, int right,
-			int (*winner)(int A[], int left, int right),
-			int (*loser)(int A[], int left, int right));
+			int (*winner)(void* A[], int left, int right),
+			int (*loser)(void* A[], int left, int right));
 	int replay(int i,
-			int (*winner)(int A[], int left, int right),
-			int (*loser)(int A[], int left, int right));
+			int (*winner)(void* A[], int left, int right),
+			int (*loser)(void* A[], int left, int right));
 
 	int Winner() {
 		return B[0];
 	}
 
-	void Load(int win, int newOne) {
+	void Load(int win, void* newOne) {
 		L[win]=newOne;
 	}
 
-	int Win() {
+	void* Win() {
 		return L[B[0]];
 	}
 private:
@@ -88,7 +88,7 @@ private:
 	/* leaves array
 	 * TODO: here we can define it as template.
 	 *  */
-	int *L;
+	void **L;
 
 	Comparator *comparator_;
 };

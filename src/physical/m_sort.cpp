@@ -36,6 +36,7 @@ bool Sort::prelude() {
 
 	Comparator *compr=new Comparator(schema_, sor);
 
+	lt_=new LoserTree(compr);
 	heap_=new Heap(HEAP_SORT_BUFFER_INIT_SIZE, schema_->get_bytes(), compr);
 	buffer_=new Block(BLOCK_SIZE,schema_->get_bytes());
 
@@ -59,11 +60,24 @@ bool Sort::prelude() {
 	cout<<"hello?"<<endl;
 	heap_->cleanup();
 
+	vector<string> files=heap_->get_files();
+	/* loser tree buffer to merge the sequential data. */
+	unsigned files_no=files.size();
+	lt_buffer_=new Block*[files_no];
+	lt_buffer_iterator_=new BufferIterator*[files_no];
+	for(unsigned i=0;i<files_no;i++) {
+
+		lt_buffer_[i]=new Block(LOOSE_TREE_BUFFER_SIZE, schema_->get_bytes());
+		lt_buffer_iterator_[i]=lt_buffer_[i]->createIterator();
+	}
 	return true;
 }
 
 bool Sort::execute(Block *block) {
+	void *tuple=0;
+	while((tuple=block->allocateTuple())!=0) {
 
+	}
 	return true;
 }
 

@@ -39,13 +39,16 @@ public:
 private:
 	vector<SortOrder *> expressions_;
 	QueryPlan *child_;
+	Schema *schema_;
 	bool global_;
 
 	Block *buffer_;
 
-	Schema *schema_;
-
 	Heap *heap_;
+	LoserTree *lt_;
+
+	Block** lt_buffer_;
+	BufferIterator** lt_buffer_iterator_;
 };
 
 }

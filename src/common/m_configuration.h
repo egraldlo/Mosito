@@ -25,6 +25,7 @@ using namespace std;
 /* buffer the data which is from the heap. */
 #define HEAP_SORT_BUFFER_INIT_SIZE 1024
 #define HEAP_SORT_BUFFER_INCREASING_FACTOR 2
+#define LOOSE_TREE_BUFFER_SIZE 256
 
 static int counter=0;
 
