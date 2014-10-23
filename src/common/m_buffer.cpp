@@ -7,8 +7,6 @@
 
 #include "m_buffer.h"
 
-#include <iostream>
-
 BufferIterator::BufferIterator(Buffer *buffer)
 :buffer_(buffer), current_(0) {
 
@@ -22,14 +20,11 @@ void *BufferIterator::getNext() {
 	unsigned tuple_size=buffer_->getActualSize();
 	void *ret=buffer_->start_+current_*tuple_size;
 	/* "ret<buffer_->free_" is wrong, we must use tuple count.*/
-	cout<<"get_size(): "<<get_size()<<endl;
-	if(get_size()==0)
-		getchar();
-	if(++current_==get_size()) {
-		cout<<"return 0"<<endl;
+	if(current_==get_size()) {
 		return 0;
 	}
 	else{
+		current_++;
 		return ret;
 	}
 }
@@ -78,14 +73,21 @@ bool Block::storeTuple(void *desc, void *src) {
 	return true;
 }
 
+bool Block::storeBlock(void *src, unsigned size) {
+	memcpy(start_,src,size);
+	free_=start_+size;
+	return true;
+}
+
 bool Block::reset() {
 	free_=start_;
 	return true;
 }
 
-bool Block::storeBlock(void *src, unsigned size) {
-	memcpy(start_,src,size);
-	free_=start_+size;
+bool Block::assembling(int size, int tuple_size) {
+	void *p=start_+size-4;
+	int tuples=(size-4)/tuple_size;
+	*(int *)p=tuples;
 	return true;
 }
 

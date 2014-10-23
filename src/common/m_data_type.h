@@ -20,6 +20,11 @@ public:
 	virtual bool eq(void *, void *)=0;
 	virtual bool ls(void *, void *)=0;
 	virtual bool le(void *, void *)=0;
+
+	data_type get_type();
+
+private:
+	data_type dt_;
 };
 
 class IntegerType: public DataType {

@@ -36,3 +36,7 @@ Schema::~Schema() {
 int Schema::get_bytes() {
 	return bytes_;
 }
+
+int Schema::get_columns() {
+	return v_d_.size();
+}

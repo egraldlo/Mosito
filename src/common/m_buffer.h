@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 #include <string>
+#include <iostream>
 using namespace std;
 
 #include "m_configuration.h"
@@ -59,6 +60,9 @@ public:
 	bool storeTuple(void *, void *);
 
 	bool reset();
+
+	/* the data buffer which has no tuple number. */
+	bool assembling(int size, int tuple_size);
 
 public:
 	/* can be used to serialization */

@@ -32,6 +32,7 @@ public:
 
 	int get_bytes();
 
+	int get_columns();
 private:
 	vector<DataType*> v_d_;
 	int* offset_;

@@ -38,6 +38,9 @@ public:
 
 	vector<Expression *> output();
 
+	/* max the last tuple. */
+	bool maxLast(void*, Schema *);
+
 private:
 	vector<SortOrder *> expressions_;
 	QueryPlan *child_;
@@ -52,6 +55,8 @@ private:
 	FILE** files_;
 	Block** lt_buffer_;
 	BufferIterator** lt_buffer_iterator_;
+
+	int already_finish_;
 };
 
 }

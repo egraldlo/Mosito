@@ -86,6 +86,7 @@ void LoserTree::initialize(void* A[], int size) {
 	cout<<"     n: "<<n<<endl;
 	cout<<"lowExt: "<<lowExt<<endl;
 	cout<<"offset: "<<offset<<endl;
+	cout<<"in the initialize."<<endl;
 
 	for(i=2;i<=lowExt;i+=2) {
 		play((i+offset)/2,i-1,i);
@@ -265,7 +266,7 @@ bool Heap::heap_empty() {
 void Heap::heap_adjust(void *tuple) {
 	void *desc=0;
 	void *top=heap_get_top();
-	print_tuple(top);
+//	print_tuple(top);
 	while((desc=flex_buffer_->allocateTuple())==0) {
 		flex_buffer_->double_buffer();
 	}
@@ -277,11 +278,9 @@ void Heap::heap_adjust(void *tuple) {
 		heap_again(0, waterline_);
 	}
 	else {
-		array_[0]=array_[waterline_-1];
-		array_[waterline_-1]=tuple;
 		waterline_--;
-
 		if(waterline_==0) {
+			array_[0]=tuple;
 			stringstream fname;
 			fname<<"sort_"<<file_off_++;
 			files_.push_back(fname.str());
@@ -290,9 +289,49 @@ void Heap::heap_adjust(void *tuple) {
 			waterline_=HEAP_SIZE;
 			init_flag_=false;
 		}
-		else {
+		else{
+			array_[0]=array_[waterline_];
+			array_[waterline_]=tuple;
 			heap_again(0, waterline_);
 		}
+//		if(waterline_>1) {
+//			array_[0]=array_[waterline_-1];
+//			array_[waterline_-1]=tuple;
+//			heap_again(0, waterline_-1);
+//			waterline_--;
+//		}
+//		else {
+//			while((desc=flex_buffer_->allocateTuple())==0) {
+//				flex_buffer_->double_buffer();
+//			}
+//			flex_buffer_->storeTuple(desc,top);
+//			array_[0]=tuple;
+//			stringstream fname;
+//			fname<<"sort_"<<file_off_++;
+//			files_.push_back(fname.str());
+//			flex_buffer_->persist(fname.str());
+//			flex_buffer_->reset();
+//			waterline_=HEAP_SIZE;
+//			init_flag_=false;
+//		}
+
+//		array_[0]=array_[waterline_-1];
+//		array_[waterline_-1]=tuple;
+//		waterline_--;
+//
+//		if(waterline_==0) {
+//			stringstream fname;
+//			fname<<"sort_"<<file_off_++;
+//			files_.push_back(fname.str());
+//			flex_buffer_->persist(fname.str());
+//			flex_buffer_->reset();
+//			waterline_=HEAP_SIZE;
+//			init_flag_=false;
+//		}
+//		else {
+//			heap_again(0, waterline_);
+//		}
+
 	}
 }
 
@@ -312,7 +351,7 @@ bool Heap::cleanup() {
 	while(waterline_>=0) {
 		heap_again(0,waterline_);
 		void *top=heap_get_top();
-		print_tuple(top);
+//		print_tuple(top);
 		while((desc=flex_buffer_->allocateTuple())==0) {
 			flex_buffer_->double_buffer();
 		}

@@ -21,11 +21,13 @@ using namespace std;
 /* initial flex block size. */
 #define INIT_FLEX_BLOCK_SIZE 64
 /* this is the heap size to sort the stream. */
-#define HEAP_SIZE 800
+#define HEAP_SIZE 100
 /* buffer the data which is from the heap. */
 #define HEAP_SORT_BUFFER_INIT_SIZE 1024
+/* every loser tree leaf node buffer. */
+#define LOOSE_TREE_BUFFER_NO 10
+/* heap sort buffer increasing factor. */
 #define HEAP_SORT_BUFFER_INCREASING_FACTOR 2
-#define LOOSE_TREE_BUFFER_SIZE 256
 
 static int counter=0;
 
@@ -38,7 +40,9 @@ static void print_tuple(void *sta) {
 	printf("%7d ++",*(int *)(sta+20));
 	printf("%7d ++",*(int *)(sta+24));
 	printf("\n");
-//	usleep(1000000);
+//	fflush(stdin);
+//	getchar();
+	usleep(1000);
 }
 
 class Configuration {
