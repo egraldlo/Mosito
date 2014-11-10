@@ -17,11 +17,13 @@ public:
 	virtual ~Server();
 
 	void initialize(){cout<<"init the server!"<<endl;};
+	void daemonize();
 };
 
 int main(){
 	Server *server=new Server();
 	server->initialize();
+	server->daemonize();
 
 	return 0;
 }
