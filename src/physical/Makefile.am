@@ -9,4 +9,6 @@ libphysical_a_SOURCES = \
 	m_scan.cpp				m_scan.h \
 	m_project.cpp			m_project.h \
 	m_debug.cpp				m_debug.h \
-	m_sort.cpp				m_sort.h 
+	m_sort.cpp				m_sort.h \
+	m_shuffle_upper.cpp		m_shuffle_upper.h \
+	m_shuffle_lower.cpp		m_shuffle_lower.h	

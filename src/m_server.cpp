@@ -39,26 +39,12 @@ void Server::daemonize() {
 	 * */
 	umask(0);
 
-	cout<<"get process id: "<<getpid()<<endl;
-
-	cout<<"new a new process!"<<endl;
-
 	if((pid=fork())<0)
 		cout<<"error!"<<endl;
 	else if(pid!=0)
 		exit(0);
 
-	cout<<"get process id: "<<getpid()<<endl;
-
-	cout<<"sid: "<<getsid(getpid())<<endl;
-
 	setsid();
-
-	cout<<"after sid: "<<getsid(getpid())<<endl;
-	
-	cout<<"child process: "<<pid<<endl;
-
-	cout<<"new a new process!"<<endl;
 
 	/*
 	 * ensure future opens won't allocate controlling TTYs.
@@ -91,8 +77,7 @@ void Server::daemonize() {
 			continue;
 		else
 			close(i);
-	}
-	
+	}	
 
 	/* 
 	 * make the /dev/null to point to file descriptor zero.
@@ -105,7 +90,7 @@ void Server::daemonize() {
 	fd1=dup(0);
 	fd2=dup(0);
 
-	int fd=open("/home/casa/hellohahahah.txt",O_WRONLY|O_CREAT);
+	int fd=open("/home/casa/hellohahah.txt",O_WRONLY|O_CREAT);
 	const char *ch="hello world!";
 	write(fd,ch,20);
 	close(fd);

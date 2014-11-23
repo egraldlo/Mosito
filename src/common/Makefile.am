@@ -16,4 +16,6 @@ libcommon_a_SOURCES = \
 	m_trees.cpp						m_trees.h \
 	m_buffer.cpp					m_buffer.h \
 	m_configuration.cpp				m_configuration.h \
-	m_schema.cpp					m_schema.h 
+	m_schema.cpp					m_schema.h \
+	m_partitioner.cpp				m_partitioner.h \
+	m_logging.cpp					m_logging.h
