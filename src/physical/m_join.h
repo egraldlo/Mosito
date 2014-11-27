@@ -33,9 +33,9 @@ public:
 	HashJoin();
 	virtual ~HashJoin();
 
-	bool prelude(){return true;};
-	bool execute(Block *){return true;};
-	bool postlude(){return true;};
+	bool prelude();
+	bool execute(Block *);
+	bool postlude();
 
 	vector<Expression *> output(){
 		vector<Expression *> ret;
@@ -43,6 +43,15 @@ public:
 	};
 
 private:
+	void partition();
+	void build();
+	void probe();
+
+private:
+	QueryPlan *left_;
+	QueryPlan *right_;
+
+	JoinType join_type_;
 
 };
 

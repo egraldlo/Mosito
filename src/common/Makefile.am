@@ -18,4 +18,6 @@ libcommon_a_SOURCES = \
 	m_configuration.cpp				m_configuration.h \
 	m_schema.cpp					m_schema.h \
 	m_partitioner.cpp				m_partitioner.h \
-	m_logging.cpp					m_logging.h
+	m_logging.cpp					m_logging.h \
+	m_sender.cpp					m_sender.h \
+	m_merger.cpp					m_merger.h

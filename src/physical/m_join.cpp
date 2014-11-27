@@ -25,6 +25,30 @@ HashJoin::~HashJoin() {
 
 }
 
+bool HashJoin::prelude() {
+
+}
+
+bool HashJoin::execute(Block *) {
+
+}
+
+bool HashJoin::postlude() {
+
+}
+
+void HashJoin::partition() {
+	
+}
+
+void HashJoin::build() {
+
+}
+
+void HashJoin::probe() {
+
+}
+
 SortMergeJoin::SortMergeJoin(
 		  vector<Expression *> leftKeys,
 		  vector<Expression *> rightKeys,
