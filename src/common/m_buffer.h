@@ -82,6 +82,8 @@ public:
 
 	bool double_buffer();
 
+	bool storeTupleOK(void *);
+
 	bool reset();
 
 protected:

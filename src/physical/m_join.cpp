@@ -78,20 +78,39 @@ bool SortMergeJoin::prelude() {
 	left_block_=new Block(BLOCK_SIZE,left_tuple_size_);
 	right_block_=new Block(BLOCK_SIZE,right_tuple_size_);
 
+	/* here we use the universal solution, and we store all data in memory.
+	 * it's not a good solution because it will waste a lot of memory space.
+	 *  */
 	left_flex_block_=new FlexBlock(INIT_FLEX_BLOCK_SIZE,left_tuple_size_);
 	right_flex_block_=new FlexBlock(INIT_FLEX_BLOCK_SIZE,right_tuple_size_);
+
+	void *ltuple,*rtuple;
+
+	/* collect the left stream data. */
+	while(!left_->execute(left_block_)) {
+		lb_itr_=left_block_->createIterator();
+		lb_itr_->reset();
+		while((ltuple=lb_itr_->getNext())!=0) {
+			left_flex_block_->storeTupleOK(ltuple);
+		}
+	}
+
+	/* collect the right stream data. */
+	while(!right_->execute(right_block_)) {
+		rb_itr_=right_block_->createIterator();
+		rb_itr_->reset();
+		while((rtuple=rb_itr_->getNext())!=0) {
+			right_flex_block_->storeTupleOK(rtuple);
+		}
+	}
 
 	return true;
 }
 
 bool SortMergeJoin::execute(Block *block) {
-	while(true) {
-		if(1)
-		left_->execute(left_block_);
-		right_->execute(right_block_);
-
-		lb_itr_=left_block_->createIterator();
-		rb_itr_=right_block_->createIterator();
+	/* merge the two tables and output block. */
+	void *desc=0;
+	while((desc=block->allocateTuple())!=0) {
 
 	}
 

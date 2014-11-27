@@ -109,6 +109,14 @@ bool FlexBlock::double_buffer() {
 	return true;
 }
 
+bool FlexBlock::storeTupleOK(void *tuple) {
+	void *des=0;
+	while((des=this->allocateTuple())==0) {
+		this->double_buffer();
+	}
+	this->storeTuple(des, tuple);
+}
+
 bool FlexBlock::reset() {
 	size_=HEAP_SORT_BUFFER_INIT_SIZE;
 	free_=start_;
