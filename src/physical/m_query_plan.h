@@ -11,6 +11,9 @@
 #include "../common/m_tree_node.h"
 #include "../expressions/m_expression.h"
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
 namespace physical {
 
 class QueryPlan {
@@ -23,6 +26,11 @@ public:
 	virtual bool postlude()=0;
 
 	virtual vector<Expression *> output()=0;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {}
 };
 
 }

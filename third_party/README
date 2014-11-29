@@ -1,0 +1,15 @@
+1. Install boost
+   sudo yum install boost.
+
+2. Install libconfig
+   sudo yum install libconfig.
+   
+3. Install libxs
+   tar zxvf libxs-1.2.0.tar.gz
+   cd libxs-1.2.0
+   ./configure
+   make 
+   sudo make install
+   
+Declaration:
+Theron is a C++ actor mode library, it's written by Ashton Mason, this is the introduction of Mason(https://www.linkedin.com/in/ashtonmason). And the theron homepage is http://www.theron-library.com/. For convenient, I directly use some .h files and lib in my project. 

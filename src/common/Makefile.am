@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC 
 
-AM_LDFLAGS=-lc -lm -lrt -lpthread
+AM_LDFLAGS=-lc -lm -lrt -lpthread 
 
 noinst_LIBRARIES=libcommon.a
 libcommon_a_SOURCES = \
@@ -20,4 +20,7 @@ libcommon_a_SOURCES = \
 	m_partitioner.cpp				m_partitioner.h \
 	m_logging.cpp					m_logging.h \
 	m_sender.cpp					m_sender.h \
-	m_merger.cpp					m_merger.h
+	m_merger.cpp					m_merger.h \
+	m_ahandler.cpp 					m_ahandler.h 
+	
+

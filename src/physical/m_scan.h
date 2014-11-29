@@ -50,6 +50,14 @@ private:
 	FILE *splits_stream_;
 
 	char *buffer_;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & boost::serialization::base_object<QueryPlan >(*this)
+				& expressions_ & scan_ser_obj_ &splits_stream_ & buffer_;
+	}
 };
 
 }

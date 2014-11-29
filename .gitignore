@@ -37,6 +37,8 @@ stamp-h1
 install/
 autom4te.cache/
 .deps/
+config.h.in
+config.h.in~
 
 mosito
 test
