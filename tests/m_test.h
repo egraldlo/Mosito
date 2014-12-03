@@ -17,6 +17,7 @@
 #include "physical/m_debug_test.cpp"
 #include "physical/m_sort_test.cpp"
 #include "sql/m_sql_parser_test.cpp"
+#include "common/m_synchronize_test.cpp"
 
 #include <arpa/inet.h>
 
@@ -64,8 +65,10 @@ int main() {
 //	string path="/home/claims/sortmergejoin/T4G0P0";
 //	physical::debug_test(path);
 
-	string path="/home/claims/sortmergejoin/T4G0P0";
-	physical::sort_test(path);
+//	string path="/home/claims/sortmergejoin/T4G0P0";
+//	physical::sort_test(path);
+
+	main_lock();
 
 //	sql();
 	return 0;

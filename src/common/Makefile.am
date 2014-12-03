@@ -21,6 +21,8 @@ libcommon_a_SOURCES = \
 	m_logging.cpp					m_logging.h \
 	m_sender.cpp					m_sender.h \
 	m_merger.cpp					m_merger.h \
-	m_ahandler.cpp 					m_ahandler.h 
+	m_ahandler.cpp 					m_ahandler.h \
+	m_rb_tree.cpp					m_rb_tree.h \
+									m_timer.h 
 	
 
