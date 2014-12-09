@@ -55,21 +55,25 @@ private:
 
 };
 
-class SortMergeJoin: public Join {
+class MergeJoin: public Join {
 public:
-	SortMergeJoin(vector<Expression *> leftKeys,
+	MergeJoin(vector<Expression *> leftKeys,
 				  vector<Expression *> rightKeys,
 				  vector<Expression *> conditions,
 				  QueryPlan *left,
 				  QueryPlan *right,
 				  JoinType join_type);
-	virtual ~SortMergeJoin();
+	virtual ~MergeJoin();
 
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
 
 	vector<Expression *> output();
+
+private:
+	int compare(void *, void *);
+	bool combine(void *, void *, void *);
 
 private:
 	vector<Expression *> left_keys_;

@@ -40,7 +40,7 @@ int KM::run() {
 	for(int i=0;i<MAXN;i++)
 		for(int j=0;j<MAXN;j++)
 			if(w[i][j]>lx[i])
-				lx[i]=w[i][j];//初始化顶标
+				lx[i]=w[i][j];
 	for(int x=0;x<MAXN;x++){
 		for(;;){
 			memset(visx,0,sizeof(visx));

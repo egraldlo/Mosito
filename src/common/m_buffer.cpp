@@ -17,6 +17,7 @@ BufferIterator::~BufferIterator() {
 }
 
 void *BufferIterator::getNext() {
+	fake_count_=0;
 	unsigned tuple_size=buffer_->getActualSize();
 	void *ret=buffer_->start_+current_*tuple_size;
 	/* "ret<buffer_->free_" is wrong, we must use tuple count.*/
@@ -27,6 +28,17 @@ void *BufferIterator::getNext() {
 		current_++;
 		return ret;
 	}
+}
+
+/*
+ * this function is used by merge join, cross join between two
+ * equal tuple sets.
+ *  */
+void *BufferIterator::getNextFake() {
+	fake_count_++;
+	unsigned tuple_size=buffer_->getActualSize();
+	void *ret=buffer_->start_+(current_+fake_count_)*tuple_size;
+	return ret;
 }
 
 void BufferIterator::reset() {

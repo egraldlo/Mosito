@@ -42,3 +42,6 @@ config.h.in~
 
 mosito
 test
+dgen
+
+table.*

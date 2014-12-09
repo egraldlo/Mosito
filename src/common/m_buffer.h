@@ -105,6 +105,8 @@ public:
 
 	void* getNext();
 
+	void *getNextFake();
+
 	void reset();
 
 public:
@@ -118,6 +120,7 @@ public:
 private:
 	Buffer *buffer_;
 	unsigned current_;
+	unsigned fake_count_;
 };
 
 #endif /* M_BUFFER_H_ */

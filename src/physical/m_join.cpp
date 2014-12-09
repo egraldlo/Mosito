@@ -49,7 +49,7 @@ void HashJoin::probe() {
 
 }
 
-SortMergeJoin::SortMergeJoin(
+MergeJoin::MergeJoin(
 		  vector<Expression *> leftKeys,
 		  vector<Expression *> rightKeys,
 		  vector<Expression *> conditions,
@@ -61,11 +61,14 @@ SortMergeJoin::SortMergeJoin(
 
 }
 
-SortMergeJoin::~SortMergeJoin() {
+MergeJoin::~MergeJoin() {
 
 }
 
-bool SortMergeJoin::prelude() {
+/*
+ * we collect all data here, before this we will merge them in the shufflelower.
+ *  */
+bool MergeJoin::prelude() {
 	left_->prelude();
 	right_->prelude();
 
@@ -78,7 +81,8 @@ bool SortMergeJoin::prelude() {
 	left_block_=new Block(BLOCK_SIZE,left_tuple_size_);
 	right_block_=new Block(BLOCK_SIZE,right_tuple_size_);
 
-	/* here we use the universal solution, and we store all data in memory.
+	/*
+	 * here we use the universal solution, and we store all data in memory.
 	 * it's not a good solution because it will waste a lot of memory space.
 	 *  */
 	left_flex_block_=new FlexBlock(INIT_FLEX_BLOCK_SIZE,left_tuple_size_);
@@ -104,24 +108,96 @@ bool SortMergeJoin::prelude() {
 		}
 	}
 
+	lb_itr_=left_flex_block_->createIterator();
+	rb_itr_=right_flex_block_->createIterator();
+
 	return true;
 }
 
-bool SortMergeJoin::execute(Block *block) {
+bool MergeJoin::execute(Block *block) {
 	/* merge the two tables and output block. */
 	void *desc=0;
-	while((desc=block->allocateTuple())!=0) {
-
+	void *l=lb_itr_->getNext();
+	void *r=rb_itr_->getNext();
+	void *fake_l=0;
+	void *fake_r=0;
+	while(l&&r) {
+		if(compare(l, r)==1) {
+			if((desc=block->allocateTuple())!=0) {
+				combine(desc, l, r);
+			}
+			else {
+				return true;
+			}
+			fake_l=lb_itr_->getNextFake();
+			fake_r=rb_itr_->getNextFake();
+			while(fake_l!=0) {
+				if(compare(l, fake_r)==1) {
+					if((desc=block->allocateTuple())!=0) {
+						combine(desc, fake_l, r);
+					}
+					else {
+						return true;
+					}
+					fake_l=lb_itr_->getNextFake();
+				}
+				else {
+					break;
+				}
+			}
+			while(fake_r!=0) {
+				if(compare(l, fake_r)==1) {
+					if((desc=block->allocateTuple())!=0) {
+						combine(desc, l, fake_r);
+					}
+					else {
+						return true;
+					}
+					fake_r=rb_itr_->getNextFake();
+				}
+				else {
+					break;
+				}
+			}
+			l=lb_itr_->getNext();
+			r=rb_itr_->getNext();
+		}
+		else if(compare(l, r)==0){
+			l=lb_itr_->getNext();
+		}
+		else {
+			r=rb_itr_->getNext();
+		}
 	}
 
+	return false;
+}
+
+int MergeJoin::compare(void *left, void *right) {
+	/*
+	 * by using '=' expression and filter out the equal expression
+	 * todo: a binding strategy to bind the 'conditions_' to child's input
+	 * left_keys_ and right_keys_,
+	 * */
+	if(*(int *)left==*(int *)right)
+		return 1;
+	if(*(int *)left<*(int *)right)
+		return 0;
+	if(*(int *)left>*(int *)right)
+		return -1;
+}
+
+bool MergeJoin::combine(void *des, void *left, void *right) {
+	memcpy(des, left, left_schema_->get_bytes());
+	memcpy(des+left_schema_->get_bytes(), right, right_schema_->get_bytes());
 	return true;
 }
 
-bool SortMergeJoin::postlude() {
+bool MergeJoin::postlude() {
 	return true;
 }
 
-vector<Expression *> SortMergeJoin::output() {
+vector<Expression *> MergeJoin::output() {
 	return left_->output();
 }
 

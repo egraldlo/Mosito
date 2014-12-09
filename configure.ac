@@ -27,6 +27,7 @@ AC_CONFIG_FILES([
   tests/storage/Makefile
   tests/sql/Makefile
   tests/analysis/Makefile
+  datagen/Makefile
 ])
 AC_OUTPUT
 

@@ -16,6 +16,7 @@
 #include "common/m_trees_test.cpp"
 #include "physical/m_debug_test.cpp"
 #include "physical/m_sort_test.cpp"
+#include "physical/m_join_test.cpp"
 #include "sql/m_sql_parser_test.cpp"
 #include "common/m_synchronize_test.cpp"
 #include "analysis/m_km_test.cpp"
@@ -63,15 +64,19 @@ int main() {
 //	m_losertrees_test();
 //	m_heap_test();
 
-//	string path="/home/claims/sortmergejoin/T4G0P0";
+//	string path="table.left";
 //	physical::debug_test(path);
 
-//	string path="/home/claims/sortmergejoin/T4G0P0";
+//	string path="table.left";
 //	physical::sort_test(path);
 
 //	main_lock();
 
-	main_km();
+//	main_km();
+
+	string path1="table.left";
+	string path2="table.right";
+	physical::join_test(path1, path2);
 
 //	sql();
 	return 0;
