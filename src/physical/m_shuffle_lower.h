@@ -9,6 +9,7 @@
 #define M_SHUFFLE_LOWER_H_
 
 #include "../common/m_tree_node.h"
+#include "../../src/common/m_sender.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -19,15 +20,17 @@ namespace physical {
 class ShuffleLower: public UnaryNode, public QueryPlan{
 public:
 	ShuffleLower(vector<Expression *> expressions, QueryPlan *child);
+	ShuffleLower(Sender **);
 	virtual ~ShuffleLower();
 
-	bool prelude();
-	bool execute();
-	bool postlude();
+	bool prelude(){};
+	bool execute(Block *){};
+	bool postlude(){};
+
+	vector<Expression *> output(){};
 
 private:
-	vector<Expression *> expressions_;
-	QueryPlan *child_;
+	Sender **senders_;
 
 };
 

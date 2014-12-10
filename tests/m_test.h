@@ -19,6 +19,7 @@
 #include "physical/m_join_test.cpp"
 #include "sql/m_sql_parser_test.cpp"
 #include "common/m_synchronize_test.cpp"
+#include "common/m_sender_test.cpp"
 #include "analysis/m_km_test.cpp"
 
 #include <arpa/inet.h>
@@ -29,7 +30,7 @@ public:
 	virtual ~Test();
 };
 
-int main() {
+int main(int argc, char** argv) {
 //	TestThreadPool *tp=new TestThreadPool();
 //	tp->test();
 //	tp->test_circle();
@@ -67,16 +68,23 @@ int main() {
 //	string path="table.left";
 //	physical::debug_test(path);
 
+	/* for sort test. */
 //	string path="table.left";
 //	physical::sort_test(path);
 
+	/* for lock test. */
 //	main_lock();
 
+	/* for KM algorithm test. */
 //	main_km();
 
-	string path1="table.left";
-	string path2="table.right";
-	physical::join_test(path1, path2);
+	/* for join test. */
+//	string path1="table.left";
+//	string path2="table.right";
+//	physical::join_test(path1, path2);
+
+	/* for sender test by socket. */
+	sender_local_test(argc, argv);
 
 //	sql();
 	return 0;

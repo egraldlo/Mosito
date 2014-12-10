@@ -13,6 +13,10 @@ ShuffleUpper::ShuffleUpper(vector<Expression *> expressions, QueryPlan *child) {
 
 }
 
+ShuffleUpper::ShuffleUpper(Merger * merger) {
+	merger_=merger;
+}
+
 ShuffleUpper::~ShuffleUpper() {
 
 }

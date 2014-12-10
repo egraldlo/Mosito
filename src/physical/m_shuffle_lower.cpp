@@ -13,6 +13,10 @@ ShuffleLower::ShuffleLower(vector<Expression *> expressions, QueryPlan *child) {
 
 }
 
+ShuffleLower::ShuffleLower(Sender** senders) {
+	senders_=senders;
+}
+
 ShuffleLower::~ShuffleLower() {
 
 }

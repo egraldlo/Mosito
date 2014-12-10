@@ -9,8 +9,8 @@
 
 Logging *Logging::logger_=0;
 
-Logging::Logging() {
-
+Logging::Logging(log_type type) {
+	type_=type;
 }
 
 Logging::~Logging() {
@@ -19,11 +19,13 @@ Logging::~Logging() {
 
 Logging* Logging::getInstance() {
 	if(logger_==0) {
-		logger_=new Logging();
+		logger_=new Logging(LOGGER);
 	}
 	return logger_;
 }
 
-void Logging::log(const char *message) {
-	cout<<message<<endl;
+void Logging::log(log_type type, const char *message) {
+	/* determine which log level will be used. */
+	if(type<=type_)
+		cout<<message<<endl;
 }

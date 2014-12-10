@@ -10,7 +10,10 @@
 
 #include "../common/m_logging.h"
 
+#include <netinet/in.h>
+#include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <string.h>
 
 #include <string>
@@ -23,13 +26,16 @@ using namespace std;
 class Sender {
 public:
 	Sender();
+	/* for local test, need to enter port number. */
+	Sender(int port);
 	virtual ~Sender();
 
-	bool m_socket(string, int);
-	bool m_send(void *);
+	bool m_connect(string);
+	bool m_send(const char *);
 
 private:
 	int fd_;
+	int port_;
 };
 
 #endif /* M_SENDER_H_ */

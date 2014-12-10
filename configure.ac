@@ -17,6 +17,7 @@ AC_CONFIG_FILES([
   src/storage/Makefile
   src/sql/Makefile
   src/analysis/Makefile
+  src/deploy/Makefile
   tests/Makefile
   tests/common/Makefile
   tests/executor/Makefile
@@ -27,6 +28,7 @@ AC_CONFIG_FILES([
   tests/storage/Makefile
   tests/sql/Makefile
   tests/analysis/Makefile
+  tests/deploy/Makefile
   datagen/Makefile
 ])
 AC_OUTPUT

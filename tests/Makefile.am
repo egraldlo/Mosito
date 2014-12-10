@@ -13,7 +13,8 @@ test_LDADD = common/libtest_common.a \
 				 ../src/physical/libphysical.a \
 				 ../src/common/libcommon.a \
 				 ../src/sql/libsqlparser.a \
-				 ../src/analysis/libanalysis.a
+				 ../src/analysis/libanalysis.a \
+				 ../src/deploy/libdeploy.a
 		 
-SUBDIRS = common executor expressions logical optimizer physical storage sql analysis
-DIST_SUBDIRS = common executor expressions logical optimizer physical storage sql analysis 
+SUBDIRS = common executor expressions logical optimizer physical storage sql analysis deploy
+DIST_SUBDIRS = common executor expressions logical optimizer physical storage sql analysis deploy 

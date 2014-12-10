@@ -29,6 +29,9 @@ using namespace std;
 /* heap sort buffer increasing factor. */
 #define HEAP_SORT_BUFFER_INCREASING_FACTOR 2
 
+/* configure log type. */
+#define LOGGER error
+
 static int counter=0;
 
 static void print_tuple(void *sta) {

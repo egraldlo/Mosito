@@ -10,6 +10,7 @@
 
 #include "../../src/expressions/m_expression.h"
 #include "../common/m_tree_node.h"
+#include "../common/m_merger.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -20,16 +21,17 @@ namespace physical {
 class ShuffleUpper: public UnaryNode, public QueryPlan {
 public:
 	ShuffleUpper(vector<Expression *> expressions, QueryPlan *child);
+	ShuffleUpper(Merger *);
 	virtual ~ShuffleUpper();
 
-	bool prelude();
-	bool execute();
-	bool postlude();
+	bool prelude(){};
+	bool execute(Block *){};
+	bool postlude(){};
+
+	vector<Expression *> output(){};
 
 private:
-	vector<Expression *> expressions_;
-	QueryPlan *child_;
-
+	Merger *merger_;
 };
 
 }
