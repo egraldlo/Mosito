@@ -28,6 +28,10 @@ using namespace std;
 #define LOOSE_TREE_BUFFER_NO 10
 /* heap sort buffer increasing factor. */
 #define HEAP_SORT_BUFFER_INCREASING_FACTOR 2
+/* coordinator theron port */
+#define COORDINATOR_THERON 5545
+/* worker theron port */
+#define WORKER_THERON 5546
 
 /* configure log type. */
 #define LOGGER error

@@ -21,6 +21,7 @@
 #include "common/m_synchronize_test.cpp"
 #include "common/m_sender_test.cpp"
 #include "analysis/m_km_test.cpp"
+#include "deploy/m_coordinator_test.cpp"
 
 #include <arpa/inet.h>
 
@@ -84,7 +85,10 @@ int main(int argc, char** argv) {
 //	physical::join_test(path1, path2);
 
 	/* for sender test by socket. */
-	sender_local_test(argc, argv);
+//	sender_local_test(argc, argv);
+
+	/* for deploy test. */
+	main_coordinator();
 
 //	sql();
 	return 0;

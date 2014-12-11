@@ -14,6 +14,8 @@
 #include <string>
 using namespace std;
 
+#define THERON_XS 1
+
 /*
  * we must register the message in theron firstly, and we can use them
  * then, so every handler must have the own message.
@@ -40,16 +42,30 @@ public:
 	AHandler();
 	virtual ~AHandler();
 
-	bool ah_connect();
+	bool ah_connect(){};
 
-	bool ah_send();
+	bool ah_send(){};
 
 private:
-	void handler1(const Message1 &message, const Theron::Address from);
+	void handler1(const Message1 &message, const Theron::Address from){};
 
 private:
 	Theron::Framework framework_;
 	Theron::Receiver reciever_;
+};
+
+class AConnection {
+public:
+	AConnection(const char *name);
+	virtual ~AConnection();
+
+	void initialize(const char *);
+
+protected:
+	const char *name_;
+	AHandler *ahandler_;
+	Theron::EndPoint *endpoint_;
+
 };
 
 #endif /* M_AHANDLER_H_ */
