@@ -75,6 +75,7 @@ int main(int argc, char** argv) {
 
 	/* for lock test. */
 //	main_lock();
+	main_rwlock();
 
 	/* for KM algorithm test. */
 //	main_km();
@@ -88,7 +89,7 @@ int main(int argc, char** argv) {
 //	sender_local_test(argc, argv);
 
 	/* for deploy test. */
-	main_coordinator();
+//	main_coordinator();
 
 //	sql();
 	return 0;

@@ -39,6 +39,26 @@ void Semaphore::wait() {
 	sem_wait(&semaphore);
 }
 
+RWLock::RWLock() {
+	pthread_rwlock_init(&rw_lock, 0);
+}
+
+RWLock::~RWLock() {
+	pthread_rwlock_destroy(&rw_lock);
+}
+
+void RWLock::acquire_r() {
+	pthread_rwlock_rdlock(&rw_lock);
+}
+
+void RWLock::acquire_w() {
+	pthread_rwlock_wrlock(&rw_lock);
+}
+
+void RWLock::release() {
+	pthread_rwlock_unlock(&rw_lock);
+}
+
 Barrier::Barrier(int n) {
 	nthreads=n;
 	if(pthread_mutex_init(&lock,0)==0)

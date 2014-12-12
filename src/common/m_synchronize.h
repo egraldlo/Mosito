@@ -15,7 +15,7 @@
 #include <iostream>
 using namespace std;
 
-class Lock{
+class Lock {
 public:
 	Lock();
 	virtual ~Lock();
@@ -86,7 +86,21 @@ private:
 
 };
 
-class Semaphore{
+class RWLock {
+public:
+	RWLock();
+	virtual ~RWLock();
+
+	void acquire_r();
+	void acquire_w();
+
+	void release();
+
+private:
+	pthread_rwlock_t rw_lock;
+};
+
+class Semaphore {
 public:
 	Semaphore(int n);
 	virtual ~Semaphore();
@@ -98,7 +112,7 @@ private:
 	sem_t semaphore;
 };
 
-class Barrier{
+class Barrier {
 public:
 	Barrier(int n);
 	virtual ~Barrier();
