@@ -10,15 +10,6 @@
 
 #include <stdlib.h>
 
-/*
- * one node either has multiple senders or only one merger.
- * one shufflelower has multiple senders;
- * one shuffleupper has only one merger
- * one shuffle has multiple shufflelower and multiple shuffleupper.
- *
- * a sender is sending a data block into merger.
- * a merger is receiving a data block from sender.
- *  */
 int sender_local_test(int argc, char **argv) {
 	/*
 	 * '1' means sender node;

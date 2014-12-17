@@ -23,9 +23,9 @@ public:
 	ShuffleLower(Sender **);
 	virtual ~ShuffleLower();
 
-	bool prelude(){};
-	bool execute(Block *){};
-	bool postlude(){};
+	bool prelude();
+	bool execute(Block *);
+	bool postlude();
 
 	vector<Expression *> output(){};
 

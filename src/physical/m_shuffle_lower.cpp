@@ -21,4 +21,21 @@ ShuffleLower::~ShuffleLower() {
 
 }
 
+bool ShuffleLower::prelude() {
+	/* create a thread to send the block into the upper. */
+
+	return true;
+}
+
+bool ShuffleLower::execute(Block *block) {
+	/* get the block from the pipeline. */
+
+	return true;
+}
+
+bool ShuffleLower::postlude() {
+
+	return true;
+}
+
 }

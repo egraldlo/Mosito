@@ -7,7 +7,7 @@
 
 // NOTE: Must include xs.h before standard headers to avoid warnings in MS headers!
 #if THERON_XS
-#include <xs/xs.h"
+#include <xs/xs.h>
 #endif // THERON_XS
 
 #include "../../Assert.h"

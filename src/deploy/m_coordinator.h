@@ -8,6 +8,7 @@
 #ifndef M_COORDINATOR_H_
 #define M_COORDINATOR_H_
 
+#include "../../src/common/m_merger.h"
 #include "../../src/common/m_logging.h"
 #include "../../src/common/m_ahandler.h"
 #include "../../src/common/m_configuration.h"
@@ -18,8 +19,9 @@ using namespace std;
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <pthread.h>
 
-class Coordinator: public AConnection {
+class Coordinator {
 public:
 	Coordinator();
 	virtual ~Coordinator();
@@ -27,7 +29,10 @@ public:
 	void init();
 
 private:
+	static void* register_worker(void *);
 
+private:
+	AConnection *acn_;
 };
 
 #endif /* M_COORDINATOR_H_ */

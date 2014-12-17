@@ -8,6 +8,8 @@
 #ifndef M_EXECUTOR_H_
 #define M_EXECUTOR_H_
 
+enum Role{master, slave};
+
 class Executor {
 public:
 	/* constructor can be private, but here we know that we only use getInstance. */

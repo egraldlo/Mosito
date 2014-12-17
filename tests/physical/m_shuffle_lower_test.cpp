@@ -11,6 +11,15 @@
 
 namespace physical {
 
+/*
+ * one node either has multiple senders or only one merger.
+ * one shufflelower has multiple senders;
+ * one shuffleupper has only one merger
+ * one shuffle has multiple shufflelower and multiple shuffleupper.
+ *
+ * a sender is sending a data block into merger.
+ * a merger is receiving a data block from sender.
+ *  */
 int main_shuffle_2() {
 	int nlower=2;
 	int nupper=1;
@@ -32,6 +41,8 @@ int main_shuffle_2() {
 	ShuffleLower *lower3=new ShuffleLower(sender3_);
 
 	/* upper is simulating the distributed shuffle. */
+	cout<<"upper is simulating the distributed shuffle!"<<endl;
+
 
 
 	return 0;

@@ -22,6 +22,7 @@
 #include "common/m_sender_test.cpp"
 #include "analysis/m_km_test.cpp"
 #include "deploy/m_coordinator_test.cpp"
+#include "physical/m_shuffle_lower_test.cpp"
 
 #include <arpa/inet.h>
 
@@ -75,7 +76,7 @@ int main(int argc, char** argv) {
 
 	/* for lock test. */
 //	main_lock();
-	main_rwlock();
+//	main_rwlock();
 
 	/* for KM algorithm test. */
 //	main_km();
@@ -89,7 +90,11 @@ int main(int argc, char** argv) {
 //	sender_local_test(argc, argv);
 
 	/* for deploy test. */
-//	main_coordinator();
+	main_coordinator(argc, argv);
+
+	/* for shuffle 2 levels and shuffle 3 levels test. */
+//	physical::main_shuffle_2();
+//	physical::main_shuffle_3();
 
 //	sql();
 	return 0;

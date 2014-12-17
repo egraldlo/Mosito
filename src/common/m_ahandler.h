@@ -12,6 +12,7 @@
 #include "../../third_party/theron/Theron/Theron.h"
 
 #include <string>
+#include <iostream>
 using namespace std;
 
 #define THERON_XS 1
@@ -23,49 +24,36 @@ using namespace std;
 struct Message1 {
 	explicit Message1(const string &mesg) {
 		message[0]='\0';
-		memcpy(message, mesg.c_str(), 12);
+		memcpy(message, mesg.c_str(), 15);
 	}
 	char message[12];
 };
-
 
 /*
  * AHandler is a actor handler which can use c++ actor model lib
  * theron, so we call the Actor Handler.
  * */
-class AHandler: public Theron::Actor {
+class AConnection: public Theron::Actor {
 public:
-	AHandler(Theron::Framework &framework, const char *const name)
-	:Theron::Actor(framework, name){
-		RegisterHandler(this, &AHandler::handler1);
+	AConnection(Theron::EndPoint *endpoint, Theron::Framework &framework, const char *const name)
+	:endpoint_(endpoint), Theron::Actor(framework, name) {
+		RegisterHandler(this, &AConnection::handler1);
 	}
-	AHandler();
-	virtual ~AHandler();
+	virtual ~AConnection(){};
 
-	bool ah_connect(){};
-
-	bool ah_send(){};
-
-private:
-	void handler1(const Message1 &message, const Theron::Address from){};
+	void send() {
+		framework_->Send(Message1("hello,world!"), Theron::Address(), Theron::Address("coordinator-addr"));
+	};
 
 private:
-	Theron::Framework framework_;
-	Theron::Receiver reciever_;
-};
+	void handler1(const Message1 &message, const Theron::Address from){
+		cout<<"fuck you!: "<<message.message<<endl;
+	};
 
-class AConnection {
-public:
-	AConnection(const char *name);
-	virtual ~AConnection();
-
-	void initialize(const char *);
-
-protected:
-	const char *name_;
-	AHandler *ahandler_;
+private:
+	Theron::Framework *framework_;
 	Theron::EndPoint *endpoint_;
-
+	Theron::Receiver reciever_;
 };
 
 #endif /* M_AHANDLER_H_ */

@@ -16,11 +16,15 @@ typedef void (*Func)(void *args);
 class Task {
 public:
 	Task(Func func,void *args):function_(func),args_(args){};
-	virtual ~Task(){};
+	Task();
+	virtual ~Task();
 
 	void run() {
 		function_(args_);
 	}
+
+	/* serialize will return a message which has the operator object. */
+	void serialize();
 
 private:
 	void (*function_)(void *args);

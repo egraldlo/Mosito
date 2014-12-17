@@ -7,10 +7,12 @@
 
 #include "m_merger.h"
 
-Merger::Merger(int nlowers) {
+Merger::Merger(int port) {
 	fd_=0;
-	nlower_=nlowers;
-	map_lower_=new int[nlowers];
+	port_=port;
+	/* nlower is not limited. */
+	nlower_=2;
+	map_lower_=new int[nlower_];
 }
 
 Merger::Merger(int nlowers, int port) {
@@ -87,7 +89,7 @@ bool Merger::m_receive(char *data) {
 		return false;
 	}
 	else {
-		cout<<"receive data "<<ret<<endl;
+		cout<<"receive data "<<ret<<" data: "<<data<<endl;
 		Logging::getInstance()->log(trace,"[trace]: receive data from sender!");
 		return true;
 	}
