@@ -1,6 +1,9 @@
-AM_CPPFLAGS= -fPIC 
+AM_CPPFLAGS= -fPIC \
+-I/home/Casa/Works/tools/Theron-5.01.01/Include
 
-AM_LDFLAGS=-lc -lm -lrt -lpthread 
+AM_LDFLAGS=-lc -lm -lrt -lpthread -lxs
+
+LDADD = /home/Casa/Works/tools/Theron-5.01.01/Lib/libtherond.a	
 
 noinst_LIBRARIES=libcommon.a
 libcommon_a_SOURCES = \
@@ -23,6 +26,7 @@ libcommon_a_SOURCES = \
 	m_merger.cpp					m_merger.h \
 	m_ahandler.cpp 					m_ahandler.h \
 	m_rb_tree.cpp					m_rb_tree.h \
-									m_timer.h 
+									m_timer.h \
+	m_message.cpp					m_message.h
 	
 

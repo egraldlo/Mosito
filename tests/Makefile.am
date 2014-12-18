@@ -1,4 +1,5 @@
-AM_CPPFLAGS= -fPIC
+AM_CPPFLAGS= -fPIC \
+-I/home/Casa/Works/tools/Theron-5.01.01/Include
 
 AM_LDFLAGS= -lc -lm -lrt -lxs
 
@@ -15,7 +16,7 @@ test_LDADD =     \
 				 ../src/common/libcommon.a \
 				 ../src/sql/libsqlparser.a \
 				 ../src/analysis/libanalysis.a \
-				 ../libs/libtherond.a
+				 /home/Casa/Works/tools/Theron-5.01.01/Lib/libtherond.a		 
 		 
 SUBDIRS = common executor expressions logical optimizer physical storage sql analysis deploy
 DIST_SUBDIRS = common executor expressions logical optimizer physical storage sql analysis deploy 

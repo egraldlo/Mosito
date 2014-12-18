@@ -27,7 +27,10 @@ public:
 
 	void init();
 
+//	bool aconnect(const char * ipport);
+
 private:
+//	Theron::EndPoint endpoint_;
 	AConnection *acn_;
 };
 

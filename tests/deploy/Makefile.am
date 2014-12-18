@@ -1,6 +1,7 @@
-AM_CPPFLAGS= -fPIC 
+AM_CPPFLAGS= -fPIC \
+-I/home/Casa/Works/tools/Theron-5.01.01/Include
 
-AM_LDFLAGS=-lc -lm -lrt -lpthread
+AM_LDFLAGS=-lc -lm -lrt -lpthread -lxs
 
 LD_ADD = ../../src/deploy/libdeploy.a
 

@@ -26,6 +26,8 @@ public:
 	bool m_socket();
 	bool m_accept();
 	bool m_receive(char *);
+	bool m_single(char*);
+	bool m_close();
 
 	bool m_merge(void *);
 

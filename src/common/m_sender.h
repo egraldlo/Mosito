@@ -32,6 +32,7 @@ public:
 
 	bool m_connect(string);
 	bool m_send(const char *);
+	bool m_close();
 
 private:
 	int fd_;

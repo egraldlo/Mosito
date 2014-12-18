@@ -30,11 +30,11 @@ bool Merger::m_socket() {
 	struct sockaddr_in my_addr;
 
 	if((fd_=socket(AF_INET, SOCK_STREAM, 0))==-1) {
-		Logging::getInstance()->log(error,"[error]: error in socket()!");
+		Logging::getInstance()->log(error,"error in socket()!");
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"[trace]: build a socket file descriptor!");
+		Logging::getInstance()->log(trace,"build a socket file descriptor!");
 	}
 
 	//todo: add a port manager.
@@ -47,19 +47,19 @@ bool Merger::m_socket() {
 
 	//bind the fd to the address.
 	if(bind(fd_, (struct sockaddr *)&my_addr, sizeof(struct sockaddr))==-1) {
-		Logging::getInstance()->log(error,"[error]: error in bind()!");
+		Logging::getInstance()->log(error,"error in bind()!");
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"[trace]: bind process well!");
+		Logging::getInstance()->log(trace,"bind process well!");
 	}
 
 	if(listen(fd_, nlower_)==-1) {
-		Logging::getInstance()->log(error,"[error]: error in listen()!");
+		Logging::getInstance()->log(error,"error in listen()!");
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"[trace]: listen process well!");
+		Logging::getInstance()->log(trace,"listen process well!");
 	}
 
 	return true;
@@ -71,10 +71,10 @@ bool Merger::m_accept() {
 	int count=0;
 	while(count!=nlower_) {
 		if((map_lower_[count++]=accept(fd_, (struct sockaddr *)&remote_addr, &size))!=-1) {
-			Logging::getInstance()->log(trace,"[trace]: accept a sender node!");
+			Logging::getInstance()->log(trace,"accept a sender node!");
 		}
 		else {
-			Logging::getInstance()->log(error,"[error]: error in accept a connection from sender!");
+			Logging::getInstance()->log(error,"error in accept a connection from sender!");
 			return false;
 		}
 	}
@@ -85,12 +85,41 @@ bool Merger::m_accept() {
 bool Merger::m_receive(char *data) {
 	int ret;
 	if((ret=recv(map_lower_[0], data, 100, MSG_WAITALL))==-1) {
-		Logging::getInstance()->log(error,"[error]: error in receive data!");
+		Logging::getInstance()->log(error,"error in receive data!");
 		return false;
 	}
 	else {
 		cout<<"receive data "<<ret<<" data: "<<data<<endl;
-		Logging::getInstance()->log(trace,"[trace]: receive data from sender!");
+		Logging::getInstance()->log(trace,"receive data from sender!");
 		return true;
 	}
+}
+
+bool Merger::m_single(char * data) {
+	socklen_t size=sizeof(struct sockaddr_in);
+	struct sockaddr_in remote_addr;
+	int retfd;
+	if((retfd=accept(fd_, (struct sockaddr *)&remote_addr, &size))!=-1) {
+		Logging::getInstance()->log(trace,"accept a sender node!");
+	}
+	else {
+		Logging::getInstance()->log(error,"error in accept a connection from sender!");
+		return false;
+	}
+
+	int ret;
+	if((ret=recv(retfd, data, 100, MSG_WAITALL))==-1) {
+		Logging::getInstance()->log(error,"error in receive data!");
+		return false;
+	}
+	else {
+		Logging::getInstance()->log(trace,"receive data from sender!");
+	}
+	return true;
+
+}
+
+bool Merger::m_close() {
+	close(fd_);
+	return true;
 }

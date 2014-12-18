@@ -22,21 +22,21 @@ Sender::~Sender() {
 /* ip and port can be managed by a more intelligent. */
 bool Sender::m_connect(string ip) {
 	if((fd_=socket(AF_INET, SOCK_STREAM, 0))==-1) {
-		Logging::getInstance()->log(error,"[error]: error in socket()!");
+		Logging::getInstance()->log(error,"error in socket()!");
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"[trace]: build a socket file descripter!");
+		Logging::getInstance()->log(trace,"build a socket file descripter!");
 	}
 
 	struct hostent *host;
 	/* gethostbyname is in netdb.h and sys/socket.h*/
 	if((host=gethostbyname(ip.c_str()))==0) {
-		Logging::getInstance()->log(error,"[error]: error in get host by name!");
+		Logging::getInstance()->log(error,"error in get host by name!");
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"[trace]: get host by name!");
+		Logging::getInstance()->log(trace,"get host by name!");
 	}
 
 	struct sockaddr_in serv;
@@ -47,11 +47,11 @@ bool Sender::m_connect(string ip) {
 	bzero(&(serv.sin_zero),8);
 
 	if((connect(fd_, (struct sockaddr *)&serv, sizeof(struct sockaddr)))==-1) {
-		Logging::getInstance()->log(error,"[error]: error in connect()!");
+		Logging::getInstance()->log(error,"error in connect()!");
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"[trace]: connect the merger successfully!");
+		Logging::getInstance()->log(trace,"connect the merger successfully!");
 	}
 
 	return true;
@@ -61,11 +61,16 @@ bool Sender::m_connect(string ip) {
 bool Sender::m_send(const char *data) {
 	int ret;
 	if((ret=send(fd_, data, 100, 0))==-1) {
-		Logging::getInstance()->log(error,"[error]: error in sending data!");
+		Logging::getInstance()->log(error,"error in sending data!");
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"[trace]: sending data successfully!");
+		Logging::getInstance()->log(trace,"sending data successfully!");
 		return true;
 	}
+}
+
+bool Sender::m_close() {
+	close(fd_);
+	return true;
 }
