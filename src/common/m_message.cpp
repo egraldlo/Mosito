@@ -8,3 +8,4 @@
 #include "m_message.h"
 
 THERON_DEFINE_REGISTERED_MESSAGE(MessageT);
+THERON_DEFINE_REGISTERED_MESSAGE(MessageI);

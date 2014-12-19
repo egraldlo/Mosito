@@ -8,12 +8,6 @@
 #ifndef M_AHANDLER_H_
 #define M_AHANDLER_H_
 
-//#include "../../third_party/theron/Theron/Defines.h"
-//#include "../../third_party/theron/Theron/Theron.h"
-
-#include <Theron/Defines.h>
-#include <Theron/Theron.h>
-#include "../common/m_logging.h"
 #include "../common/m_message.h"
 
 #include <string>
@@ -24,18 +18,21 @@ using namespace std;
  * AHandler is a actor handler which can use c++ actor model lib
  * theron, so we call the Actor Handler.
  * */
-class AConnection: public Theron::Actor {
+class Thandler: public Theron::Actor {
 public:
-	AConnection(Theron::Framework &framework, const char *const name)
+	Thandler(Theron::Framework &framework, const char *const name)
 	:Theron::Actor(framework, name) {
-		Logging::getInstance()->getInstance()->log(trace, "register a handler in actor!");
-		RegisterHandler(this, &AConnection::handler1);
+		RegisterHandler(this, &Thandler::handler1);
+		RegisterHandler(this, &Thandler::handler2);
 	}
 
 private:
 	void handler1(const MessageT &message, const Theron::Address from){
-		cout<<"okokokokokokokooko"<<endl;
-//		cout<<"fuck you!: "<<message.message<<endl;
+		cout<<"okokokokokokokooko: "<<message.mText<<endl;
+	};
+
+	void handler2(const MessageI &message, const Theron::Address from){
+		cout<<"okokokokokokokooko: "<<message.c<<endl;
 	};
 };
 

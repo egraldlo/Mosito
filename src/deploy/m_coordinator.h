@@ -34,8 +34,8 @@ private:
 	static void* register_worker(void *);
 
 private:
-	AConnection *acn_;
-//	Theron::EndPoint endpoint_;
+	Theron::EndPoint *endpoint_;
+	Thandler *acn_;
 };
 
 #endif /* M_COORDINATOR_H_ */

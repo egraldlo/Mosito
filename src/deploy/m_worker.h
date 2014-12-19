@@ -27,11 +27,11 @@ public:
 
 	void init();
 
-//	bool aconnect(const char * ipport);
+private:
+
 
 private:
-//	Theron::EndPoint endpoint_;
-	AConnection *acn_;
+	Thandler *acn_;
 };
 
 #endif /* M_WORKER_H_ */

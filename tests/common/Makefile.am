@@ -1,7 +1,6 @@
-AM_CPPFLAGS= -fPIC \
--I/home/Casa/Works/tools/Theron-5.01.01/Include
+AM_CPPFLAGS= -fPIC 
 
-AM_LDFLAGS=-lc -lm -lrt -lpthread -lx
+AM_LDFLAGS=-lc -lm -lrt -lpthread
 
 noinst_LIBRARIES=libtest_common.a
 libtest_common_a_SOURCES = \

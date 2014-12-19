@@ -19,13 +19,21 @@ using namespace std;
  * then, so every handler must have the own message.
  * */
 struct MessageT {
-	explicit MessageT(const string &mesg) {
-		mMessage[0]='\0';
-		memcpy(mMessage, mesg.c_str(), 15);
+	explicit MessageT(const char * const mesg) {
+		mText[0]='\0';
+		strcpy(mText, mesg);
 	}
-	char mMessage[15];
+	char mText[256];
+};
+
+struct MessageI {
+	explicit MessageI(int i) {
+		c=i;
+	}
+	int c;
 };
 
 THERON_DECLARE_REGISTERED_MESSAGE(MessageT)
+THERON_DECLARE_REGISTERED_MESSAGE(MessageI)
 
 #endif /* M_MESSAGE_H_ */
