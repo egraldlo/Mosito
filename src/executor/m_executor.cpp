@@ -7,20 +7,13 @@
 
 #include "m_executor.h"
 
-Executor* Executor::executor_=0;
+ExecutorMaster* ExecutorMaster::executormaster_=0;
 
-Executor::Executor() {
-	// TODO Auto-generated constructor stub
+ExecutorSlave* ExecutorSlave::executorslave_=0;
 
-}
-
-Executor::~Executor() {
-	// TODO Auto-generated destructor stub
-}
-
-Executor* Executor::getInstance() {
-	if(executor_==0) {
-		executor_=new Executor();
-	}
-	return executor_;
+bool ExecutorMaster::sendToMultiple(QueryPlan * qp, vector<string> ips) {
+	/*
+	 * executorslave will recieve the task, and deserialize the message
+	 * into a task, and executorslave will put the task into the threadpool.
+	 *  */
 }

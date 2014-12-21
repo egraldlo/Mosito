@@ -18,10 +18,11 @@ public:
 	Serialization();
 	virtual ~Serialization();
 
-	template <class Archive>
-	void register_obj(Archive &ar) {
-		ar.register_type(static_cast<physical::Scan *>(NULL));
-	}
 };
+
+template <class Archive>
+void register_obj(Archive &ar) {
+	ar.register_type(static_cast<physical::Scan *>(NULL));
+}
 
 #endif /* M_SERIALIZATION_H_ */

@@ -33,7 +33,18 @@ struct MessageI {
 	int c;
 };
 
+struct Message1
+{
+	unsigned length;
+	char message[256-sizeof(unsigned)];
+	static unsigned Capacity()
+	{
+		return 256-sizeof(unsigned);
+	}
+};
+
 THERON_DECLARE_REGISTERED_MESSAGE(MessageT)
 THERON_DECLARE_REGISTERED_MESSAGE(MessageI)
+THERON_DECLARE_REGISTERED_MESSAGE(Message1)
 
 #endif /* M_MESSAGE_H_ */

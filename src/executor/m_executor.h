@@ -8,19 +8,51 @@
 #ifndef M_EXECUTOR_H_
 #define M_EXECUTOR_H_
 
-enum Role{master, slave};
+#include "../physical/m_query_plan.h"
+using namespace physical;
 
-class Executor {
+#include <string>
+#include <vector>
+using namespace std;
+
+class ExecutorMaster {
 public:
-	/* constructor can be private, but here we know that we only use getInstance. */
-	Executor();
-	virtual ~Executor();
+	ExecutorMaster() {};
+	virtual ~ExecutorMaster() {};
 
-	/* the only interface we use to create or get the instance. */
-	static Executor *getInstance();
+	static ExecutorMaster* getInstance() {
+		if(executormaster_==0) {
+			executormaster_=new ExecutorMaster();
+			return executormaster_;
+		}
+		else {
+			return executormaster_;
+		}
+	}
+
+	bool sendToMultiple(QueryPlan *qp, vector<string> ips);
 
 private:
-	static Executor *executor_;
+	static ExecutorMaster* executormaster_;
+};
+
+class ExecutorSlave {
+public:
+	ExecutorSlave() {};
+	virtual ~ExecutorSlave() {};
+
+	static ExecutorSlave *getInstance() {
+		if(executorslave_==0) {
+			executorslave_=new ExecutorSlave();
+			return executorslave_;
+		}
+		else {
+			return executorslave_;
+		}
+	}
+
+private:
+	static ExecutorSlave *executorslave_;
 };
 
 #endif /* M_EXECUTOR_H_ */

@@ -7,14 +7,6 @@
 
 #include "m_task.h"
 
-Task::Task() {
-
-}
-
-Task::~Task() {
-
-}
-
 void Task::serialize() {
 
 }
