@@ -16,6 +16,7 @@
 #include "common/m_trees_test.cpp"
 #include "physical/m_debug_test.cpp"
 #include "physical/m_sort_test.cpp"
+#include "physical/m_scan_test.cpp"
 #include "physical/m_join_test.cpp"
 #include "sql/m_sql_parser_test.cpp"
 #include "common/m_synchronize_test.cpp"
@@ -86,11 +87,14 @@ int main(int argc, char** argv) {
 //	string path2="table.right";
 //	physical::join_test(path1, path2);
 
+	/* for scan test. */
+	scan_test();
+
 	/* for sender test by socket. */
 //	sender_local_test(argc, argv);
 
 	/* for deploy test. */
-	main_coordinator(argc, argv);
+//	main_coordinator(argc, argv);
 
 	/* for shuffle 2 levels and shuffle 3 levels test. */
 //	physical::main_shuffle_2();

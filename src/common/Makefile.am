@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC 
 
-AM_LDFLAGS=-lc -lm -lrt -lpthread -lxs
+AM_LDFLAGS=-lc -lm -lrt -lpthread -lxs -lboost_serialization
 
 noinst_LIBRARIES=libcommon.a
 libcommon_a_SOURCES = \
@@ -25,5 +25,3 @@ libcommon_a_SOURCES = \
 	m_rb_tree.cpp					m_rb_tree.h \
 									m_timer.h \
 	m_message.cpp					m_message.h
-	
-

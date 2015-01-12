@@ -8,6 +8,14 @@
 #ifndef M_SCAN_H_
 #define M_SCAN_H_
 
+#include <boost/iostreams/stream.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/iostreams/device/back_inserter.hpp>
+
 #include "../../src/expressions/m_expression.h"
 #include "../common/m_tree_node.h"
 #include "../common/m_configuration.h"
@@ -55,7 +63,7 @@ private:
 	friend class boost::serialization::access;
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int version) {
-		ar & boost::serialization::base_object<QueryPlan >(*this)
+		ar & boost::serialization::base_object<QueryPlan>(*this)
 				& expressions_ & scan_ser_obj_ &splits_stream_ & buffer_;
 	}
 };

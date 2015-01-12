@@ -8,6 +8,18 @@
 #include "../../src/physical/m_scan.h"
 #include "../../src/common/m_buffer.h"
 #include "../../src/common/m_configuration.h"
+#include "../../src/common/m_serialization.h"
+
+#include <boost/iostreams/stream.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/iostreams/device/back_inserter.hpp>
+
+#include <sstream>
+using namespace std;
 
 namespace physical {
 
@@ -27,6 +39,16 @@ int scan_test(){
 	string file_path="";
 	ScanSerObj *scan_ser_obj=new ScanSerObj(file_path);
 	QueryPlan *scan=new Scan(ve,scan_ser_obj);
+
+	std::ostringstream os;
+
+	boost::archive::text_oarchive oa(os);
+//	register_obj(oa);
+	oa.register_type(static_cast<Scan *>(NULL));
+	oa<<scan;
+
+	cout<<"after serialization: "<<os.str().c_str()<<endl;
+
 	return 0;
 }
 

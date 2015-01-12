@@ -10,19 +10,19 @@
 
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 
-#include "../physical/m_scan.h"
+//#include <boost/iostreams/device/back_inserter.hpp>
+//#include <boost/iostreams/stream.hpp>
 
-class Serialization {
-public:
-	Serialization();
-	virtual ~Serialization();
+//#include "../physical/m_scan.h"
+//using namespace physical;
 
-};
-
+//#pragma auto_inline
 template <class Archive>
-void register_obj(Archive &ar) {
-	ar.register_type(static_cast<physical::Scan *>(NULL));
-}
+void register_obj(Archive &ar);// {
+//	ar.register_type(static_cast<Scan *>(NULL));
+//}
 
 #endif /* M_SERIALIZATION_H_ */

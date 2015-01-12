@@ -1,6 +1,8 @@
 AM_CPPFLAGS= -fPIC 
 
-AM_LDFLAGS=-lc -lm -lrt -lpthread
+AM_LDFLAGS=-lc -lm -lrt -lpthread -lboost_serialization
+
+LDADD = ../common/libcommon.a
 
 noinst_LIBRARIES=libphysical.a
 libphysical_a_SOURCES = \

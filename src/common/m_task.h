@@ -11,10 +11,11 @@
 #include "m_message.h"
 #include "m_serialization.h"
 #include "../physical/m_query_plan.h"
+#include "../physical/m_scan.h"
 using namespace physical;
 
-//#include <iostream>
-//using namespace std;
+#include <iostream>
+using namespace std;
 
 #include <boost/iostreams/stream.hpp>
 #include <boost/serialization/vector.hpp>
@@ -32,7 +33,7 @@ static Message1 Serialize(T object) {
 	boost::iostreams::back_insert_device<std::string> inserter(serial_str);
 	boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > ostr(inserter);
 	boost::archive::binary_oarchive oa(ostr);
-	oa << object;
+	oa<<object;
 	ostr.flush();
 	Message1 ret;
 	assert(serial_str.size()<=Message1::Capacity());
@@ -42,8 +43,8 @@ static Message1 Serialize(T object) {
 }
 
 template<typename T>
-static T Deserialize(Message1 input) {
-	std::string received(input.message,input.length);
+static T Deserialize(Message1 output) {
+	std::string received(output.message,output.length);
 
 	boost::iostreams::basic_array_source<char> device(received.data(),received.size());
 	boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(device);
@@ -71,7 +72,12 @@ private:
 class TaskInfo {
 public:
 	TaskInfo(QueryPlan *qp):ser_qp_(qp) {};
-	virtual ~TaskInfo() {};
+	TaskInfo(const TaskInfo& r){
+		ser_qp_=r.ser_qp_;
+	}
+
+	TaskInfo():ser_qp_(0){};
+	~TaskInfo() {};
 
 	/* serialize will return a message which has the operator object. */
 	static Message1 serialize(TaskInfo input) {
@@ -79,7 +85,7 @@ public:
 	}
 
 	static TaskInfo deserialize(Message1 output) {
-		return Deserialize<Message1>(output);
+		return Deserialize<TaskInfo>(output);
 	}
 
 private:
@@ -88,8 +94,8 @@ private:
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 		/* todo: register schema */
-//		Register_Schemas(ar);
-		register_obj(ar);
+//		register_obj(ar);
+//		ar.register_type(static_cast<Scan *>(NULL));
 		ar  & ser_qp_;
 	}
 };

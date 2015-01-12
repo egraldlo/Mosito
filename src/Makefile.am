@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC
 
-AM_LDFLAGS= -lc -lm -lrt -pthreads
+AM_LDFLAGS= -lc -lm -lrt -pthreads -lboost_serialization
 
 include_HEADERS = m_server.h
 				

@@ -9,7 +9,7 @@
 
 int main_km() {
 	KM *km=new KM();
-//	km->eval();
-	km->LM();
+	km->eval();
+//	km->LM();
 	return 0;
 }

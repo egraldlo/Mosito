@@ -8,6 +8,9 @@
 #ifndef M_TREE_NODE_H_
 #define M_TREE_NODE_H_
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
 #include "m_buffer.h"
 
 #include <vector>
@@ -17,6 +20,11 @@ class TreeNode {
 public:
 	TreeNode(){};
 	virtual ~TreeNode(){};
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {}
 };
 
 class BinaryNode: public TreeNode {
@@ -34,6 +42,11 @@ class LeafNode: public TreeNode {
 public:
 	LeafNode(){};
 	virtual ~LeafNode(){};
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {}
 
 };
 

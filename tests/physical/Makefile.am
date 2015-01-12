@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC 
 
-AM_LDFLAGS=-lc -lm -lrt -lpthread
+AM_LDFLAGS=-lc -lm -lrt -lpthread -lboost_serialization
 
 noinst_LIBRARIES=libtest_physical.a
 libtest_physical_a_SOURCES = \

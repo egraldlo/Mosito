@@ -6,7 +6,3 @@
  */
 
 #include "m_task.h"
-
-void Task::serialize() {
-
-}
