@@ -57,4 +57,18 @@ vector<Expression *> Scan::output() {
 	return expressions_;
 }
 
+#ifdef EXPERIMENT_TEST
+NewSchema *Scan::newoutput() {
+	return &vd_;
+}
+#endif
+
+#ifdef EXPERIMENT
+	Scan::Scan(NewSchema vd, ScanSerObj *sso)
+	:vd_(vd), scan_ser_obj_(sso) {
+
+	}
+
+#endif
+
 }

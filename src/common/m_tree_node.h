@@ -21,10 +21,10 @@ public:
 	TreeNode(){};
 	virtual ~TreeNode(){};
 
-private:
-	friend class boost::serialization::access;
-	template <class Archive>
-	void serialize(Archive &ar, const unsigned int version) {}
+//private:
+//	friend class boost::serialization::access;
+//	template <class Archive>
+//	void serialize(Archive &ar, const unsigned int version) {}
 };
 
 class BinaryNode: public TreeNode {
@@ -43,10 +43,10 @@ public:
 	LeafNode(){};
 	virtual ~LeafNode(){};
 
-private:
-	friend class boost::serialization::access;
-	template <class Archive>
-	void serialize(Archive &ar, const unsigned int version) {}
+//private:
+//	friend class boost::serialization::access;
+//	template <class Archive>
+//	void serialize(Archive &ar, const unsigned int version) {}
 
 };
 

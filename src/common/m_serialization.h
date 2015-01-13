@@ -16,8 +16,16 @@
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <boost/iostreams/stream.hpp>
 
+#include "../common/m_data_type.h"
 #include "../physical/m_scan.h"
 using namespace physical;
+
+#pragma auto_inline
+template <class Archive>
+void register_data(Archive &ar) {
+	ar.register_type(static_cast<IntegerType *>(NULL));
+	ar.register_type(static_cast<UnLongType *>(NULL));
+}
 
 #pragma auto_inline
 template <class Archive>

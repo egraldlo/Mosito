@@ -26,6 +26,53 @@ using namespace std;
 
 namespace physical {
 
+#ifdef EXPERIMENT_TEST
+int debug_test(string path) {
+	DataType *e1=new UnLongType(t_long);
+	DataType *e2=new IntegerType(t_int);
+	DataType *e3=new IntegerType(t_int);
+	DataType *e4=new IntegerType(t_int);
+	DataType *e5=new IntegerType(t_int);
+	DataType *e6=new IntegerType(t_int);
+	vector<DataType *> ve;
+	ve.push_back(e1);
+	ve.push_back(e2);
+	ve.push_back(e3);
+	ve.push_back(e4);
+	ve.push_back(e5);
+	ve.push_back(e6);
+
+	ScanSerObj *scan_ser_obj=new ScanSerObj(path);
+	QueryPlan *scan=new Scan(ve,scan_ser_obj);
+
+	/* test serialization. */
+	std::ostringstream os;
+	boost::archive::text_oarchive oa(os);
+	register_obj(oa);
+	register_data(oa);
+	oa<<scan;
+
+	std::istringstream is(os.str());
+	boost::archive::text_iarchive ia(is);
+	register_obj(ia);
+	register_data(ia);
+	QueryPlan *qp_scan;
+	ia>>qp_scan;
+	/***********************/
+
+//	Scan *ss=reinterpret_cast<Scan *>(qp_scan);
+//	QueryPlan *project=new Project(ve,qp_scan);
+
+	QueryPlan *debug=new Debug(qp_scan);
+	debug->prelude();
+	debug->execute(0);
+	debug->postlude();
+
+	return 0;
+}
+#endif
+
+#ifndef EXPERIMENT_TEST
 int debug_test(string path) {
 	Expression *e1=new Column();
 	e1->return_type=t_long;
@@ -74,5 +121,6 @@ int debug_test(string path) {
 
 	return 0;
 }
+#endif
 
 } /* namespace physical */

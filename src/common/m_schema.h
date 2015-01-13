@@ -18,6 +18,11 @@ class Schema {
 public:
 	Schema();
 	Schema(vector<Expression*> *);
+
+#ifdef EXPERIMENT
+	Schema(NewSchema *ns);
+#endif
+
 	virtual ~Schema();
 
 	/* get a data type from the v_d_. */
@@ -34,8 +39,11 @@ public:
 
 	int get_columns();
 private:
+	/* vector of data type pointer. */
 	vector<DataType*> v_d_;
+	/* offset of every column. */
 	int* offset_;
+	/* tatolsize of the schema. */
 	int bytes_;
 };
 

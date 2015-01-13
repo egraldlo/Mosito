@@ -33,6 +33,10 @@ using namespace std;
 /* worker theron port */
 #define WORKER_THERON 5546
 
+/* this is my experiment */
+#define EXPERIMENT
+#define EXPERIMENT_TEST
+
 /* configure log type. */
 #define LOGGER error
 

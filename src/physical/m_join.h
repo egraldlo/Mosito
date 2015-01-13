@@ -37,6 +37,8 @@ public:
 	bool execute(Block *);
 	bool postlude();
 
+	NewSchema *newoutput(){};
+
 	vector<Expression *> output(){
 		vector<Expression *> ret;
 		return ret;
@@ -68,6 +70,8 @@ public:
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
+
+	NewSchema *newoutput(){};
 
 	vector<Expression *> output();
 
@@ -109,6 +113,8 @@ public:
 	bool prelude(){return true;};
 	bool execute(Block *){return true;};
 	bool postlude(){return true;};
+
+	NewSchema *newoutput(){};
 
 	vector<Expression *> output(){
 		vector<Expression *> ret;

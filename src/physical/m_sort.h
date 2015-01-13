@@ -36,6 +36,7 @@ public:
 	bool execute(Block *);
 	bool postlude();
 
+	NewSchema *newoutput(){};
 	vector<Expression *> output();
 
 	/* max the last tuple. */

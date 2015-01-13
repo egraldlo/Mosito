@@ -51,6 +51,11 @@ private:
 class Scan :public LeafNode, public QueryPlan {
 public:
 	Scan(vector<Expression* > expressions, ScanSerObj *scan_ser_obj);
+
+#ifdef EXPERIMENT
+	Scan(NewSchema vd, ScanSerObj *scan_ser_obj);
+#endif
+
 	virtual ~Scan();
 
 	/* needed constructor function. */
@@ -62,12 +67,16 @@ public:
 
 	void display();
 
+#ifdef EXPERIMENT_TEST
+	NewSchema *newoutput();
+#endif
 	vector<Expression *> output();
 
 private:
 	/* expressions can be serialized. */
 	vector<Expression *> expressions_;
 
+	NewSchema vd_;
 	ScanSerObj *scan_ser_obj_;
 
 	FILE *splits_stream_;
@@ -78,7 +87,7 @@ private:
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int version) {
 		ar & boost::serialization::base_object<QueryPlan>(*this)
-				& scan_ser_obj_ ;
+				& scan_ser_obj_ & vd_;
 	}
 };
 

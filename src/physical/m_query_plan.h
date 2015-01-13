@@ -25,6 +25,9 @@ public:
 	virtual bool execute(Block *)=0;
 	virtual bool postlude()=0;
 
+#ifdef EXPERIMENT_TEST
+	virtual NewSchema* newoutput()=0;
+#endif
 	virtual vector<Expression *> output()=0;
 
 private:

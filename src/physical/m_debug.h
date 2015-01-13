@@ -25,16 +25,23 @@ public:
 	Debug(vector<Expression *> expressions, QueryPlan *child);
 	virtual ~Debug();
 
+#ifdef EXPERIMENT
+	Debug(QueryPlan *child);
+#endif
+
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
 
 	void display(void *);
+	void print(data_type,void *);
 
+	NewSchema *newoutput(){};
 	vector<Expression *> output();
 
 private:
 	vector<Expression *> expressions_;
+
 	QueryPlan *child_;
 
 	Block *buffer_;
