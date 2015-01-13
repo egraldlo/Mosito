@@ -15,6 +15,8 @@
 #define INF 2147483647
 #define max(x,y) ((x)>(y)?(x):(y))
 
+#define PAT 4
+
 class KM {
 public:
 	KM();
@@ -24,6 +26,9 @@ public:
 	int eval();
 
 	int LM();
+
+	int LM(int**, int);
+	int pre_shl();
 
 private:
 	bool search(int);

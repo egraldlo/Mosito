@@ -6,10 +6,14 @@
  */
 
 #include "../../src/analysis/m_km.h"
+#include "../../src/analysis/m_par_strategy.h"
 
 int main_km() {
 	KM *km=new KM();
 	km->eval();
 //	km->LM();
+
+	ParStrategy *ps=new ParStrategy();
+	ps->eval();
 	return 0;
 }

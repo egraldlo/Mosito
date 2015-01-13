@@ -40,7 +40,7 @@ autom4te.cache/
 config.h.in
 config.h.in~
 
-libtherond.a
+libs/libtherond.a
 mosito
 test
 dgen

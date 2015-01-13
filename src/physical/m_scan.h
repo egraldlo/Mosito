@@ -34,6 +34,9 @@ public:
 	ScanSerObj(string file_path);
 	virtual ~ScanSerObj();
 
+	/* needed constructor function. */
+	ScanSerObj(){};
+
 	string file_path_;
 
 private:
@@ -50,6 +53,9 @@ public:
 	Scan(vector<Expression* > expressions, ScanSerObj *scan_ser_obj);
 	virtual ~Scan();
 
+	/* needed constructor function. */
+	Scan(){};
+
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
@@ -59,10 +65,12 @@ public:
 	vector<Expression *> output();
 
 private:
+	/* expressions can be serialized. */
 	vector<Expression *> expressions_;
-	ScanSerObj *scan_ser_obj_;
-	FILE *splits_stream_;
 
+	ScanSerObj *scan_ser_obj_;
+
+	FILE *splits_stream_;
 	char *buffer_;
 
 private:
@@ -70,7 +78,7 @@ private:
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int version) {
 		ar & boost::serialization::base_object<QueryPlan>(*this)
-				& expressions_ & scan_ser_obj_ ;
+				& scan_ser_obj_ ;
 	}
 };
 

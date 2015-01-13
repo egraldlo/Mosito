@@ -42,9 +42,13 @@ int scan_test(){
 
 	std::ostringstream os;
 
+	cout<<"hello world!"<<endl;
+
 	boost::archive::text_oarchive oa(os);
-//	register_obj(oa);
-	oa.register_type(static_cast<Scan *>(NULL));
+	register_obj(oa);
+	cout<<"hello world!"<<endl;
+//	oa.register_type(static_cast<Scan *>(NULL));
+	cout<<"hello world!"<<endl;
 	oa<<scan;
 
 	cout<<"after serialization: "<<os.str().c_str()<<endl;

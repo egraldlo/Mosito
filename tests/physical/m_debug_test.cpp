@@ -9,8 +9,20 @@
 #include "../../src/physical/m_scan.h"
 #include "../../src/physical/m_project.h"
 #include "../../src/common/m_configuration.h"
+#include "../../src/common/m_serialization.h"
 #include "../../src/expressions/m_expression.h"
 #include "../../src/physical/m_query_plan.h"
+
+#include <boost/iostreams/stream.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/iostreams/device/back_inserter.hpp>
+
+#include <sstream>
+using namespace std;
 
 namespace physical {
 
@@ -39,7 +51,21 @@ int debug_test(string path) {
 	ScanSerObj *scan_ser_obj=new ScanSerObj(path);
 	QueryPlan *scan=new Scan(ve,scan_ser_obj);
 
-	QueryPlan *project=new Project(ve,scan);
+	/* test serialization. */
+	std::ostringstream os;
+	boost::archive::text_oarchive oa(os);
+	register_obj(oa);
+	oa<<scan;
+
+	std::istringstream is(os.str());
+	boost::archive::text_iarchive ia(is);
+	register_obj(ia);
+	QueryPlan *qp_scan;
+	ia>>qp_scan;
+	/***********************/
+
+//	Scan *ss=reinterpret_cast<Scan *>(qp_scan);
+	QueryPlan *project=new Project(ve,qp_scan);
 
 	QueryPlan *debug=new Debug(ve,scan);
 	debug->prelude();

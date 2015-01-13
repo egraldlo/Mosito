@@ -124,6 +124,7 @@ bool KM::find(int x) {
  *  */
 int KM::LM() {
 	int i, j, x, y, s;
+	s=0;
 	printf("largest matching in bitgraph!\n");
     if (scanf ("%d",&n)!=EOF) {
     	nx = ny = n;
@@ -147,5 +148,23 @@ int KM::LM() {
         printf("k: ");
         printf("%d\n",k);
     }
+	return 0;
+}
+
+int KM::LM(int **array, int m) {
+	for(int i=1; i<m; i++) {
+		for(int j=1; j<m; j++) {
+		}
+	}
+	return 0;
+}
+
+int KM::pre_shl() {
+
+	//while loop{
+	//1 is used to represent the array element.
+	link[PAT];//contains largest graph.
+	//find a minimum of the largest matching}
+
 	return 0;
 }

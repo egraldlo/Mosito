@@ -7,17 +7,17 @@
 
 #include "m_serialization.h"
 
-#include <boost/iostreams/device/back_inserter.hpp>
-#include <boost/iostreams/stream.hpp>
+//#include <boost/iostreams/device/back_inserter.hpp>
+//#include <boost/iostreams/stream.hpp>
+//
+//#include "../physical/m_scan.h"
+//using namespace physical;
 
-#include "../physical/m_scan.h"
-using namespace physical;
-
-#pragma auto_inline
-template <class Archive>
-void register_obj(Archive &ar) {
-	ar.register_type(static_cast<Scan *>(NULL));
-}
+//#pragma auto_inline
+//template <class Archive>
+//void register_obj(Archive &ar) {
+//	ar.register_type(static_cast<Scan *>(NULL));
+//}
 
 //void cheat_the_compiler(){
 //    char buffer[4096*2-sizeof(unsigned)];

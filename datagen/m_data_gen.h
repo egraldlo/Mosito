@@ -24,8 +24,18 @@ public:
 };
 
 int main(int argc, char **argv) {
-	cout<<"this is a simple data generator!"<<endl
-			<<"note: you can use 'datagen 3' to generate 3 pages"<<endl;
+	cout<<"this is a simple data generator!"<<endl;
+
+	/*
+	 * 1st args: pages number
+	 * 2nd args: left table name
+	 * 3rd args: right table name
+	 * 4th args: random gain.
+	 *
+	 * example: dgen 3 left right 1000.
+	 *          to generate two tables which are left table and right table
+	 *          which has three pages.
+	 *  */
 
 	/* 64*1024-8 space to store data. */
 	const char *arg=argv[1];
