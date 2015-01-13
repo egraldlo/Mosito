@@ -8,6 +8,10 @@
 #ifndef M_EXECUTOR_H_
 #define M_EXECUTOR_H_
 
+//#include "../../third_party/theron/Theron/Defines.h"
+//#include "../../third_party/theron/Theron/Theron.h"
+
+#include "../common/m_message.h"
 #include "../physical/m_query_plan.h"
 using namespace physical;
 
@@ -15,8 +19,12 @@ using namespace physical;
 #include <vector>
 using namespace std;
 
+class ExecutorSlaveActor;
+
 class ExecutorMaster {
 public:
+	ExecutorMaster(Theron::EndPoint *end)
+	:endpoint_(end) {};
 	ExecutorMaster() {};
 	virtual ~ExecutorMaster() {};
 
@@ -30,14 +38,22 @@ public:
 		}
 	}
 
-	bool sendToMultiple(QueryPlan *qp, vector<string> ips);
+	bool sendToMultiple(Message1, vector<int>);
+
+private:
+	void init_executor();
 
 private:
 	static ExecutorMaster* executormaster_;
+	Theron::Framework *framework_;
+	Theron::EndPoint *endpoint_;
+
 };
 
 class ExecutorSlave {
 public:
+	ExecutorSlave(Theron::EndPoint *end)
+	:endpoint_(end) {};
 	ExecutorSlave() {};
 	virtual ~ExecutorSlave() {};
 
@@ -52,7 +68,28 @@ public:
 	}
 
 private:
+	void init_executor();
+
+private:
 	static ExecutorSlave *executorslave_;
+	ExecutorSlaveActor *es_actor_;
+	Theron::Framework *framework_;
+	Theron::EndPoint *endpoint_;
+
+};
+
+class ExecutorSlaveActor: public Theron::Actor {
+public:
+	ExecutorSlaveActor(Theron::Framework &framework, const char * const name)
+	:Theron::Actor(framework, name){
+		RegisterHandler(this, &ExecutorSlaveActor::handler);
+	}
+
+private:
+	void handler(const Message1 &message, const Theron::Address from) {
+		cout<<"hello, the task is: "<<message.message<<endl;
+	};
+
 };
 
 #endif /* M_EXECUTOR_H_ */

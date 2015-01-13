@@ -7,14 +7,6 @@
 
 #include "m_worker.h"
 
-Worker::Worker() {
-
-}
-
-Worker::~Worker() {
-
-}
-
 void Worker::init() {
 	/* get the local host ip. */
 	char hostname[128];
@@ -38,6 +30,10 @@ void Worker::init() {
 	Theron::EndPoint endpoint("worker", ip_port_worker.str().c_str());
 	endpoint.Connect(ip_port_master.str().c_str());
 
+	endpoint_= &endpoint;
+//	endpoint_=new Theron::EndPoint("worker", ip_port_worker.str().c_str());
+//	endpoint_->Connect(ip_port_master.str().c_str());
+
 	Sender *sender=new Sender(COORDINATOR_THERON+1000);
 	sender->m_connect("127.0.0.1");//master
 	sender->m_send(ip);
@@ -45,8 +41,10 @@ void Worker::init() {
 
 	printf("hello sending ---------------->\n");
 
-	Theron::Framework framework(endpoint);
+	Theron::Framework framework(*endpoint_);
+//	Theron::Framework framework(endpoint);
 
 	framework.Send(MessageT("hello"), Theron::Address(), Theron::Address("register"));
 
+	executor_s_=new ExecutorSlave(endpoint_);
 }

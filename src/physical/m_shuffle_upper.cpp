@@ -9,6 +9,19 @@
 
 namespace physical {
 
+/* when test the shuffleupper, this object is been constructed.
+ * the first step can be two level, one upper and two lowers.
+ * the secod step can be three level, one upper and two mids and three lowers.
+ * */
+ShuffleUpperSerObj::ShuffleUpperSerObj(NewSchema ns, vector<int> uppers, vector<int> lowers, QueryPlan *child)
+:ns_(ns), upper_seqs_(uppers), lower_seqs_(lowers), child_(child){
+
+}
+
+ShuffleUpperSerObj::~ShuffleUpperSerObj() {
+
+}
+
 ShuffleUpper::ShuffleUpper(vector<Expression *> expressions, QueryPlan *child) {
 
 }
@@ -39,9 +52,20 @@ bool ShuffleUpper::postlude() {
 }
 
 bool ShuffleUpper::serialization() {
-	for(int i=0; i<2; i++) {
+	NewSchema schema=shuffle_ser_obj_->ns_;
+	QueryPlan *child=shuffle_ser_obj_->child_;
+	vector<int> upper_nodes=shuffle_ser_obj_->upper_seqs_;
+	vector<int> lower_nodes=shuffle_ser_obj_->lower_seqs_;
+	ShuffleLowerSerObj *slso=new
+			ShuffleLowerSerObj(schema, upper_nodes, child);
+	TaskInfo tasks(new ShuffleLower(slso));
+	Message1 serialized_task=TaskInfo::serialize(tasks);
+	/*
+	 * send the serialized tasks to the lower nodes.
+	 * here, we need the actor mode of master node and slave nodes.
+	 * */
+	ExecutorMaster::getInstance()->sendToMultiple(serialized_task, lower_nodes);
 
-	}
 	return true;
 }
 

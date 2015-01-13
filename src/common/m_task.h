@@ -93,9 +93,9 @@ private:
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
-		/* todo: register schema */
-//		register_obj(ar);
-//		ar.register_type(static_cast<Scan *>(NULL));
+		/* every nest loop relation must be registered. */
+		register_data(ar);
+		register_obj(ar);
 		ar  & ser_qp_;
 	}
 };

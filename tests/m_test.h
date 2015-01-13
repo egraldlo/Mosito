@@ -68,8 +68,8 @@ int main(int argc, char** argv) {
 //	m_losertrees_test();
 //	m_heap_test();
 
-	string path="table.left";
-	physical::debug_test(path);
+//	string path="table.left";
+//	physical::debug_test(path);
 
 	/* for sort test. */
 //	string path="table.left";
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
 //	sender_local_test(argc, argv);
 
 	/* for deploy test. */
-//	main_coordinator(argc, argv);
+	main_coordinator(argc, argv);
 
 	/* for shuffle 2 levels and shuffle 3 levels test. */
 //	physical::main_shuffle_2();

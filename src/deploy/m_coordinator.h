@@ -11,6 +11,7 @@
 #include "../../src/common/m_merger.h"
 #include "../../src/common/m_logging.h"
 #include "../../src/common/m_ahandler.h"
+#include "../../src/executor/m_executor.h"
 #include "../../src/common/m_configuration.h"
 
 #include <sstream>
@@ -23,8 +24,8 @@ using namespace std;
 
 class Coordinator {
 public:
-	Coordinator();
-	virtual ~Coordinator();
+	Coordinator(){};
+	virtual ~Coordinator(){};
 
 	void init();
 
@@ -34,8 +35,11 @@ private:
 	static void* register_worker(void *);
 
 private:
-	Theron::EndPoint *endpoint_;
 	Thandler *acn_;
+	ExecutorMaster *executor_m_;
+
+	Theron::EndPoint *endpoint_;
+
 };
 
 #endif /* M_COORDINATOR_H_ */

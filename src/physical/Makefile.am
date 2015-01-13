@@ -2,7 +2,8 @@ AM_CPPFLAGS= -fPIC
 
 AM_LDFLAGS=-lc -lm -lrt -lpthread -lboost_serialization
 
-LDADD = ../common/libcommon.a
+LDADD = ../common/libcommon.a \
+		../executor/libexecutor.a
 
 noinst_LIBRARIES=libphysical.a
 libphysical_a_SOURCES = \

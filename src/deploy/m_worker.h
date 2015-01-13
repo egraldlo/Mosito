@@ -12,6 +12,10 @@
 #include "../../src/common/m_logging.h"
 #include "../../src/common/m_ahandler.h"
 #include "../../src/common/m_configuration.h"
+#include "../../src/executor/m_executor.h"
+
+#include "../../third_party/theron/Theron/Defines.h"
+#include "../../third_party/theron/Theron/Theron.h"
 
 #include <sstream>
 using namespace std;
@@ -22,16 +26,19 @@ using namespace std;
 
 class Worker {
 public:
-	Worker();
-	virtual ~Worker();
+	Worker(){};
+	virtual ~Worker(){};
 
 	void init();
 
 private:
 
-
 private:
 	Thandler *acn_;
+	ExecutorSlave *executor_s_;
+
+	Theron::EndPoint *endpoint_;
+
 };
 
 #endif /* M_WORKER_H_ */

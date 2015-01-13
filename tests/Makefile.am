@@ -11,6 +11,7 @@ test_SOURCES = m_test.cpp
 test_LDADD =       \
 				 ../src/expressions/libexpressions.a \
 				 ../src/physical/libphysical.a \
+				 ../src/executor/libexecutor.a \
 				 ../src/analysis/libanalysis.a \
 				 ../src/deploy/libdeploy.a \
 				 ../src/common/libcommon.a \

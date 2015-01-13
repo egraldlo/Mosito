@@ -7,14 +7,6 @@
 
 #include "m_coordinator.h"
 
-Coordinator::Coordinator() {
-
-}
-
-Coordinator::~Coordinator() {
-
-}
-
 void Coordinator::init() {
 	/* get the local host ip. */
 	char hostname[128];
@@ -48,6 +40,8 @@ void Coordinator::init() {
 	acn_= new Thandler(framework, "register");
 
 	receiver.Wait();
+
+	executor_m_=new ExecutorMaster(endpoint_);
 
 }
 

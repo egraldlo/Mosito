@@ -9,6 +9,15 @@
 
 namespace physical {
 
+ShuffleLowerSerObj::ShuffleLowerSerObj(NewSchema ns, vector<int> seqs, QueryPlan* child)
+:ns_(ns), seqs_(seqs), child_(child){
+
+}
+
+ShuffleLowerSerObj::~ShuffleLowerSerObj() {
+
+}
+
 ShuffleLower::ShuffleLower(vector<Expression *> expressions, QueryPlan *child) {
 
 }
