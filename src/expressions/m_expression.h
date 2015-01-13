@@ -42,6 +42,13 @@ public:
 	 * TODO: some good way.
 	 *  */
 	void *val;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & expr_id & return_type & references & val;
+	}
 };
 
 class UnaryExpression: public Expression, public UnaryNode {
@@ -66,6 +73,11 @@ public:
 	virtual ~LeafExpression(){};
 
 	virtual void initilize(){};
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {}
 };
 
 class Literal: public LeafExpression {
@@ -84,6 +96,12 @@ public:
 
 	void *eval(){return 0;};
 	void initilize(){};
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {}
+
 };
 
 #endif /* M_EXPRESSION_H_ */

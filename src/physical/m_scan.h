@@ -35,7 +35,13 @@ public:
 	virtual ~ScanSerObj();
 
 	string file_path_;
+
 private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & file_path_;
+	}
 
 };
 
@@ -64,7 +70,7 @@ private:
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int version) {
 		ar & boost::serialization::base_object<QueryPlan>(*this)
-				& expressions_ & scan_ser_obj_ &splits_stream_ & buffer_;
+				& expressions_ & scan_ser_obj_ ;
 	}
 };
 
