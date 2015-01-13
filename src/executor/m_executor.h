@@ -34,6 +34,7 @@ public:
 			return executormaster_;
 		}
 		else {
+			init_executor();
 			return executormaster_;
 		}
 	}
@@ -63,6 +64,7 @@ public:
 			return executorslave_;
 		}
 		else {
+			init_executor();
 			return executorslave_;
 		}
 	}
@@ -78,6 +80,7 @@ private:
 
 };
 
+/* this actor can be put into the common src. */
 class ExecutorSlaveActor: public Theron::Actor {
 public:
 	ExecutorSlaveActor(Theron::Framework &framework, const char * const name)

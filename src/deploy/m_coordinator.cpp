@@ -72,3 +72,14 @@ bool Coordinator::aconnect(const char * ipport) {
 		return true;
 	}
 }
+
+void Coordinator::do_query() {
+	/*
+	 * todo: two level query which has one node and two nodes.
+	 * 		 Scan operator + ShuffleLower + ShuffleUpper + Debug.
+	 * 		 so there is shuffle which can cover the query.
+	 *
+	 * 		 one node use coordinator and other two nodes use worker,
+	 * 		 different port can be used for simulation.
+	 *  */
+}

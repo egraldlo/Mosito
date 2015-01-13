@@ -31,6 +31,9 @@ public:
 
 	bool aconnect(const char * ipport);
 
+	/* this function is for test. */
+	void do_query();
+
 private:
 	static void* register_worker(void *);
 
