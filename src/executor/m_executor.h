@@ -11,7 +11,9 @@
 //#include "../../third_party/theron/Theron/Defines.h"
 //#include "../../third_party/theron/Theron/Theron.h"
 
+#include "../../src/common/m_task.h"
 #include "../common/m_message.h"
+#include "../common/m_logging.h"
 #include "../physical/m_query_plan.h"
 using namespace physical;
 
@@ -34,14 +36,12 @@ public:
 			return executormaster_;
 		}
 		else {
-			init_executor();
 			return executormaster_;
 		}
 	}
 
 	bool sendToMultiple(Message1, vector<int>);
 
-private:
 	void init_executor();
 
 private:
@@ -64,12 +64,10 @@ public:
 			return executorslave_;
 		}
 		else {
-			init_executor();
 			return executorslave_;
 		}
 	}
 
-private:
 	void init_executor();
 
 private:
@@ -91,6 +89,9 @@ public:
 private:
 	void handler(const Message1 &message, const Theron::Address from) {
 		cout<<"hello, the task is: "<<message.message<<endl;
+		TaskInfo task=TaskInfo::deserialize(message);
+		task.run();
+		cout<<"finished executing the task."<<endl;
 	};
 
 };

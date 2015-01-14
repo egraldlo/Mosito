@@ -19,6 +19,7 @@ int main_coordinator(int argc, char **argv) {
 	if(i==1) {
 		Coordinator *coordinator=new Coordinator();
 		coordinator->init();
+		coordinator->do_query();
 	}
 	else {
 		Worker *worker=new Worker();

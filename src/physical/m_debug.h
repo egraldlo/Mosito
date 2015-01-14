@@ -29,6 +29,8 @@ public:
 	Debug(QueryPlan *child);
 #endif
 
+	Debug() {};
+
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
@@ -47,6 +49,14 @@ private:
 	Block *buffer_;
 
 	Schema *schema_;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		/* child_ can be put in a serialized object. */
+		ar & boost::serialization::base_object<QueryPlan>(*this) & child_;
+	}
 };
 
 }

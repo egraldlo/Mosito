@@ -18,6 +18,7 @@
 
 #include "../common/m_data_type.h"
 #include "../physical/m_scan.h"
+#include "../physical/m_debug.h"
 using namespace physical;
 
 #pragma auto_inline
@@ -31,6 +32,7 @@ void register_data(Archive &ar) {
 template <class Archive>
 void register_obj(Archive &ar) {
 	ar.register_type(static_cast<Scan *>(NULL));
+	ar.register_type(static_cast<Debug *>(NULL));
 }
 
 #endif /* M_SERIALIZATION_H_ */

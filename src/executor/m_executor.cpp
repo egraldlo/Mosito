@@ -17,7 +17,7 @@ bool ExecutorMaster::sendToMultiple(Message1 msg, vector<int> ips) {
 	 * and executorslave will put the task into the threadpool.
 	 *  */
 	for(int slave_id=0; slave_id<ips.size(); slave_id++) {
-
+		framework_->Send(msg, Theron::Address(), Theron::Address("slaveactor"));
 	}
 
 	/* executorslave must be a theron handler. */
@@ -25,10 +25,13 @@ bool ExecutorMaster::sendToMultiple(Message1 msg, vector<int> ips) {
 
 void ExecutorMaster::init_executor() {
 	framework_=new Theron::Framework(*endpoint_);
+	Logging::getInstance()->log(trace, "master executor is on!");
 }
 
 void ExecutorSlave::init_executor() {
 	framework_=new Theron::Framework(*endpoint_);
+	Logging::getInstance()->log(trace, "slave executor is on!");
 	/* todo: add a id for slaveactor */
 	es_actor_=new ExecutorSlaveActor(*framework_, "slaveactor");
+	getchar();
 }

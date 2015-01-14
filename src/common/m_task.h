@@ -79,6 +79,12 @@ public:
 	TaskInfo():ser_qp_(0){};
 	~TaskInfo() {};
 
+	inline void run() {
+		ser_qp_->prelude();
+		ser_qp_->execute(0);
+		ser_qp_->postlude();
+	}
+
 	/* serialize will return a message which has the operator object. */
 	static Message1 serialize(TaskInfo input) {
 		return Serialize<TaskInfo>(input);

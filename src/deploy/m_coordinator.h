@@ -8,11 +8,13 @@
 #ifndef M_COORDINATOR_H_
 #define M_COORDINATOR_H_
 
+#include "../../src/common/m_task.h"
 #include "../../src/common/m_merger.h"
 #include "../../src/common/m_logging.h"
 #include "../../src/common/m_ahandler.h"
-#include "../../src/executor/m_executor.h"
 #include "../../src/common/m_configuration.h"
+#include "../../src/executor/m_executor.h"
+#include "../../src/physical/m_scan.h"
 
 #include <sstream>
 using namespace std;

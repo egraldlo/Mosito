@@ -39,9 +39,10 @@ void Coordinator::init() {
 
 	acn_= new Thandler(framework, "register");
 
-	receiver.Wait();
+//	receiver.Wait(1);
 
 	executor_m_=new ExecutorMaster(endpoint_);
+	executor_m_->init_executor();
 
 }
 
@@ -82,4 +83,37 @@ void Coordinator::do_query() {
 	 * 		 one node use coordinator and other two nodes use worker,
 	 * 		 different port can be used for simulation.
 	 *  */
+
+	cout<<"input a enter key and submit a query!"<<endl;
+	getchar();
+	cout<<"one query has been executed!"<<endl;
+
+	string file="table.left";
+	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+	DataType *e1=new UnLongType(t_long);
+	DataType *e2=new IntegerType(t_int);
+	DataType *e3=new IntegerType(t_int);
+	DataType *e4=new IntegerType(t_int);
+	DataType *e5=new IntegerType(t_int);
+	DataType *e6=new IntegerType(t_int);
+	vector<DataType *> ve;
+	ve.push_back(e1);
+	ve.push_back(e2);
+	ve.push_back(e3);
+	ve.push_back(e4);
+	ve.push_back(e5);
+	ve.push_back(e6);
+	Scan *scan=new Scan(ve,scan_ser_obj);
+	Debug *debug=new Debug(scan);
+
+	TaskInfo task(debug);
+	Message1 m1=TaskInfo::serialize(task);
+	cout<<"before sending: "<<m1.message<<endl;
+
+	vector<int> ips;
+	ips.push_back(1);
+	executor_m_->sendToMultiple(m1,ips);
+
+	getchar();
+
 }

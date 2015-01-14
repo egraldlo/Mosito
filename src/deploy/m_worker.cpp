@@ -46,5 +46,6 @@ void Worker::init() {
 
 	framework.Send(MessageT("hello"), Theron::Address(), Theron::Address("register"));
 
-	executor_s_=new ExecutorSlave(endpoint_);
+	executor_s_=new ExecutorSlave(&endpoint);
+	executor_s_->init_executor();
 }
