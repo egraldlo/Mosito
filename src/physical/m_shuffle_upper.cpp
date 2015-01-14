@@ -7,6 +7,8 @@
 
 #include "m_shuffle_upper.h"
 
+#include "../../src/executor/m_executor.h"
+
 namespace physical {
 
 /* when test the shuffleupper, this object is been constructed.
@@ -36,35 +38,37 @@ ShuffleUpper::~ShuffleUpper() {
 
 bool ShuffleUpper::prelude() {
 	/* send the task into shuffle lower. */
-
+	Logging::getInstance()->log(trace, "enter the shuffle upper open function.");
 	/* here we must create pthread to receive the data, it's a producer.*/
+	Logging::getInstance()->log(trace, "serialize the task and send the task to remote node.");
+	serialization();
 	return true;
 }
 
 bool ShuffleUpper::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
-
+	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
 	return true;
 }
 
 bool ShuffleUpper::postlude() {
+	Logging::getInstance()->log(trace, "enter the shuffle upper close function.");
 	return true;
 }
 
 bool ShuffleUpper::serialization() {
-	NewSchema schema=shuffle_ser_obj_->ns_;
 	QueryPlan *child=shuffle_ser_obj_->child_;
-	vector<int> upper_nodes=shuffle_ser_obj_->upper_seqs_;
-	vector<int> lower_nodes=shuffle_ser_obj_->lower_seqs_;
 	ShuffleLowerSerObj *slso=new
-			ShuffleLowerSerObj(schema, upper_nodes, child);
-	TaskInfo tasks(new ShuffleLower(slso));
+			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_, child);
+	ShuffleLower *sl=new ShuffleLower(slso);
+	TaskInfo tasks(sl);
 	Message1 serialized_task=TaskInfo::serialize(tasks);
 	/*
 	 * send the serialized tasks to the lower nodes.
 	 * here, we need the actor mode of master node and slave nodes.
 	 * */
-	ExecutorMaster::getInstance()->sendToMultiple(serialized_task, lower_nodes);
+
+	ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_);
 
 	return true;
 }

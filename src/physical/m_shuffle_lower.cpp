@@ -32,18 +32,18 @@ ShuffleLower::~ShuffleLower() {
 
 bool ShuffleLower::prelude() {
 	/* create a thread to send the block into the upper. */
-
+	Logging::getInstance()->log(trace, "enter the shuffle lower open function.");
 	return true;
 }
 
 bool ShuffleLower::execute(Block *block) {
 	/* get the block from the pipeline. */
-
+	Logging::getInstance()->log(trace, "enter the shuffle lower next function.");
 	return true;
 }
 
 bool ShuffleLower::postlude() {
-
+	Logging::getInstance()->log(trace, "enter the shuffle lower close function.");
 	return true;
 }
 

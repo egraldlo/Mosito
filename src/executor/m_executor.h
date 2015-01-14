@@ -11,7 +11,7 @@
 //#include "../../third_party/theron/Theron/Defines.h"
 //#include "../../third_party/theron/Theron/Theron.h"
 
-#include "../../src/common/m_task.h"
+#include "../common/m_task.h"
 #include "../common/m_message.h"
 #include "../common/m_logging.h"
 #include "../physical/m_query_plan.h"

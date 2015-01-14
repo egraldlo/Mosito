@@ -19,6 +19,8 @@
 #include "../common/m_data_type.h"
 #include "../physical/m_scan.h"
 #include "../physical/m_debug.h"
+#include "../physical/m_shuffle_upper.h"
+#include "../physical/m_shuffle_lower.h"
 using namespace physical;
 
 #pragma auto_inline
@@ -33,6 +35,8 @@ template <class Archive>
 void register_obj(Archive &ar) {
 	ar.register_type(static_cast<Scan *>(NULL));
 	ar.register_type(static_cast<Debug *>(NULL));
+	ar.register_type(static_cast<ShuffleUpper *>(NULL));
+	ar.register_type(static_cast<ShuffleLower *>(NULL));
 }
 
 #endif /* M_SERIALIZATION_H_ */

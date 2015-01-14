@@ -9,8 +9,6 @@
 #define M_SHUFFLE_UPPER_H_
 
 #include "../../src/expressions/m_expression.h"
-#include "../../src/executor/m_executor.h"
-#include "../../src/common/m_task.h"
 #include "../common/m_tree_node.h"
 #include "../common/m_merger.h"
 #include "m_shuffle_lower.h"
@@ -48,7 +46,9 @@ public:
 	ShuffleUpper(ShuffleUpperSerObj *shuffle_ser_obj)
 	:shuffle_ser_obj_(shuffle_ser_obj){};
 	ShuffleUpper(Merger *);
+	ShuffleUpper(){};
 	virtual ~ShuffleUpper();
+
 
 	bool prelude();
 	bool execute(Block *);

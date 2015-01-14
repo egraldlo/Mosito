@@ -25,8 +25,6 @@ using namespace std;
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/iostreams/device/back_inserter.hpp>
 
-typedef void (*Func)(void *args);
-
 template<typename T>
 static Message1 Serialize(T object) {
 	std::string serial_str;
@@ -54,20 +52,6 @@ static T Deserialize(Message1 output) {
 	ia>>ret;
 	return ret;
 }
-
-class Task {
-public:
-	Task(Func func,void *args):function_(func),args_(args) {};
-	virtual ~Task() {};
-
-	void run() {
-		function_(args_);
-	}
-
-private:
-	void (*function_)(void *args);
-	void *args_;
-};
 
 class TaskInfo {
 public:

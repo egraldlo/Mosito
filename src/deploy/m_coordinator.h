@@ -15,6 +15,7 @@
 #include "../../src/common/m_configuration.h"
 #include "../../src/executor/m_executor.h"
 #include "../../src/physical/m_scan.h"
+#include "../../src/physical/m_shuffle_upper.h"
 
 #include <sstream>
 using namespace std;

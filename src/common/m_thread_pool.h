@@ -12,7 +12,22 @@
 
 #include "m_circle_queue.h"
 #include "m_smart_ptr.h"
-#include "m_task.h"
+
+typedef void (*Func)(void *args);
+
+class Task {
+public:
+	Task(Func func,void *args):function_(func),args_(args) {};
+	virtual ~Task() {};
+
+	void run() {
+		function_(args_);
+	}
+
+private:
+	void (*function_)(void *args);
+	void *args_;
+};
 
 class ThreadPool {
 public:

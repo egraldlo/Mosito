@@ -36,10 +36,11 @@ void Coordinator::init() {
 
 	Theron::Receiver receiver(*endpoint_, "coordinator_receiver");
 	Theron::Framework framework(*endpoint_);
+	framework.SetMaxThreads(1);
 
 	acn_= new Thandler(framework, "register");
 
-//	receiver.Wait(1);
+	receiver.Wait(1);
 
 	executor_m_=new ExecutorMaster(endpoint_);
 	executor_m_->init_executor();
@@ -106,13 +107,17 @@ void Coordinator::do_query() {
 	Scan *scan=new Scan(ve,scan_ser_obj);
 	Debug *debug=new Debug(scan);
 
-	TaskInfo task(debug);
-	Message1 m1=TaskInfo::serialize(task);
-	cout<<"before sending: "<<m1.message<<endl;
+	vector<int> uppers;
+	uppers.push_back(1);
+	vector<int> lowers;
+	lowers.push_back(1);
 
-	vector<int> ips;
-	ips.push_back(1);
-	executor_m_->sendToMultiple(m1,ips);
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,scan);
+	ShuffleUpper *su=new ShuffleUpper(suso);
+
+	su->prelude();
+	su->execute(0);
+	su->postlude();
 
 	getchar();
 

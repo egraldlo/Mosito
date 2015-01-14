@@ -16,10 +16,12 @@ bool ExecutorMaster::sendToMultiple(Message1 msg, vector<int> ips) {
 	 * executorslave will recieve the message and deserialize the messsage to taskinfo,
 	 * and executorslave will put the task into the threadpool.
 	 *  */
+	Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
 	for(int slave_id=0; slave_id<ips.size(); slave_id++) {
-		framework_->Send(msg, Theron::Address(), Theron::Address("slaveactor"));
+		framework_->Send(msg, Theron::Address(), Theron::Address("actor_slave"));
 	}
 
+	return true;
 	/* executorslave must be a theron handler. */
 }
 
@@ -32,6 +34,6 @@ void ExecutorSlave::init_executor() {
 	framework_=new Theron::Framework(*endpoint_);
 	Logging::getInstance()->log(trace, "slave executor is on!");
 	/* todo: add a id for slaveactor */
-	es_actor_=new ExecutorSlaveActor(*framework_, "slaveactor");
+	es_actor_=new ExecutorSlaveActor(*framework_, "actor_slave");
 	getchar();
 }
