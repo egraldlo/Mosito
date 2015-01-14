@@ -61,14 +61,12 @@ bool ShuffleUpper::serialization() {
 	ShuffleLowerSerObj *slso=new
 			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_, child);
 	ShuffleLower *sl=new ShuffleLower(slso);
-	TaskInfo tasks(sl);
-	Message1 serialized_task=TaskInfo::serialize(tasks);
 	/*
 	 * send the serialized tasks to the lower nodes.
 	 * here, we need the actor mode of master node and slave nodes.
 	 * */
 
-	ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_);
+	ExecutorMaster::getInstance()->sendToMultiple(sl, shuffle_ser_obj_->lower_seqs_);
 
 	return true;
 }

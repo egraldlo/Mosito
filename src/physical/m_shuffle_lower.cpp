@@ -33,17 +33,20 @@ ShuffleLower::~ShuffleLower() {
 bool ShuffleLower::prelude() {
 	/* create a thread to send the block into the upper. */
 	Logging::getInstance()->log(trace, "enter the shuffle lower open function.");
+	shuffle_ser_obj_->child_->prelude();
 	return true;
 }
 
 bool ShuffleLower::execute(Block *block) {
 	/* get the block from the pipeline. */
 	Logging::getInstance()->log(trace, "enter the shuffle lower next function.");
+	shuffle_ser_obj_->child_->execute(0);
 	return true;
 }
 
 bool ShuffleLower::postlude() {
 	Logging::getInstance()->log(trace, "enter the shuffle lower close function.");
+	shuffle_ser_obj_->child_->postlude();
 	return true;
 }
 

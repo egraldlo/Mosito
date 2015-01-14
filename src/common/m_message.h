@@ -36,10 +36,10 @@ struct MessageI {
 struct Message1
 {
 	unsigned length;
-	char message[512-sizeof(unsigned)];
+	char message[4096-sizeof(unsigned)];
 	static unsigned Capacity()
 	{
-		return 512-sizeof(unsigned);
+		return 4096-sizeof(unsigned);
 	}
 };
 

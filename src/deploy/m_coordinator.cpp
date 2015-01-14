@@ -40,7 +40,7 @@ void Coordinator::init() {
 
 	acn_= new Thandler(framework, "register");
 
-	receiver.Wait(1);
+//	receiver.Wait(1);
 
 	executor_m_=new ExecutorMaster(endpoint_);
 	executor_m_->init_executor();
