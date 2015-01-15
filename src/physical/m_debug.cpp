@@ -26,6 +26,7 @@ Debug::~Debug() {
 
 bool Debug::prelude() {
 	child_->prelude();
+	startTimer(&time_);
 #ifndef EXPERIMENT_TEST
 
 	/* TODO: output_ must be compute. */
@@ -48,8 +49,10 @@ bool Debug::execute(Block *) {
 	while(child_->execute(buffer_)) {
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
-			display(tuple);
+//			display(tuple);
+
 		}
+		cout<<"the query time consume: "<<getSecond(time_)<<endl;
 	}
 	return true;
 }

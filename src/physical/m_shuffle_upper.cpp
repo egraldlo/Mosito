@@ -57,7 +57,7 @@ bool ShuffleUpper::execute(Block *block) {
 		Logging::getInstance()->log(trace, "get a block from the sender!");
 		/* construct a block from the data. */
 		block->storeBlock(data, BLOCK_SIZE);
-		getchar();
+//		getchar();
 		return true;
 	}
 	else {

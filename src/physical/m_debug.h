@@ -11,6 +11,7 @@
 #include "../../src/expressions/m_expression.h"
 #include "../common/m_configuration.h"
 #include "../common/m_schema.h"
+#include "../common/m_timer.h"
 #include "m_query_plan.h"
 
 #include <stdio.h>
@@ -49,6 +50,8 @@ private:
 	Block *buffer_;
 
 	Schema *schema_;
+
+	unsigned long long time_;
 
 private:
 	friend class boost::serialization::access;
