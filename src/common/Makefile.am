@@ -24,4 +24,5 @@ libcommon_a_SOURCES = \
 	m_ahandler.cpp 					m_ahandler.h \
 	m_rb_tree.cpp					m_rb_tree.h \
 									m_timer.h \
-	m_message.cpp					m_message.h
+	m_message.cpp					m_message.h \
+	m_pc_buffer.cpp					m_pc_buffer.h

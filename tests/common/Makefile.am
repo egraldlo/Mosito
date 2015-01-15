@@ -20,4 +20,5 @@ libtest_common_a_SOURCES = \
 	m_merger_test.cpp \
 	m_sender_test.cpp \
 	m_ahandler_test.cpp \
-	m_rb_tree_test.cpp
+	m_rb_tree_test.cpp \
+	m_pc_buffer_test.cpp

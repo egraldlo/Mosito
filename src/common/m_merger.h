@@ -9,8 +9,13 @@
 #define M_MERGER_H_
 
 #include "../common/m_logging.h"
+#include "../common/m_pc_buffer.h"
 
 #include <arpa/inet.h>
+#include <sys/select.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/stat.h>
 #include <string.h>
 
 /*
@@ -31,11 +36,16 @@ public:
 
 	bool m_merge(void *);
 
+	bool m_receive_select(PCBuffer *);
+
 private:
 	int fd_; //fd on this node.
 	int port_;
 	int nlower_; //map side nodes' number.
 	int* map_lower_; //map fd to map side nodes.
+
+	/* data_ is the data merger receive. */
+	char *data_;
 };
 
 #endif /* M_MERGER_H_ */

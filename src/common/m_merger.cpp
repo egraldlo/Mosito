@@ -62,6 +62,8 @@ bool Merger::m_socket() {
 		Logging::getInstance()->log(trace,"listen process well!");
 	}
 
+	data_=new char[BLOCK_SIZE];
+
 	return true;
 }
 
@@ -127,6 +129,53 @@ bool Merger::m_single(char * data) {
 }
 
 bool Merger::m_close() {
+	free(data_);
 	close(fd_);
 	return true;
 }
+
+bool Merger::m_receive_select(PCBuffer *pcbuffer) {
+	/*
+	 * in a simple version, we try to use select because that number of connections is small,
+	 * to put the blocks the merger receive into the producer-consumer buffer.
+	 *  */
+	fd_set fds;
+
+	int maxfd=0;
+	for(int i=0; i<nlower_; i++) {
+		if(map_lower_[i]>maxfd)
+			maxfd=map_lower_[i];
+	}
+	maxfd=fd_>maxfd?fd_+1:maxfd+1;
+
+	Block *block=new Block(BLOCK_SIZE, pcbuffer->getSchema()->totalsize_);
+
+	while(1) {
+		FD_ZERO(&fds);
+		FD_SET(fd_, &fds);
+
+		switch(select(maxfd, &fds, 0, 0, 0)) {
+		case -1: exit(-1); break;
+		case 0: break;
+		default:
+			for(int i=0; i<nlower_; i++) {
+				if(FD_ISSET(map_lower_[i], &fds)) {
+					int ret;
+					/* receive the data from the sender. */
+					if((ret=recv(map_lower_[i], data_, BLOCK_SIZE, MSG_WAITALL))==-1) {
+						Logging::getInstance()->log(error,"error in receive data!");
+					}
+					/*
+					 * construct a block from the data and put it into the pcbuffer.
+					 * todo: here the size of data_ is not BLOCK_SIZE.
+					 * */
+					block->storeBlock(data_, BLOCK_SIZE);
+					/* put the block into the pc_buffer. */
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
