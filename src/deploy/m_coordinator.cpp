@@ -104,25 +104,24 @@ void Coordinator::do_query() {
 	ve.push_back(e4);
 	ve.push_back(e5);
 	ve.push_back(e6);
-	Scan *scan=new Scan(ve,scan_ser_obj);
-	Debug *debug=new Debug(scan);
+	Scan *toser=new Scan(ve,scan_ser_obj);
+//	Debug *toser=new Debug(scan);
 
 	vector<int> uppers;
 	uppers.push_back(1);
 	vector<int> lowers;
 	lowers.push_back(1);
 
-	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,debug);
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser);
 	ShuffleUpper *su=new ShuffleUpper(suso);
 
-//	ShuffleLowerSerObj *slso=new ShuffleLowerSerObj(ve,uppers,debug);
-//	ShuffleLower *sl=new ShuffleLower(slso);
-//	executor_m_->sendToMultiple(sl,lowers);
-//	ExecutorMaster::getInstance()->sendToMultiple(sl,lowers);
+	Debug *debug=new Debug(su);
 
-	su->prelude();
-	su->execute(0);
-	su->postlude();
+	/* debug can be here for print the shuffleupper data out. */
+
+	debug->prelude();
+	debug->execute(0);
+	debug->postlude();
 
 	getchar();
 

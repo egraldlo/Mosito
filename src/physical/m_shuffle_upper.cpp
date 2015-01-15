@@ -41,13 +41,22 @@ bool ShuffleUpper::prelude() {
 	Logging::getInstance()->log(trace, "enter the shuffle upper open function.");
 	/* here we must create pthread to receive the data, it's a producer.*/
 	Logging::getInstance()->log(trace, "serialize the task and send the task to remote node.");
+	/* todo: modify here, the port_base is for testing. */
+	int port_base=6456;
+	merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), port_base);
+	merger_->m_socket();
 	serialization();
+	merger_->m_accept();
 	return true;
 }
 
 bool ShuffleUpper::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
+	char *data=(char *)malloc(BLOCK_SIZE);
+	merger_->m_receive(data);
+	/* construct a block from the data, block must has a serialization function to this.*/
+	block=new Block(BLOCK_SIZE,shuffle_ser_obj_->ns_.get_bytes());
 	return true;
 }
 

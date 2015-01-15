@@ -139,6 +139,10 @@ public:
 	NewSchema(){};
 	~NewSchema(){};
 
+	inline int get_bytes() {
+		return totalsize_;
+	}
+
 /* ugly but for experiment. */
 public:
 	unsigned totalsize_;

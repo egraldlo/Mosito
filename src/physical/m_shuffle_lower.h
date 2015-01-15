@@ -59,6 +59,8 @@ private:
 	Sender **senders_;
 	ShuffleLowerSerObj *shuffle_ser_obj_;
 
+	Block *buffer_;
+
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
