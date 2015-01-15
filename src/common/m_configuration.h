@@ -38,6 +38,7 @@ using namespace std;
 /* this is my experiment */
 #define EXPERIMENT
 #define EXPERIMENT_TEST
+#define TIMING
 
 /* configure log type. */
 #define LOGGER error

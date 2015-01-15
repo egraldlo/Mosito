@@ -35,7 +35,11 @@ void ExecutorMaster::init_executor() {
 void ExecutorSlave::init_executor() {
 	framework_=new Theron::Framework(*endpoint_);
 	Logging::getInstance()->log(trace, "slave executor is on!");
-	/* todo: add a id for slaveactor */
+	/* todo: add a id for slaveactor
+	 *       at here we can pass a argument to this function and
+	 *       construct a slave actor name, so we can simulate distributed
+	 *       computing in local node.
+	 * */
 	es_actor_=new ExecutorSlaveActor(*framework_, "actor_slave");
 	getchar();
 }
