@@ -58,9 +58,9 @@ bool Sender::m_connect(string ip) {
 }
 
 /* a block must be sent, the length will be about 64KB.*/
-bool Sender::m_send(const char *data) {
+bool Sender::m_send(const char *data, unsigned size) {
 	int ret;
-	if((ret=send(fd_, data, 100, 0))==-1) {
+	if((ret=send(fd_, data, size, 0))==-1) {
 		Logging::getInstance()->log(error,"error in sending data!");
 		return false;
 	}

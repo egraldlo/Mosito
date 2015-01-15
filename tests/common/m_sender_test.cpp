@@ -27,7 +27,7 @@ int sender_local_test(int argc, char **argv) {
 		string str;
 		cout<<"input a string: "<<endl;
 		cin>>str;
-		sender->m_send(str.c_str());
+		sender->m_send(str.c_str(), 32);
 	}
 	else {
 		int nlowers=1;

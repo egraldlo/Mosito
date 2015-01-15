@@ -31,7 +31,7 @@ public:
 	virtual ~Sender();
 
 	bool m_connect(string);
-	bool m_send(const char *);
+	bool m_send(const char *, unsigned);
 	bool m_close();
 
 private:

@@ -93,12 +93,16 @@ int main(int argc, char** argv) {
 	/* for sender test by socket. */
 //	sender_local_test(argc, argv);
 
-	/* for deploy test. */
-	main_coordinator(argc, argv);
+	/* for block test with debug and scan */
+//	string path="table.left";
+//	physical::debug_test(path);
 
 	/* for shuffle 2 levels and shuffle 3 levels test. */
 //	physical::main_shuffle_2();
 //	physical::main_shuffle_3();
+
+	/* for deploy test. */
+	main_coordinator(argc, argv);
 
 //	sql();
 	return 0;

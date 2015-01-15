@@ -42,8 +42,7 @@ bool ShuffleUpper::prelude() {
 	/* here we must create pthread to receive the data, it's a producer.*/
 	Logging::getInstance()->log(trace, "serialize the task and send the task to remote node.");
 	/* todo: modify here, the port_base is for testing. */
-	int port_base=6456;
-	merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), port_base);
+	merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE);
 	merger_->m_socket();
 	serialization();
 	merger_->m_accept();
@@ -54,10 +53,17 @@ bool ShuffleUpper::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
 	char *data=(char *)malloc(BLOCK_SIZE);
-	merger_->m_receive(data);
-	/* construct a block from the data, block must has a serialization function to this.*/
-	block=new Block(BLOCK_SIZE,shuffle_ser_obj_->ns_.get_bytes());
-	return true;
+	if(merger_->m_receive(data)) {
+		Logging::getInstance()->log(trace, "get a block from the sender!");
+		/* construct a block from the data. */
+		block->storeBlock(data, BLOCK_SIZE);
+		getchar();
+		return true;
+	}
+	else {
+		Logging::getInstance()->log(trace, "receive all the blocks from the sender.");
+		return false;
+	}
 }
 
 bool ShuffleUpper::postlude() {
@@ -78,6 +84,10 @@ bool ShuffleUpper::serialization() {
 	ExecutorMaster::getInstance()->sendToMultiple(sl, shuffle_ser_obj_->lower_seqs_);
 
 	return true;
+}
+
+NewSchema *ShuffleUpper::newoutput() {
+	return &(shuffle_ser_obj_->ns_);
 }
 
 }

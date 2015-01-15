@@ -32,6 +32,8 @@ using namespace std;
 #define COORDINATOR_THERON 5545
 /* worker theron port */
 #define WORKER_THERON 5546
+/* port base for test */
+#define PORT_BASE 6677
 
 /* this is my experiment */
 #define EXPERIMENT

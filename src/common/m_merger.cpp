@@ -84,14 +84,21 @@ bool Merger::m_accept() {
 /* receive a block data from sender, the length is 64KB. */
 bool Merger::m_receive(char *data) {
 	int ret;
-	if((ret=recv(map_lower_[0], data, 100, MSG_WAITALL))==-1) {
+	if((ret=recv(map_lower_[0], data, BLOCK_SIZE, MSG_WAITALL))==-1) {
 		Logging::getInstance()->log(error,"error in receive data!");
 		return false;
 	}
 	else {
-		cout<<"receive data "<<ret<<" data: "<<data<<endl;
-		Logging::getInstance()->log(trace,"receive data from sender!");
-		return true;
+		if(ret!=0) {
+			cout<<"receive data "<<ret<<" data: "<<data<<endl;
+			Logging::getInstance()->log(trace,"receive data from sender!");
+			return true;
+		}
+		else {
+			/* todo: a better way to handle with the border. */
+			Logging::getInstance()->log(trace,"sender finish transferring data!");
+			return false;
+		}
 	}
 }
 

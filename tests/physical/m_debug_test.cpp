@@ -28,6 +28,8 @@ namespace physical {
 
 #ifdef EXPERIMENT_TEST
 int debug_test(string path) {
+	string file="table.left";
+	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
 	DataType *e1=new UnLongType(t_long);
 	DataType *e2=new IntegerType(t_int);
 	DataType *e3=new IntegerType(t_int);
@@ -41,33 +43,12 @@ int debug_test(string path) {
 	ve.push_back(e4);
 	ve.push_back(e5);
 	ve.push_back(e6);
+	Scan *scan=new Scan(ve,scan_ser_obj);
+	Debug *debug=new Debug(scan);
 
-	ScanSerObj *scan_ser_obj=new ScanSerObj(path);
-	QueryPlan *scan=new Scan(ve,scan_ser_obj);
-	QueryPlan *debug=new Debug(scan);
-
-	/* test serialization. */
-	std::ostringstream os;
-	boost::archive::text_oarchive oa(os);
-	register_obj(oa);
-	register_data(oa);
-	oa<<debug;
-
-	std::istringstream is(os.str());
-	boost::archive::text_iarchive ia(is);
-	register_obj(ia);
-	register_data(ia);
-	QueryPlan *qp_debug;
-	ia>>qp_debug;
-	/***********************/
-
-//	Scan *ss=reinterpret_cast<Scan *>(qp_scan);
-//	QueryPlan *project=new Project(ve,qp_scan);
-
-//	QueryPlan *debug=new Debug(qp_scan);
-	qp_debug->prelude();
-	qp_debug->execute(0);
-	qp_debug->postlude();
+	debug->prelude();
+	debug->execute(0);
+	debug->postlude();
 
 	return 0;
 }

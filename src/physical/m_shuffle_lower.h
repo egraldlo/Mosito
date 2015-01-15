@@ -55,6 +55,14 @@ public:
 	NewSchema *newoutput(){};
 	vector<Expression *> output(){};
 
+	/*
+	 * when sending the block out, we store the tuple count in the last of the block
+	 *       copy from the Block to void *.
+	 * todo: this function must be in block, because block is flexible, we can change
+	 *       the model of block, modify the model in the block is ok.
+	 * */
+	bool seriliaze(Block *, void *);
+
 private:
 	Sender **senders_;
 	ShuffleLowerSerObj *shuffle_ser_obj_;

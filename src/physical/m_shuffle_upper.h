@@ -54,8 +54,16 @@ public:
 	bool execute(Block *);
 	bool postlude();
 
-	NewSchema *newoutput(){};
+	NewSchema *newoutput();
+
 	vector<Expression *> output(){};
+
+	/*
+	 * when receive the block from the remote node, we only get the data
+	 * todo: this function must be in block, because block is flexible, we can change
+	 *       the model of block, modify the model in the block is ok.
+	 * */
+	bool deseriliaze();
 
 private:
 	bool serialization();

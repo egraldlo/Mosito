@@ -36,7 +36,7 @@ void Worker::init() {
 
 	Sender *sender=new Sender(COORDINATOR_THERON+1000);
 	sender->m_connect("127.0.0.1");//master
-	sender->m_send(ip);
+	sender->m_send(ip, 32);
 	sender->m_close();
 
 	printf("hello sending ---------------->\n");
