@@ -30,9 +30,9 @@ public:
 	ExecutorMaster() {};
 	virtual ~ExecutorMaster() {};
 
-	static ExecutorMaster* getInstance() {
+	static ExecutorMaster* getInstance(Theron::EndPoint *end = 0) {
 		if(executormaster_==0) {
-			executormaster_=new ExecutorMaster();
+			executormaster_=new ExecutorMaster(end);
 			return executormaster_;
 		}
 		else {

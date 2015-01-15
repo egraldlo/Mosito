@@ -42,7 +42,7 @@ void Coordinator::init() {
 
 //	receiver.Wait(1);
 
-	executor_m_=new ExecutorMaster(endpoint_);
+	executor_m_=ExecutorMaster::getInstance(endpoint_);
 	executor_m_->init_executor();
 
 }
@@ -112,8 +112,13 @@ void Coordinator::do_query() {
 	vector<int> lowers;
 	lowers.push_back(1);
 
-	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,scan);
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,debug);
 	ShuffleUpper *su=new ShuffleUpper(suso);
+
+//	ShuffleLowerSerObj *slso=new ShuffleLowerSerObj(ve,uppers,debug);
+//	ShuffleLower *sl=new ShuffleLower(slso);
+//	executor_m_->sendToMultiple(sl,lowers);
+//	ExecutorMaster::getInstance()->sendToMultiple(sl,lowers);
 
 	su->prelude();
 	su->execute(0);
