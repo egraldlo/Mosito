@@ -74,30 +74,31 @@ public:
 		 * */
 		pthread_mutex_lock(&lock_);
 		if(rear_->next_==front_){
+			pthread_mutex_unlock(&lock_);
 			return false;
 		}
-		pthread_mutex_unlock(&lock_);
 		sem_wait(&empty_);
-		pthread_mutex_lock(&lock_);
+//		pthread_mutex_lock(&lock_);
 		rear_->node_=node;
 		rear_=rear_->next_;
-		pthread_mutex_unlock(&lock_);
 		sem_post(&full_);
+		pthread_mutex_unlock(&lock_);
 		return true;
 	}
 
 	Q* pop() {
 		/* if the queue is empty, return 0 */
 		pthread_mutex_lock(&lock_);
-		if(rear_==front_)
+		if(rear_==front_) {
+			pthread_mutex_unlock(&lock_);
 			return 0;
-		pthread_mutex_unlock(&lock_);
+		}
 		sem_wait(&full_);
-		pthread_mutex_lock(&lock_);
+//		pthread_mutex_lock(&lock_);
 		Q *ret=front_->node_;
 		front_=front_->next_;
-		pthread_mutex_unlock(&lock_);
 		sem_post(&empty_);
+		pthread_mutex_unlock(&lock_);
 		return ret;
 	}
 

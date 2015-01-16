@@ -8,6 +8,11 @@
 #ifndef M_CONFIGURATION_H_
 #define M_CONFIGURATION_H_
 
+/*
+ * this configuration class will read the config file by using
+ * the libconfig lib, like ip and port.
+ *  */
+
 #include <iostream>
 using namespace std;
 

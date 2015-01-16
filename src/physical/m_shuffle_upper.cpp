@@ -47,7 +47,18 @@ bool ShuffleUpper::prelude() {
 	serialization();
 	merger_->m_accept();
 
+	/* waiting for accepting the connection. */
+	usleep(10000);
+
+	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->lower_seqs_.size());
+
 	/* pthread a receive thread and gather the blocks in the pcbuffer. */
+	if(pthread_create(&receive_p_, 0, receive_route, this)==0) {
+		Logging::getInstance()->log(trace, "create a receive thread to gather the data.");
+	}
+	else {
+		Logging::getInstance()->log(error, "error in create a receive thread.");
+	}
 
 	return true;
 }
@@ -55,10 +66,11 @@ bool ShuffleUpper::prelude() {
 bool ShuffleUpper::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
+
+	/* we will use one to multiple model.
 	char *data=(char *)malloc(BLOCK_SIZE);
 	if(merger_->m_receive(data)) {
 		Logging::getInstance()->log(trace, "get a block from the sender!");
-		/* construct a block from the data. */
 		block->storeBlock(data, BLOCK_SIZE);
 //		getchar();
 		return true;
@@ -67,10 +79,27 @@ bool ShuffleUpper::execute(Block *block) {
 		Logging::getInstance()->log(trace, "receive all the blocks from the sender.");
 		return false;
 	}
+	*/
+
+	/* todo: a traverse strategy must be used here. */
+	bool empty_or_not_;
+	while(1) {
+		empty_or_not_=pcbuffer_->get(block_temp_, 0);
+		if(empty_or_not_==true) {
+			block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
+			Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
+			break;
+		}
+		else {
+			continue;
+		}
+	}
+	return true;
 }
 
 bool ShuffleUpper::postlude() {
 	Logging::getInstance()->log(trace, "enter the shuffle upper close function.");
+	pthread_join(receive_p_,0);
 	return true;
 }
 
@@ -91,6 +120,14 @@ bool ShuffleUpper::serialization() {
 
 NewSchema *ShuffleUpper::newoutput() {
 	return &(shuffle_ser_obj_->ns_);
+}
+
+void *ShuffleUpper::receive_route(void *args) {
+	ShuffleUpper *pthis=(ShuffleUpper *)(args);
+	if(pthis->merger_->m_receive_select(pthis->pcbuffer_)) {
+		Logging::getInstance()->log(trace, "receive all the data the senders will send.");
+	}
+	return 0;
 }
 
 }

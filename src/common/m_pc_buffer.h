@@ -21,20 +21,20 @@
  *  */
 class PCBuffer {
 public:
-	PCBuffer(NewSchema *, int);
+	PCBuffer(NewSchema &, int);
 	virtual ~PCBuffer();
 
-	NewSchema *getSchema();
+	NewSchema getSchema();
 
 	Block **merge_sort();
 
 	bool put(Block *, int);
-	bool get(Block *, int);
+	bool get(Block *&, int);
 
 private:
 	CircleQueue<Block> **data_;
 //	Block ***data_;
-	NewSchema *ns_;
+	NewSchema ns_;
 	int row_;
 };
 

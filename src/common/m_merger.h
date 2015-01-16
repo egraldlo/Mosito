@@ -38,6 +38,8 @@ public:
 
 	bool m_receive_select(PCBuffer *);
 
+	int debug_count_;
+
 private:
 	int fd_; //fd on this node.
 	int port_;

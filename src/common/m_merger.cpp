@@ -63,6 +63,7 @@ bool Merger::m_socket() {
 	}
 
 	data_=new char[BLOCK_SIZE];
+	debug_count_=0;
 
 	return true;
 }
@@ -141,20 +142,24 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 	 *  */
 	fd_set fds;
 
+	/* set the fds empty. */
+	FD_ZERO(&fds);
 	int maxfd=0;
 	for(int i=0; i<nlower_; i++) {
-		if(map_lower_[i]>maxfd)
+		/* set the fds which will be listened in fds. */
+		FD_SET(map_lower_[i], &fds);
+		if(map_lower_[i]>maxfd) {
 			maxfd=map_lower_[i];
+		}
 	}
-	maxfd=fd_>maxfd?fd_+1:maxfd+1;
 
-	Block *block=new Block(BLOCK_SIZE, pcbuffer->getSchema()->totalsize_);
+	Block *block=new Block(BLOCK_SIZE, pcbuffer->getSchema().totalsize_);
 
 	while(1) {
-		FD_ZERO(&fds);
-		FD_SET(fd_, &fds);
+		Logging::getInstance()->getInstance()->log(trace, "hello? this is the select syscall.");
 
-		switch(select(maxfd, &fds, 0, 0, 0)) {
+		/* select will return the number of active fds. */
+		switch(select(maxfd+1, &fds, 0, 0, (timeval *)0)) {
 		case -1: exit(-1); break;
 		case 0: break;
 		default:
@@ -169,9 +174,11 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					 * construct a block from the data and put it into the pcbuffer.
 					 * todo: here the size of data_ is not BLOCK_SIZE.
 					 * */
+					Logging::getInstance()->log(trace, "store the data into the block.");
 					block->storeBlock(data_, BLOCK_SIZE);
-					/* put the block into the pc_buffer. */
+					Logging::getInstance()->log(trace, "put the block into the pc_buffer.");
 					pcbuffer->put(block, i);
+					cout<<"the deubg count number is: "<<debug_count_++<<endl;
 				}
 			}
 		}

@@ -47,6 +47,9 @@ bool Debug::execute(Block *) {
 	BufferIterator *bi=0;
 	void *tuple;
 	while(child_->execute(buffer_)) {
+		Logging::getInstance()->log(trace,"---------------------");
+		cout<<"actural size: "<<buffer_->getActualSize()<<endl;
+		Logging::getInstance()->log(trace,"---------------------");
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
 #ifndef TIMING

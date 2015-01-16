@@ -9,6 +9,7 @@
 #define M_SHUFFLE_UPPER_H_
 
 #include "../../src/expressions/m_expression.h"
+#include "../common/m_pc_buffer.h"
 #include "../common/m_tree_node.h"
 #include "../common/m_merger.h"
 #include "m_shuffle_lower.h"
@@ -68,9 +69,17 @@ public:
 private:
 	bool serialization();
 
+	static void *receive_route(void *);
+
 private:
 	Merger *merger_;
 	ShuffleUpperSerObj *shuffle_ser_obj_;
+
+private:
+	pthread_t receive_p_;
+	PCBuffer *pcbuffer_;
+
+	Block *block_temp_;
 
 private:
 	friend class boost::serialization::access;

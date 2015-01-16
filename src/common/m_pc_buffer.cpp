@@ -7,7 +7,7 @@
 
 #include "m_pc_buffer.h"
 
-PCBuffer::PCBuffer(NewSchema *ns, int row)
+PCBuffer::PCBuffer(NewSchema &ns, int row)
 :ns_(ns), row_(row) {
 	// TODO Auto-generated constructor stub
 	data_=new CircleQueue<Block>*[row];
@@ -20,7 +20,8 @@ PCBuffer::~PCBuffer() {
 	// TODO Auto-generated destructor stub
 }
 
-bool PCBuffer::get(Block *block, int column) {
+bool PCBuffer::get(Block* &block, int column) {
+	/*
 	if(data_[column]->empty()!=true) {
 		block=data_[column]->pop();
 		Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
@@ -30,19 +31,19 @@ bool PCBuffer::get(Block *block, int column) {
 		Logging::getInstance()->log(error, "the buffer is empty now.");
 		return false;
 	}
+	*/
+	while(data_[column]->empty());
+	block=data_[column]->pop();
+	Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
+	return true;
 }
 
 bool PCBuffer::put(Block *block, int column) {
-	if(data_[column]->push(block)) {
-		Logging::getInstance()->log(trace, "put a block into the pcbuffer.");
-		return true;
-	}
-	else {
-		Logging::getInstance()->log(error, "error in putting a block into the pcbuffer.");
-		return false;
-	}
+	while(!data_[column]->push(block));
+	Logging::getInstance()->log(trace, "put a block into the pcbuffer.");
+	return true;
 }
 
-NewSchema *PCBuffer::getSchema() {
+NewSchema PCBuffer::getSchema() {
 	return ns_;
 }

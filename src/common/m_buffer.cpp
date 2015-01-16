@@ -56,7 +56,12 @@ Buffer::~Buffer() {
 }
 
 Block::Block(unsigned size, unsigned tuple_size)
-:Buffer(size),tuple_size_(tuple_size){
+:Buffer(size),tuple_size_(tuple_size) {
+
+}
+
+Block::Block(unsigned int size)
+:Buffer(size) {
 
 }
 
