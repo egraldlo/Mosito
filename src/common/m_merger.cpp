@@ -171,6 +171,7 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					 * */
 					block->storeBlock(data_, BLOCK_SIZE);
 					/* put the block into the pc_buffer. */
+					pcbuffer->put(block, i);
 				}
 			}
 		}

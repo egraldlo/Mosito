@@ -35,6 +35,9 @@ using namespace std;
 /* port base for test */
 #define PORT_BASE 6677
 
+/* every column in the PC buffer has COLUMN_CON blocks */
+#define COLUMN_CON 20
+
 /* this is my experiment */
 #define EXPERIMENT
 #define EXPERIMENT_TEST

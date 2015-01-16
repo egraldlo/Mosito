@@ -9,6 +9,8 @@
 #define M_PC_BUFFER_H_
 
 #include "../expressions/m_expression.h"
+#include "../common/m_circle_queue.h"
+#include "../common/m_logging.h"
 #include "m_buffer.h"
 
 /*
@@ -19,19 +21,21 @@
  *  */
 class PCBuffer {
 public:
-	PCBuffer(NewSchema *);
+	PCBuffer(NewSchema *, int);
 	virtual ~PCBuffer();
 
 	NewSchema *getSchema();
 
 	Block **merge_sort();
 
-private:
-	/* synchronized strategy must require lock and semaphore. */
+	bool put(Block *, int);
+	bool get(Block *, int);
 
 private:
-	Block ***data_;
+	CircleQueue<Block> **data_;
+//	Block ***data_;
 	NewSchema *ns_;
+	int row_;
 };
 
 #endif /* M_PC_BUFFER_H_ */

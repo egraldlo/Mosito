@@ -46,6 +46,9 @@ bool ShuffleUpper::prelude() {
 	merger_->m_socket();
 	serialization();
 	merger_->m_accept();
+
+	/* pthread a receive thread and gather the blocks in the pcbuffer. */
+
 	return true;
 }
 
