@@ -59,9 +59,10 @@ void Worker::init() {
 
 	framework.Send(MessageT("hello"), Theron::Address(), Theron::Address("register"));
 
+	executor_m_=ExecutorMaster::getInstance(&endpoint);
+	executor_m_->init_executor();
+
 	executor_s_=new ExecutorSlave(&endpoint);
 	executor_s_->init_executor();
 
-	executor_m_=new ExecutorMaster(&endpoint);
-	executor_m_->init_executor();
 }

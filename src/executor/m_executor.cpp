@@ -31,6 +31,7 @@ bool ExecutorMaster::sendToMultiple(QueryPlan *qp, vector<int> ips) {
 		/* actor_slave will be add ip: ip+actor_slave. */
 		stringstream actor_name;
 		actor_name<<"actor_slave_"<<ips[slave_id];
+		cout<<"actor_name: "<<actor_name.str().c_str()<<endl;
 		framework_->Send(serialized_task, Theron::Address(), Theron::Address(actor_name.str().c_str()));
 	}
 #endif
@@ -59,6 +60,7 @@ void ExecutorSlave::init_executor() {
 #ifdef SINGLE_NODE_TEST
 	stringstream actor_name;
 	actor_name<<"actor_slave_"<<Configuration::getInstance()->get_theron_worker_port();
+	cout<<"actor_name: "<<actor_name.str().c_str()<<endl;
 	es_actor_=new ExecutorSlaveActor(*framework_, actor_name.str().c_str());
 #endif
 	getchar();
