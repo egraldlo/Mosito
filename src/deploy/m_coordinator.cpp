@@ -126,7 +126,8 @@ void Coordinator::do_query() {
 	lowers.push_back(5568);
 #endif
 
-	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser);
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
+
 	ShuffleUpper *su=new ShuffleUpper(suso);
 
 	Debug *debug=new Debug(su);

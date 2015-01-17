@@ -15,8 +15,9 @@ namespace physical {
  * the first step can be two level, one upper and two lowers.
  * the secod step can be three level, one upper and two mids and three lowers.
  * */
-ShuffleUpperSerObj::ShuffleUpperSerObj(NewSchema ns, vector<int> uppers, vector<int> lowers, QueryPlan *child)
-:ns_(ns), upper_seqs_(uppers), lower_seqs_(lowers), child_(child){
+ShuffleUpperSerObj::ShuffleUpperSerObj(NewSchema ns, vector<int> uppers, vector<int> lowers,
+		QueryPlan *child, int exchange_id)
+:ns_(ns), upper_seqs_(uppers), lower_seqs_(lowers), child_(child), exchange_id_(exchange_id){
 
 }
 
@@ -42,7 +43,7 @@ bool ShuffleUpper::prelude() {
 	/* here we must create pthread to receive the data, it's a producer.*/
 	Logging::getInstance()->log(trace, "serialize the task and send the task to remote node.");
 	/* todo: modify here, the port_base is for testing. */
-	merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE);
+	merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE+shuffle_ser_obj_->exchange_id_);
 	merger_->m_socket();
 	serialization();
 	merger_->m_accept();
@@ -106,9 +107,9 @@ bool ShuffleUpper::postlude() {
 }
 
 bool ShuffleUpper::serialization() {
-	QueryPlan *child=shuffle_ser_obj_->child_;
 	ShuffleLowerSerObj *slso=new
-			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_, child);
+			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
+					shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
 	ShuffleLower *sl=new ShuffleLower(slso);
 	/*
 	 * send the serialized tasks to the lower nodes.

@@ -22,7 +22,7 @@ namespace physical {
 
 class ShuffleUpperSerObj {
 public:
-	ShuffleUpperSerObj(NewSchema, vector<int>, vector<int>, QueryPlan *);
+	ShuffleUpperSerObj(NewSchema, vector<int>, vector<int>, QueryPlan *, int);
 	virtual ~ShuffleUpperSerObj();
 
 	ShuffleUpperSerObj(){};
@@ -32,12 +32,13 @@ public:
 	vector<int> upper_seqs_;
 	vector<int> lower_seqs_;
 	QueryPlan* child_;
+	int exchange_id_;
 
 private:
 	friend class boost::serialization::access;
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int version) {
-		ar & ns_ & upper_seqs_ & lower_seqs_ & child_;
+		ar & ns_ & upper_seqs_ & lower_seqs_ & child_ & exchange_id_;
 	}
 };
 

@@ -19,7 +19,7 @@ namespace physical {
 
 class ShuffleLowerSerObj {
 public:
-	ShuffleLowerSerObj(NewSchema, vector<int>, QueryPlan*);
+	ShuffleLowerSerObj(NewSchema, vector<int>, QueryPlan*, int);
 	virtual ~ShuffleLowerSerObj();
 
 	/* needed constructor function. */
@@ -29,12 +29,13 @@ public:
 	NewSchema ns_;
 	vector<int> seqs_;
 	QueryPlan* child_;
+	int exchange_id_;
 
 private:
 	friend class boost::serialization::access;
 	template <class Archive>
 	void serialize(Archive &ar, const unsigned int version) {
-		ar & ns_ & seqs_ & child_;
+		ar & ns_ & seqs_ & child_ & exchange_id_;
 	}
 
 };
@@ -62,6 +63,9 @@ public:
 	 *       the model of block, modify the model in the block is ok.
 	 * */
 	bool seriliaze(Block *, void *);
+
+private:
+	static void *send_route(void *);
 
 private:
 	Sender **senders_;

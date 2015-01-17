@@ -35,6 +35,7 @@ private:
 
 private:
 	Thandler *acn_;
+	ExecutorMaster *executor_m_;
 	ExecutorSlave *executor_s_;
 
 	Theron::EndPoint *endpoint_;

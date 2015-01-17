@@ -61,4 +61,7 @@ void Worker::init() {
 
 	executor_s_=new ExecutorSlave(&endpoint);
 	executor_s_->init_executor();
+
+	executor_m_=new ExecutorMaster(&endpoint);
+	executor_m_->init_executor();
 }
