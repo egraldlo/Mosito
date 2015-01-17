@@ -1,6 +1,6 @@
 AM_CPPFLAGS= -fPIC 
 
-AM_LDFLAGS= -lc -lm -lrt -lxs -lpthread -lboost_serialization
+AM_LDFLAGS= -lc -lm -lrt -lxs -lpthread -lboost_serialization -lconfig++
 
 include_HEADERS = m_test.h
 				

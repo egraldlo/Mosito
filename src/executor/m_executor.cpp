@@ -20,6 +20,7 @@ bool ExecutorMaster::sendToMultiple(QueryPlan *qp, vector<int> ips) {
 	Message1 serialized_task=TaskInfo::serialize(tasks);
 	Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
 	for(int slave_id=0; slave_id<ips.size(); slave_id++) {
+		/* actor_slave will be add ip: ip+actor_slave. */
 		framework_->Send(serialized_task, Theron::Address(), Theron::Address("actor_slave"));
 	}
 
@@ -34,12 +35,13 @@ void ExecutorMaster::init_executor() {
 
 void ExecutorSlave::init_executor() {
 	framework_=new Theron::Framework(*endpoint_);
-	Logging::getInstance()->log(trace, "slave executor is on!");
 	/* todo: add a id for slaveactor
 	 *       at here we can pass a argument to this function and
 	 *       construct a slave actor name, so we can simulate distributed
 	 *       computing in local node.
 	 * */
+	Logging::getInstance()->log(trace, "slave executor is on!");
+	/* actor_slave will be add ip: ip+actor_slave. */
 	es_actor_=new ExecutorSlaveActor(*framework_, "actor_slave");
 	getchar();
 }

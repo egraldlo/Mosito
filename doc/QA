@@ -1,0 +1,8 @@
+1, if you run the executed file and come up with a error like:
+   "install/bin/test: error while loading shared libraries: libconfig++.so.9: 
+    cannot open shared object file: No such file or directory"
+   note: it was telling you than the dynamic link lib is not in the /usr/lib/ 
+   or /usr/lib64 or /usr/local/lib, one simple method is that you can put it 
+   in this dirs.
+
+2, 

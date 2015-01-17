@@ -13,6 +13,8 @@
  * the libconfig lib, like ip and port.
  *  */
 
+#include <libconfig.h++>
+
 #include <iostream>
 using namespace std;
 
@@ -72,13 +74,40 @@ public:
 	Configuration();
 	virtual ~Configuration();
 
+	static Configuration *getInstance() {
+		if(configuration_==0) {
+			configuration_=new Configuration();
+			return configuration_;
+		}
+		else {
+			return configuration_;
+		}
+	}
+
+	bool initilize();
+
+	string read_coordinator_ip();
+	string get_coordinator_ip();
+
+	int read_theron_worker_port();
+	int get_theron_worker_port();
+
 private:
+	static Configuration *configuration_;
+
 	/*
 	 * TODO: add the set and get method.
 	 * */
 	unsigned block_size_;
 	unsigned heap_size_;
 	unsigned heap_sort_buffer_init_size_;
+
+	string coordinator_ip_;
+	/* for test on a single node. */
+	int theron_worker_port_;
+
+private:
+	libconfig::Config cfg_;
 };
 
 #endif /* M_CONFIGURATION_H_ */
