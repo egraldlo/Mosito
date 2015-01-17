@@ -19,11 +19,21 @@ bool ExecutorMaster::sendToMultiple(QueryPlan *qp, vector<int> ips) {
 	TaskInfo tasks(qp);
 	Message1 serialized_task=TaskInfo::serialize(tasks);
 	Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
+#ifndef SINGLE_NODE_TEST
 	for(int slave_id=0; slave_id<ips.size(); slave_id++) {
 		/* actor_slave will be add ip: ip+actor_slave. */
 		framework_->Send(serialized_task, Theron::Address(), Theron::Address("actor_slave"));
 	}
+#endif
 
+#ifdef SINGLE_NODE_TEST
+	for(int slave_id=0; slave_id<ips.size(); slave_id++) {
+		/* actor_slave will be add ip: ip+actor_slave. */
+		stringstream actor_name;
+		actor_name<<"actor_slave_"<<ips[slave_id];
+		framework_->Send(serialized_task, Theron::Address(), Theron::Address(actor_name.str().c_str()));
+	}
+#endif
 	return true;
 	/* executorslave must be a theron handler. */
 }
@@ -41,7 +51,15 @@ void ExecutorSlave::init_executor() {
 	 *       computing in local node.
 	 * */
 	Logging::getInstance()->log(trace, "slave executor is on!");
+#ifndef SINGLE_NODE_TEST
 	/* actor_slave will be add ip: ip+actor_slave. */
 	es_actor_=new ExecutorSlaveActor(*framework_, "actor_slave");
+#endif
+
+#ifdef SINGLE_NODE_TEST
+	stringstream actor_name;
+	actor_name<<"actor_slave_"<<Configuration::getInstance()->get_theron_worker_port();
+	es_actor_=new ExecutorSlaveActor(*framework_, actor_name.str().c_str());
+#endif
 	getchar();
 }

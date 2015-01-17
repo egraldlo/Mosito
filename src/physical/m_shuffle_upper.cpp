@@ -84,14 +84,16 @@ bool ShuffleUpper::execute(Block *block) {
 	/* todo: a traverse strategy must be used here. */
 	bool empty_or_not_;
 	while(1) {
-		empty_or_not_=pcbuffer_->get(block_temp_, 0);
-		if(empty_or_not_==true) {
-			block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
-			Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
-			break;
-		}
-		else {
-			continue;
+		for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
+			empty_or_not_=pcbuffer_->get(block_temp_, i);
+			if(empty_or_not_==true) {
+				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
+				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
+				return true;
+			}
+			else {
+				continue;
+			}
 		}
 	}
 	return true;

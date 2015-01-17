@@ -29,8 +29,17 @@ Scan::~Scan() {
 
 bool Scan::prelude() {
 	/* TODO: output_ must be compute. */
+#ifndef SINGLE_NODE_TEST
 	splits_stream_=fopen(scan_ser_obj_->file_path_.c_str(),"rb");
 	buffer_=new char[BLOCK_SIZE];
+#endif
+
+#ifdef SINGLE_NODE_TEST
+	stringstream filename;
+	filename<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_theron_worker_port();
+	splits_stream_=fopen(filename.str().c_str(),"rb");
+	buffer_=new char[BLOCK_SIZE];
+#endif
 	return true;
 }
 

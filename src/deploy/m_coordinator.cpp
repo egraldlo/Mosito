@@ -91,6 +91,11 @@ void Coordinator::do_query() {
 
 	string file="table.left";
 	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+//#ifdef SINGLE_NODE_TEST
+//	stringstream file;
+//	file<<"table.left."<<Configuration::getInstance()->get_theron_worker_port();
+//	ScanSerObj *scan_ser_obj=new ScanSerObj(file.str().c_str());
+//#endif
 	DataType *e1=new UnLongType(t_long);
 	DataType *e2=new IntegerType(t_int);
 	DataType *e3=new IntegerType(t_int);
@@ -109,8 +114,17 @@ void Coordinator::do_query() {
 
 	vector<int> uppers;
 	uppers.push_back(1);
+
+#ifndef SINGLE_NODE_TEST
 	vector<int> lowers;
 	lowers.push_back(1);
+#endif
+
+#ifdef SINGLE_NODE_TEST
+	vector<int> lowers;
+	lowers.push_back(5567);
+	lowers.push_back(5568);
+#endif
 
 	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser);
 	ShuffleUpper *su=new ShuffleUpper(suso);

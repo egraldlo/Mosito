@@ -8,7 +8,7 @@
 #include "m_configuration.h"
 
 Configuration *Configuration::configuration_=0;
-
+#ifndef SINGLE_NODE_TEST
 Configuration::Configuration() {
 	const char *config_file="/home/Casa/git/Mosito/conf/master";
 	try {
@@ -24,10 +24,12 @@ Configuration::Configuration() {
 Configuration::~Configuration() {
 
 }
-
+#endif
 bool Configuration::initilize() {
 	coordinator_ip_=read_coordinator_ip();
+	cout<<"coordinator_ip_: "<<coordinator_ip_<<endl;
 	theron_worker_port_=read_theron_worker_port();
+	cout<<"theron_worker_port_: "<<theron_worker_port_<<endl;
 }
 
 string Configuration::read_coordinator_ip() {

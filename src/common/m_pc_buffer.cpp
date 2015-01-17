@@ -32,10 +32,20 @@ bool PCBuffer::get(Block* &block, int column) {
 		return false;
 	}
 	*/
+	if(data_[column]->empty()) {
+		return false;
+	}
+	else {
+		block=data_[column]->pop();
+		Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
+		return true;
+	}
+	/*before commit 54
 	while(data_[column]->empty());
 	block=data_[column]->pop();
 	Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
 	return true;
+	*/
 }
 
 bool PCBuffer::put(Block *block, int column) {

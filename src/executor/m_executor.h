@@ -19,6 +19,7 @@ using namespace physical;
 
 #include <string>
 #include <vector>
+#include <sstream>
 using namespace std;
 
 class ExecutorSlaveActor;

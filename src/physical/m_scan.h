@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 using namespace std;
 
 namespace physical {

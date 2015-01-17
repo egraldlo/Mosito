@@ -49,6 +49,7 @@ using namespace std;
 #define EXPERIMENT
 #define EXPERIMENT_TEST
 #define TIMING
+#define SINGLE_NODE_TEST
 
 /* configure log type. */
 #define LOGGER error
@@ -71,6 +72,7 @@ static void print_tuple(void *sta) {
 
 class Configuration {
 public:
+#ifndef SINGLE_NODE_TEST
 	Configuration();
 	virtual ~Configuration();
 
@@ -83,6 +85,32 @@ public:
 			return configuration_;
 		}
 	}
+#endif
+
+#ifdef SINGLE_NODE_TEST
+	Configuration(const char *file){
+		const char *config_file=file;
+		try {
+			cfg_.readFile(config_file);
+		}
+		catch(libconfig::FileIOException &e) {
+			e.what();
+		}
+
+		initilize();
+	};
+	virtual ~Configuration(){};
+
+	static Configuration *getInstance(const char * file=0) {
+		if(configuration_==0) {
+			configuration_=new Configuration(file);
+			return configuration_;
+		}
+		else {
+			return configuration_;
+		}
+	}
+#endif
 
 	bool initilize();
 
