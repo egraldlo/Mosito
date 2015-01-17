@@ -124,6 +124,10 @@ void Coordinator::do_query() {
 	vector<int> lowers;
 	lowers.push_back(5567);
 	lowers.push_back(5568);
+	lowers.push_back(5569);
+	lowers.push_back(5570);
+	lowers.push_back(5571);
+
 #endif
 
 	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
@@ -139,5 +143,39 @@ void Coordinator::do_query() {
 	debug->postlude();
 
 	getchar();
+
+//	vector<int> uppers;
+////	uppers.push_back(5567);
+//	uppers.push_back(5568);
+//
+//#ifndef SINGLE_NODE_TEST
+//	vector<int> lowers;
+//	lowers.push_back(1);
+//#endif
+//
+//#ifdef SINGLE_NODE_TEST
+//	vector<int> lowers;
+//	lowers.push_back(5569);
+//	lowers.push_back(5570);
+//	lowers.push_back(5571);
+//#endif
+//
+//	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
+//	ShuffleUpper *su=new ShuffleUpper(suso);
+//
+//	vector<int> up;
+//	up.push_back(1);
+//	vector<int> low;
+////	low.push_back(5567);
+//	low.push_back(5568);
+//	ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,up,low,su,1);
+//	ShuffleUpper *su1=new ShuffleUpper(suso1);
+//
+//
+//	Debug *debug=new Debug(su1);
+//	/* debug can be here for print the shuffleupper data out. */
+//	debug->prelude();
+//	debug->execute(0);
+//	debug->postlude();
 
 }

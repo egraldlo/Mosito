@@ -9,7 +9,8 @@
 #define M_SHUFFLE_LOWER_H_
 
 #include "../common/m_tree_node.h"
-#include "../../src/common/m_sender.h"
+#include "../common/m_pc_buffer.h"
+#include "../common/m_sender.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -71,7 +72,12 @@ private:
 	Sender **senders_;
 	ShuffleLowerSerObj *shuffle_ser_obj_;
 
+private:
+	pthread_t send_p_;
+	PCBuffer *pcbuffer_;
 	Block *buffer_;
+
+	int debug_count_;
 
 private:
 	friend class boost::serialization::access;

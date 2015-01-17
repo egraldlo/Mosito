@@ -142,20 +142,20 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 	 *  */
 	fd_set fds;
 
-	/* set the fds empty. */
-	FD_ZERO(&fds);
-	int maxfd=0;
-	for(int i=0; i<nlower_; i++) {
-		/* set the fds which will be listened in fds. */
-		FD_SET(map_lower_[i], &fds);
-		if(map_lower_[i]>maxfd) {
-			maxfd=map_lower_[i];
-		}
-	}
-
 	Block *block=new Block(BLOCK_SIZE, pcbuffer->getSchema().totalsize_);
 
 	while(1) {
+		/* set the fds empty. */
+		FD_ZERO(&fds);
+		int maxfd=0;
+		for(int i=0; i<nlower_; i++) {
+			/* set the fds which will be listened in fds. */
+			FD_SET(map_lower_[i], &fds);
+			if(map_lower_[i]>maxfd) {
+				maxfd=map_lower_[i];
+			}
+		}
+
 		Logging::getInstance()->getInstance()->log(trace, "hello? this is the select syscall.");
 
 		/* select will return the number of active fds. */

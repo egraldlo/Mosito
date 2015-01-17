@@ -86,6 +86,7 @@ bool ShuffleUpper::execute(Block *block) {
 	bool empty_or_not_;
 	while(1) {
 		for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
+			/* todo: a ugly coding here, must use a general way. */
 			empty_or_not_=pcbuffer_->get(block_temp_, i);
 			if(empty_or_not_==true) {
 				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
@@ -97,6 +98,7 @@ bool ShuffleUpper::execute(Block *block) {
 			}
 		}
 	}
+	/* todo: no return false in this function. */
 	return true;
 }
 
