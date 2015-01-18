@@ -11,14 +11,11 @@ ExecutorMaster* ExecutorMaster::executormaster_=0;
 
 ExecutorSlave* ExecutorSlave::executorslave_=0;
 
-bool ExecutorMaster::sendToMultiple(QueryPlan *qp, vector<int> ips) {
+bool ExecutorMaster::sendToMultiple(Message1& serialized_task, int ips) {
 	/*
 	 * executorslave will recieve the message and deserialize the messsage to taskinfo,
 	 * and executorslave will put the task into the threadpool.
 	 *  */
-	TaskInfo tasks(qp);
-	Message1 serialized_task=TaskInfo::serialize(tasks);
-	Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
 #ifndef SINGLE_NODE_TEST
 	for(int slave_id=0; slave_id<ips.size(); slave_id++) {
 		/* actor_slave will be add ip: ip+actor_slave. */
@@ -27,13 +24,11 @@ bool ExecutorMaster::sendToMultiple(QueryPlan *qp, vector<int> ips) {
 #endif
 
 #ifdef SINGLE_NODE_TEST
-	for(int slave_id=0; slave_id<ips.size(); slave_id++) {
-		/* actor_slave will be add ip: ip+actor_slave. */
-		stringstream actor_name;
-		actor_name<<"actor_slave_"<<ips[slave_id];
-		cout<<"actor_name: "<<actor_name.str().c_str()<<endl;
-		framework_->Send(serialized_task, Theron::Address(), Theron::Address(actor_name.str().c_str()));
-	}
+	/* actor_slave will be add ip: ip+actor_slave. */
+	stringstream actor_name;
+	actor_name<<"actor_slave_"<<ips;
+	cout<<"actor_name: "<<actor_name.str().c_str()<<endl;
+	framework_->Send(serialized_task, Theron::Address(), Theron::Address(actor_name.str().c_str()));
 #endif
 	return true;
 	/* executorslave must be a theron handler. */

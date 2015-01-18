@@ -1,1 +1,6 @@
 1. commit 56 is a stable version, and following will be some errors.
+
+2. ShuffleUpper.cpp:57 and ShuffleLower.cpp:42 are for socket port binding.
+   in the distributed environment, no need and is wrong. commit-59
+   
+3. ShuffleLower.cpp:69--ShuffleLower.cpp:79 lines have some error. commit-59

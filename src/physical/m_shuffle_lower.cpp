@@ -38,7 +38,8 @@ bool ShuffleLower::prelude() {
 
 	/* todo: modify here, the port_base is for testing. */
 	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
-		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_);
+		/* here exchange_id_+i is for m_shuffle_upper.cpp:57 line. */
+		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_+i);
 		senders_[i]->m_connect("127.0.0.1");
 	}
 
@@ -65,10 +66,15 @@ bool ShuffleLower::execute(Block *block) {
 	 * this function will get the data from the lower pipeline and
 	 * store the blocks into pcbuffer.
 	 * */
-	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
-		while(shuffle_ser_obj_->child_->execute(buffer_)){
-			pcbuffer_->put(buffer_, i);
-//			senders_[i]->m_send((const char *)buffer_->getAddr(),BLOCK_SIZE);
+	while(1) {
+		for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
+			if(shuffle_ser_obj_->child_->execute(buffer_)){
+				pcbuffer_->put(buffer_, i);
+		//			senders_[i]->m_send((const char *)buffer_->getAddr(),BLOCK_SIZE);
+			}
+			else {
+				return false;
+			}
 		}
 	}
 	return true;

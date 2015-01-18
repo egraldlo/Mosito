@@ -20,6 +20,9 @@ int main_coordinator(int argc, char **argv) {
 	const char *cfg=argv[2];
 #endif
 	if(i==1) {
+#ifdef SINGLE_NODE_TEST
+		Configuration::getInstance(cfg);
+#endif
 		Coordinator *coordinator=new Coordinator();
 		coordinator->init();
 		coordinator->do_query();

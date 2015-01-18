@@ -41,7 +41,7 @@ public:
 		}
 	}
 
-	bool sendToMultiple(QueryPlan *, vector<int>);
+	bool sendToMultiple(Message1 &, int);
 
 	void init_executor();
 

@@ -154,7 +154,7 @@ void Coordinator::do_query() {
 //	getchar();
 
 	vector<int> uppers;
-//	uppers.push_back(5567);
+	uppers.push_back(5567);
 	uppers.push_back(5568);
 
 #ifndef SINGLE_NODE_TEST
@@ -173,11 +173,11 @@ void Coordinator::do_query() {
 	ShuffleUpper *su=new ShuffleUpper(suso);
 
 	vector<int> up;
-	up.push_back(1);
+	up.push_back(5566);
 	vector<int> low;
-//	low.push_back(5567);
+	low.push_back(5567);
 	low.push_back(5568);
-	ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,up,low,su,1);
+	ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,up,low,su,84);
 	ShuffleUpper *su1=new ShuffleUpper(suso1);
 
 

@@ -42,10 +42,21 @@ bool ShuffleUpper::prelude() {
 	Logging::getInstance()->log(trace, "enter the shuffle upper open function.");
 	/* here we must create pthread to receive the data, it's a producer.*/
 	Logging::getInstance()->log(trace, "serialize the task and send the task to remote node.");
-	/* todo: modify here, the port_base is for testing. */
-	merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE+shuffle_ser_obj_->exchange_id_);
-	merger_->m_socket();
-	serialization();
+	/* ugly way. it means that we must select one master to send the tasks. */
+	if(Configuration::getInstance()->get_theron_worker_port()==shuffle_ser_obj_->upper_seqs_[0]) {
+		/* todo: modify here, the port_base is for testing. */
+		merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE+shuffle_ser_obj_->exchange_id_);
+		merger_->m_socket();
+		serialization();
+	}
+	else {
+		/*
+		 * todo: modify here, the port_base is for testing.
+		 * todo: here +1 just for "2" of 1-2-3.
+		 * */
+		merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE+shuffle_ser_obj_->exchange_id_+1);
+		merger_->m_socket();
+	}
 	merger_->m_accept();
 
 	/* waiting for accepting the connection. */
@@ -109,17 +120,21 @@ bool ShuffleUpper::postlude() {
 }
 
 bool ShuffleUpper::serialization() {
-	ShuffleLowerSerObj *slso=new
-			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
-					shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
-	ShuffleLower *sl=new ShuffleLower(slso);
-	/*
-	 * send the serialized tasks to the lower nodes.
-	 * here, we need the actor mode of master node and slave nodes.
-	 * */
+	for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
+		ShuffleLowerSerObj *slso=new
+				ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
+						shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
+		ShuffleLower *sl=new ShuffleLower(slso);
+		/*
+		 * send the serialized tasks to the lower nodes.
+		 * here, we need the actor mode of master node and slave nodes.
+		 * */
+		TaskInfo tasks(sl);
+		Message1 serialized_task=TaskInfo::serialize(tasks);
+		Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
 
-	ExecutorMaster::getInstance()->sendToMultiple(sl, shuffle_ser_obj_->lower_seqs_);
-
+		ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_[i]);
+	}
 	return true;
 }
 
