@@ -32,11 +32,11 @@ void Coordinator::init() {
 		Logging::getInstance()->getInstance()->log(trace, "register worker thread is running.");
 	}
 
-	aconnect(ip_port.str().c_str());
+//	aconnect(ip_port.str().c_str());
 
 	Theron::Receiver receiver(*endpoint_, "coordinator_receiver");
 	Theron::Framework framework(*endpoint_);
-	framework.SetMaxThreads(1);
+//	framework.SetMaxThreads(1);
 
 	acn_= new Thandler(framework, "register");
 
@@ -49,14 +49,23 @@ void Coordinator::init() {
 
 void* Coordinator::register_worker(void *args) {
 	Coordinator *pthis=(Coordinator *)args;
+	Theron::Framework framework(*pthis->endpoint_);
 	Merger *merger=new Merger(COORDINATOR_THERON+1000);
 	merger->m_socket();
 	char *ipinfo=(char *)malloc(100);
 	while(true) {
 		stringstream ip_port;
 		merger->m_single(ipinfo);
-		ip_port<<"tcp://"<<string(ipinfo)<<":"<<WORKER_THERON;
+		stringstream new_node;
+		new_node<<"worker_"<<string(ipinfo);
+		ip_port<<"tcp://"<<"127.0.0.1"<<":"<<string(ipinfo);
 		pthis->aconnect(ip_port.str().c_str());
+		/* send the endpoints_info to the new node and then add it in. */
+		for(int i=0; i<pthis->endpoints_info_.size(); i++) {
+			MessageIP ip(pthis->endpoints_info_[i].c_str());
+			framework.Send(ip, Theron::Address(), Theron::Address(new_node.str().c_str()));
+		}
+		pthis->endpoints_info_.push_back(ip_port.str());
 		Logging::getInstance()->getInstance()->log(trace, ip_port.str().c_str());
 		Logging::getInstance()->getInstance()->log(trace, "one new worker is registering.");
 	}

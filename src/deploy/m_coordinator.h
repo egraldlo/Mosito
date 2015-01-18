@@ -17,6 +17,9 @@
 #include "../../src/physical/m_scan.h"
 #include "../../src/physical/m_shuffle_upper.h"
 
+#include "../../third_party/theron/Theron/Defines.h"
+#include "../../third_party/theron/Theron/Theron.h"
+
 #include <sstream>
 using namespace std;
 
@@ -41,6 +44,8 @@ private:
 	static void* register_worker(void *);
 
 private:
+	vector<string> endpoints_info_;
+
 	Thandler *acn_;
 	ExecutorMaster *executor_m_;
 

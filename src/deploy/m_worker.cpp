@@ -34,8 +34,10 @@ void Worker::init() {
 	/* for test on a single node. */
 	stringstream worker_endpoint;
 	worker_endpoint<<"worker_"<<theron_worker_port;
-	Theron::EndPoint endpoint(worker_endpoint.str().c_str(), ip_port_worker.str().c_str());
-	endpoint.Connect(ip_port_master.str().c_str());
+	ConnectionEndpoint *ce=new ConnectionEndpoint(worker_endpoint.str().c_str(), ip_port_worker.str().c_str());
+	ce->Connect(ip_port_master.str().c_str());
+//	Theron::EndPoint endpoint(worker_endpoint.str().c_str(), ip_port_worker.str().c_str());
+//	endpoint.Connect(ip_port_master.str().c_str());
 #endif
 
 #ifndef SINGLE_NODE_TEST
@@ -43,13 +45,19 @@ void Worker::init() {
 	endpoint.Connect(ip_port_master.str().c_str());
 #endif
 
-	endpoint_= &endpoint;
+	endpoint_= (Theron::EndPoint *)ce;
+	worker_connector_=new WorkerConnector(ce, worker_endpoint.str().c_str());
 //	endpoint_=new Theron::EndPoint("worker", ip_port_worker.str().c_str());
 //	endpoint_->Connect(ip_port_master.str().c_str());
 
 	Sender *sender=new Sender(COORDINATOR_THERON+1000);
 	sender->m_connect(master_ip.c_str());//master
-	sender->m_send(ip, 32);
+	/* test on a single node, so here ip must be port.
+	 * sender->m_send(ip, 32);
+	 *  */
+	stringstream worker_actor_port;
+	worker_actor_port<<theron_worker_port;
+	sender->m_send(worker_actor_port.str().c_str(), 32);
 	sender->m_close();
 
 	printf("hello sending ---------------->\n");
@@ -59,10 +67,10 @@ void Worker::init() {
 
 	framework.Send(MessageT("hello"), Theron::Address(), Theron::Address("register"));
 
-	executor_m_=ExecutorMaster::getInstance(&endpoint);
+	executor_m_=ExecutorMaster::getInstance(endpoint_);
 	executor_m_->init_executor();
 
-	executor_s_=new ExecutorSlave(&endpoint);
+	executor_s_=new ExecutorSlave(endpoint_);
 	executor_s_->init_executor();
 
 }

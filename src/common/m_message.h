@@ -33,8 +33,7 @@ struct MessageI {
 	int c;
 };
 
-struct Message1
-{
+struct Message1 {
 	unsigned length;
 	char message[4096-sizeof(unsigned)];
 	static unsigned Capacity()
@@ -43,8 +42,17 @@ struct Message1
 	}
 };
 
+struct MessageIP {
+	explicit MessageIP(const char * const mesg) {
+		message[0]='\0';
+		strcpy(message, mesg);
+	}
+	char message[256];
+};
+
 THERON_DECLARE_REGISTERED_MESSAGE(MessageT)
 THERON_DECLARE_REGISTERED_MESSAGE(MessageI)
 THERON_DECLARE_REGISTERED_MESSAGE(Message1)
+THERON_DECLARE_REGISTERED_MESSAGE(MessageIP)
 
 #endif /* M_MESSAGE_H_ */
