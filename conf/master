@@ -3,4 +3,4 @@ COORDINATOR_IP="127.0.0.1"
 
 #the following is for test.
 #theron worker port represents the ports we have tested on a single node.
-THERON_WORKER_PORT=5567
+THERON_WORKER_PORT=5566

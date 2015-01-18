@@ -94,99 +94,102 @@ void Coordinator::do_query() {
 	 * 		 different port can be used for simulation.
 	 *  */
 
-	cout<<"input a enter key and submit a query!"<<endl;
-	getchar();
-	cout<<"one query has been executed!"<<endl;
+	while(1) {
 
-	string file="table.left";
-	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
-//#ifdef SINGLE_NODE_TEST
-//	stringstream file;
-//	file<<"table.left."<<Configuration::getInstance()->get_theron_worker_port();
-//	ScanSerObj *scan_ser_obj=new ScanSerObj(file.str().c_str());
-//#endif
-	DataType *e1=new UnLongType(t_long);
-	DataType *e2=new IntegerType(t_int);
-	DataType *e3=new IntegerType(t_int);
-	DataType *e4=new IntegerType(t_int);
-	DataType *e5=new IntegerType(t_int);
-	DataType *e6=new IntegerType(t_int);
-	vector<DataType *> ve;
-	ve.push_back(e1);
-	ve.push_back(e2);
-	ve.push_back(e3);
-	ve.push_back(e4);
-	ve.push_back(e5);
-	ve.push_back(e6);
-	Scan *toser=new Scan(ve,scan_ser_obj);
-//	Debug *toser=new Debug(scan);
+		cout<<"input a enter key and submit a query!"<<endl;
+		getchar();
+		cout<<"one query has been executed!"<<endl;
 
-//	vector<int> uppers;
-//	uppers.push_back(1);
-//
-//#ifndef SINGLE_NODE_TEST
-//	vector<int> lowers;
-//	lowers.push_back(1);
-//#endif
-//
-//#ifdef SINGLE_NODE_TEST
-//	vector<int> lowers;
-//	lowers.push_back(5567);
-//	lowers.push_back(5568);
-//	lowers.push_back(5569);
-//	lowers.push_back(5570);
-//	lowers.push_back(5571);
-//
-//#endif
-//
-//	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
-//
-//	ShuffleUpper *su=new ShuffleUpper(suso);
-//
-//	Debug *debug=new Debug(su);
-//
-//	/* debug can be here for print the shuffleupper data out. */
-//
-//	debug->prelude();
-//	debug->execute(0);
-//	debug->postlude();
-//
-//	getchar();
+		string file="table.left";
+		ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+	//#ifdef SINGLE_NODE_TEST
+	//	stringstream file;
+	//	file<<"table.left."<<Configuration::getInstance()->get_theron_worker_port();
+	//	ScanSerObj *scan_ser_obj=new ScanSerObj(file.str().c_str());
+	//#endif
+		DataType *e1=new UnLongType(t_long);
+		DataType *e2=new IntegerType(t_int);
+		DataType *e3=new IntegerType(t_int);
+		DataType *e4=new IntegerType(t_int);
+		DataType *e5=new IntegerType(t_int);
+		DataType *e6=new IntegerType(t_int);
+		vector<DataType *> ve;
+		ve.push_back(e1);
+		ve.push_back(e2);
+		ve.push_back(e3);
+		ve.push_back(e4);
+		ve.push_back(e5);
+		ve.push_back(e6);
+		Scan *toser=new Scan(ve,scan_ser_obj);
+	//	Debug *toser=new Debug(scan);
 
-	vector<int> uppers;
-	uppers.push_back(5567);
-	uppers.push_back(5568);
+	//	vector<int> uppers;
+	//	uppers.push_back(1);
+	//
+	//#ifndef SINGLE_NODE_TEST
+	//	vector<int> lowers;
+	//	lowers.push_back(1);
+	//#endif
+	//
+	//#ifdef SINGLE_NODE_TEST
+	//	vector<int> lowers;
+	//	lowers.push_back(5567);
+	//	lowers.push_back(5568);
+	//	lowers.push_back(5569);
+	//	lowers.push_back(5570);
+	//	lowers.push_back(5571);
+	//
+	//#endif
+	//
+	//	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
+	//
+	//	ShuffleUpper *su=new ShuffleUpper(suso);
+	//
+	//	Debug *debug=new Debug(su);
+	//
+	//	/* debug can be here for print the shuffleupper data out. */
+	//
+	//	debug->prelude();
+	//	debug->execute(0);
+	//	debug->postlude();
+	//
+	//	getchar();
 
-#ifndef SINGLE_NODE_TEST
-	vector<int> lowers;
-	lowers.push_back(1);
-#endif
+		vector<int> uppers;
+		uppers.push_back(5567);
+		uppers.push_back(5568);
 
-#ifdef SINGLE_NODE_TEST
-	vector<int> lowers;
-	lowers.push_back(5569);
-	lowers.push_back(5570);
-	lowers.push_back(5571);
-#endif
+	#ifndef SINGLE_NODE_TEST
+		vector<int> lowers;
+		lowers.push_back(1);
+	#endif
 
-	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
-	ShuffleUpper *su=new ShuffleUpper(suso);
+	#ifdef SINGLE_NODE_TEST
+		vector<int> lowers;
+		lowers.push_back(5569);
+		lowers.push_back(5570);
+		lowers.push_back(5571);
+	#endif
 
-	vector<int> up;
-	up.push_back(5566);
-	vector<int> low;
-	low.push_back(5567);
-	low.push_back(5568);
-	ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,up,low,su,84);
-	ShuffleUpper *su1=new ShuffleUpper(suso1);
+		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
+		ShuffleUpper *su=new ShuffleUpper(suso);
+
+		vector<int> up;
+		up.push_back(5566);
+		vector<int> low;
+		low.push_back(5567);
+		low.push_back(5568);
+		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,up,low,su,84);
+		ShuffleUpper *su1=new ShuffleUpper(suso1);
 
 
-	Debug *debug=new Debug(su1);
-	/* debug can be here for print the shuffleupper data out. */
-	debug->prelude();
-	debug->execute(0);
-	debug->postlude();
+		Debug *debug=new Debug(su1);
+		/* debug can be here for print the shuffleupper data out. */
+		debug->prelude();
+		debug->execute(0);
+		debug->postlude();
 
-	getchar();
+		getchar();
+	}
 
 }

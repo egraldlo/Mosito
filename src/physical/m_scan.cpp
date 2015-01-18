@@ -40,20 +40,32 @@ bool Scan::prelude() {
 	splits_stream_=fopen(filename.str().c_str(),"rb");
 	buffer_=new char[BLOCK_SIZE];
 #endif
+	iscached_=MemoryStore::getInstance()->isCached();
+	cursor_=0;
 	return true;
 }
 
 bool Scan::execute(Block *block) {
-	int size=0;
-	if((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
-		block->storeBlock(buffer_,size);
-//		cout<<"size: "<<size<<endl;
-//		cout<<"count: "<<*(int *)(buffer_+size-4)<<endl;
-//		getchar();
-		return true;
+	if(iscached_) {
+		int size=0;
+		if((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
+			block->storeBlock(buffer_,size);
+			MemoryStore::getInstance()->blocks_.push_back(block);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	else {
-		return false;
+		if(cursor_<MemoryStore::getInstance()->blocks_.size()) {
+			/* todo: BLOCK_SIZE is not the good way. */
+			block->storeBlock(MemoryStore::getInstance()->blocks_[cursor_++], BLOCK_SIZE);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 

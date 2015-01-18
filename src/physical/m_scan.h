@@ -16,9 +16,10 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/iostreams/device/back_inserter.hpp>
 
-#include "../../src/expressions/m_expression.h"
-#include "../common/m_tree_node.h"
+#include "../expressions/m_expression.h"
+#include "../storage/m_memory_store.h"
 #include "../common/m_configuration.h"
+#include "../common/m_tree_node.h"
 #include "m_query_plan.h"
 
 #include <stdio.h>
@@ -82,6 +83,9 @@ private:
 
 	FILE *splits_stream_;
 	char *buffer_;
+
+	unsigned cursor_;
+	bool iscached_;
 
 private:
 	friend class boost::serialization::access;

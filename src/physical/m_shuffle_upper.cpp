@@ -114,6 +114,7 @@ bool ShuffleUpper::execute(Block *block) {
 }
 
 bool ShuffleUpper::postlude() {
+	shuffle_ser_obj_->child_->postlude();
 	Logging::getInstance()->log(trace, "enter the shuffle upper close function.");
 	pthread_join(receive_p_,0);
 	return true;

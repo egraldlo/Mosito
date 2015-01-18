@@ -13,6 +13,7 @@ test_LDADD =       \
 				 ../src/physical/libphysical.a \
 				 ../src/executor/libexecutor.a \
 				 ../src/analysis/libanalysis.a \
+				 ../src/storage/libstorage.a \
 				 ../src/deploy/libdeploy.a \
 				 ../src/common/libcommon.a \
 				 ../src/sql/libsqlparser.a \
