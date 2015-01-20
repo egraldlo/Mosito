@@ -26,7 +26,7 @@ Logging* Logging::getInstance() {
 
 void Logging::log(log_type type, const char *message) {
 	/* determine which log level will be used. */
-	if(type<=type_) {
+	if(type>=type_) {
 		if(type==trace)
 			cout<<"[trace]: "<<message<<endl;
 		if(type==debug)

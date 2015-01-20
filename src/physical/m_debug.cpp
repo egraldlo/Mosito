@@ -40,6 +40,9 @@ bool Debug::prelude() {
 #endif
 
 	buffer_=new Block(BLOCK_SIZE,schema_->get_bytes());
+	count_=0;
+
+//	pthread_create(&pt_, 0, timer, &time_);
 	return true;
 }
 
@@ -48,7 +51,7 @@ bool Debug::execute(Block *) {
 	void *tuple;
 	while(child_->execute(buffer_)) {
 		Logging::getInstance()->log(trace,"---------------------");
-		cout<<"actural size: "<<buffer_->getActualSize()<<endl;
+//		cout<<"actural size: "<<buffer_->getActualSize()<<endl;
 		Logging::getInstance()->log(trace,"---------------------");
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
@@ -57,13 +60,18 @@ bool Debug::execute(Block *) {
 #endif
 		}
 #ifdef TIMING
+	if(++count_ > 8990) {
 		cout<<"the query time consume: "<<getSecond(time_)<<endl;
+	}
+//	cout<<"the query time consume: "<<getSecond(time_)<<endl;
 #endif
 	}
 	return true;
 }
 
 bool Debug::postlude() {
+	pthread_kill(pt_, SIGTERM);
+	Logging::getInstance()->log(trace, "kill the thread!");
 	child_->postlude();
 	return true;
 }
@@ -97,6 +105,15 @@ void Debug::print(data_type ty,void *attr) {
 	if(ty==t_long) {
 		cout<<*(unsigned long*)attr<<" | ";
 	}
+}
+
+void *Debug::timer(void * args) {
+	unsigned long long *t=(unsigned long long *)args;
+	while(1) {
+		usleep(100000);
+		cout<<"the query time consume: "<<getSecond(*t)<<endl;
+	}
+	return 0;
 }
 
 }

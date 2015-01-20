@@ -178,7 +178,9 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					block->storeBlock(data_, BLOCK_SIZE);
 					Logging::getInstance()->log(trace, "put the block into the pc_buffer.");
 					pcbuffer->put(block, i);
-					cout<<"the deubg count number is: "<<debug_count_++<<endl;
+					stringstream debug_co;
+					debug_co<<"the deubg count number is: "<<debug_count_++;
+					Logging::getInstance()->log(trace, debug_co.str().c_str());
 				}
 			}
 		}

@@ -40,32 +40,50 @@ bool Scan::prelude() {
 	splits_stream_=fopen(filename.str().c_str(),"rb");
 	buffer_=new char[BLOCK_SIZE];
 #endif
-	iscached_=MemoryStore::getInstance()->isCached();
+	startTimer(&tm_);
+	int size;
+	Block *block=new Block(BLOCK_SIZE);
+	while((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
+		block->storeBlock(buffer_,size);
+		MemoryStore::getInstance()->blocks_.push_back(block);
+	}
+	cout<<"the time spend is: "<<getSecond(tm_)<<endl;
 	cursor_=0;
+//	sleep(2);
+	iscached_=MemoryStore::getInstance()->isCached();
 	return true;
 }
 
 bool Scan::execute(Block *block) {
-	if(iscached_) {
-		int size=0;
-		if((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
-			block->storeBlock(buffer_,size);
-			MemoryStore::getInstance()->blocks_.push_back(block);
-			return true;
-		}
-		else {
-			return false;
-		}
+//	if(iscached_) {
+//		int size=0;
+//		if((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
+//			block->storeBlock(buffer_,size);
+//			MemoryStore::getInstance()->blocks_.push_back(block);
+//			return true;
+//		}
+//		else {
+//			return false;
+//		}
+//	}
+//	else {
+//		if(cursor_<MemoryStore::getInstance()->blocks_.size()) {
+//			/* todo: BLOCK_SIZE is not the good way. */
+//			block->storeBlock(MemoryStore::getInstance()->blocks_[cursor_++], BLOCK_SIZE);
+//			return true;
+//		}
+//		else {
+//			return false;
+//		}
+//	}
+	if(cursor_<MemoryStore::getInstance()->blocks_.size()) {
+		/* todo: BLOCK_SIZE is not the good way. */
+		block->storeBlock(MemoryStore::getInstance()->blocks_[cursor_++]->getAddr(), BLOCK_SIZE);
+//		block=MemoryStore::getInstance()->blocks_[cursor_++];
+		return true;
 	}
 	else {
-		if(cursor_<MemoryStore::getInstance()->blocks_.size()) {
-			/* todo: BLOCK_SIZE is not the good way. */
-			block->storeBlock(MemoryStore::getInstance()->blocks_[cursor_++], BLOCK_SIZE);
-			return true;
-		}
-		else {
-			return false;
-		}
+		return false;
 	}
 }
 

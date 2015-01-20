@@ -14,6 +14,7 @@
 #include "m_query_plan.h"
 
 #include <vector>
+#include <sstream>
 using namespace std;
 
 namespace physical {

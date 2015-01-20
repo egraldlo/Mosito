@@ -4,3 +4,6 @@
    in the distributed environment, no need and is wrong. commit-59
    
 3. ShuffleLower.cpp:69--ShuffleLower.cpp:79 lines have some error. commit-59
+
+4. commit-60 is the stable one which pipeline the query test, commit 61 add 
+   a timer which is a ugly timer.

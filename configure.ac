@@ -1,7 +1,7 @@
 AC_INIT([Mosito], [0.1], [zhangleicasa@gmail.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_LIBTOOL
-CPPFLAGS="-w -O0 -DTHERON_XS"
+CPPFLAGS="-w -O2 -DTHERON_XS"
 CXXFLAGS=${CXXFLAGS="-g"}
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])

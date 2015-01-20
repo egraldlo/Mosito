@@ -15,6 +15,7 @@
 #include "../common/m_timer.h"
 #include "m_query_plan.h"
 
+#include <signal.h>
 #include <stdio.h>
 
 #include <vector>
@@ -44,6 +45,9 @@ public:
 	vector<Expression *> output();
 
 private:
+	static void * timer(void *);
+
+private:
 	vector<Expression *> expressions_;
 
 	QueryPlan *child_;
@@ -53,6 +57,10 @@ private:
 	Schema *schema_;
 
 	unsigned long long time_;
+
+	pthread_t pt_;
+
+	int count_;
 
 private:
 	friend class boost::serialization::access;

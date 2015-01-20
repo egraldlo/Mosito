@@ -20,6 +20,7 @@
 #include "../storage/m_memory_store.h"
 #include "../common/m_configuration.h"
 #include "../common/m_tree_node.h"
+#include "../common/m_timer.h"
 #include "m_query_plan.h"
 
 #include <stdio.h>
@@ -86,6 +87,8 @@ private:
 
 	unsigned cursor_;
 	bool iscached_;
+
+	unsigned long long tm_;
 
 private:
 	friend class boost::serialization::access;

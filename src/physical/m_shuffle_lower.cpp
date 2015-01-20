@@ -97,10 +97,13 @@ void * ShuffleLower::send_route(void *args) {
 			/* todo: a ugly coding here, must use a general way. */
 			empty_or_not_=pthis->pcbuffer_->get(get_block_, i);
 			if(empty_or_not_==true) {
+//				block_temp_=get_block_;
 				block_temp_->storeBlock(get_block_->getAddr(), BLOCK_SIZE);
 				pthis->senders_[i]->m_send((const char *)block_temp_->getAddr(), BLOCK_SIZE);
 				Logging::getInstance()->log(trace, "send a block to the upper node.");
-				cout<<"-------send already: "<<pthis->debug_count_++<<endl;
+				stringstream debug_co;
+				debug_co<<"-------send already: "<<pthis->debug_count_++;
+				Logging::getInstance()->log(trace, debug_co.str().c_str());
 			}
 			else {
 				continue;

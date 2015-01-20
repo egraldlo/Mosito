@@ -100,6 +100,7 @@ bool ShuffleUpper::execute(Block *block) {
 			/* todo: a ugly coding here, must use a general way. */
 			empty_or_not_=pcbuffer_->get(block_temp_, i);
 			if(empty_or_not_==true) {
+//				block=block_temp_;
 				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
 				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
 				return true;
