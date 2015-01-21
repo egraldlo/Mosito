@@ -9,14 +9,6 @@
 
 namespace physical {
 
-Join::Join() {
-
-}
-
-Join::~Join() {
-
-}
-
 HashJoin::HashJoin() {
 
 }
@@ -37,15 +29,20 @@ bool HashJoin::postlude() {
 
 }
 
-void HashJoin::partition() {
-	
-}
-
 void HashJoin::build() {
 
 }
 
 void HashJoin::probe() {
+
+}
+
+MergeJoinSerObj::MergeJoinSerObj(NewSchema ns_l, NewSchema ns_r, NewSchema out, QueryPlan *left, QueryPlan *right)
+:left_schema_(ns_l), right_schema_(ns_r),output_schema_(out), left_(left), right_(right) {
+
+}
+
+MergeJoinSerObj::~MergeJoinSerObj() {
 
 }
 
@@ -69,11 +66,11 @@ MergeJoin::~MergeJoin() {
  * we collect all data here, before this we will merge them in the shufflelower.
  *  */
 bool MergeJoin::prelude() {
-	left_->prelude();
-	right_->prelude();
+	merge_join_ser_obj_->left_->prelude();
+	merge_join_ser_obj_->right_->prelude();
 
-	left_schema_=new Schema(&(left_->output()));
-	right_schema_=new Schema(&(right_->output()));
+	left_schema_=new Schema(&(merge_join_ser_obj_->left_schema_));
+	right_schema_=new Schema(&(merge_join_ser_obj_->right_schema_));
 
 	unsigned left_tuple_size_=left_schema_->get_bytes();
 	unsigned right_tuple_size_=right_schema_->get_bytes();
@@ -201,12 +198,41 @@ vector<Expression *> MergeJoin::output() {
 	return left_->output();
 }
 
+NewSchema *MergeJoin::newoutput() {
+	return &(merge_join_ser_obj_->output_schema_);
+}
+
+NestLoopJoinSerObj::NestLoopJoinSerObj(NewSchema ns_l, NewSchema ns_r, NewSchema out, QueryPlan *left, QueryPlan *right)
+:left_schema_(ns_l), right_schema_(ns_r),output_schema_(out), left_(left), right_(right) {
+
+}
+
+NestLoopJoinSerObj::~NestLoopJoinSerObj() {
+
+}
+
 NestLoopJoin::NestLoopJoin() {
 
 }
 
 NestLoopJoin::~NestLoopJoin() {
 
+}
+
+bool NestLoopJoin::prelude() {
+	return true;
+}
+
+bool NestLoopJoin::execute(Block *) {
+	return true;
+}
+
+bool NestLoopJoin::postlude() {
+	return true;
+}
+
+NewSchema *NestLoopJoin::newoutput() {
+	return &(nestloop_ser_obj_->output_schema_) ;
 }
 
 } /* namespace physical */

@@ -38,4 +38,16 @@ private:
 	int row_;
 };
 
+class SortedPCBuffer {
+public:
+	SortedPCBuffer(NewSchema & ns, int row){}
+	virtual ~SortedPCBuffer(){}
+
+private:
+	NewSchema getSchema();
+
+private:
+	FlexBlock **flex_block_;
+};
+
 #endif /* M_PC_BUFFER_H_ */

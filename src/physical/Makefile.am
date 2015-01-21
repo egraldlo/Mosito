@@ -14,4 +14,8 @@ libphysical_a_SOURCES = \
 	m_debug.cpp				m_debug.h \
 	m_sort.cpp				m_sort.h \
 	m_shuffle_upper.cpp		m_shuffle_upper.h \
-	m_shuffle_lower.cpp		m_shuffle_lower.h	
+	m_shuffle_lower.cpp		m_shuffle_lower.h \
+	m_bcshuffle_upper.cpp   m_bcshuffle_upper.h \
+	m_bcshuffle_lower.cpp	m_bcshuffle_lower.h \
+	m_srshuffle_upper.cpp	m_srshuffle_upper.h \
+	m_srshuffle_lower.cpp	m_srshuffle_lower.h
