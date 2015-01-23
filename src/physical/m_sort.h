@@ -12,15 +12,22 @@
 #include "../expressions/m_sort_order.h"
 #include "../common/m_configuration.h"
 #include "../common/m_tree_node.h"
+#include "../common/m_logging.h"
 #include "../common/m_schema.h"
 #include "m_query_plan.h"
 
 #include <vector>
+#include <iterator>
+#include <algorithm>
 using namespace std;
 
 #include <stdio.h>
 
 namespace physical {
+
+typedef struct range {
+	vector<void *> rg_;
+}range;
 
 /* sort iterator is designed to support internal sort and external sort. */
 class Sort: public UnaryNode, public QueryPlan {
@@ -30,17 +37,23 @@ public:
 	 *  when global is false, sort is on the map side and sort stream by using external way.
 	 *   */
 	Sort(vector<SortOrder *> expressions, QueryPlan *child, bool global);
+	Sort(QueryPlan *);
 	virtual ~Sort();
 
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
 
-	NewSchema *newoutput(){};
+	NewSchema *newoutput();
 	vector<Expression *> output();
 
 	/* max the last tuple. */
 	bool maxLast(void*, Schema *);
+	void sort();
+//	static void *single_sort(void *);
+//	unsigned heap_out();
+
+	static bool compare(const void *left, const void *right);
 
 private:
 	vector<SortOrder *> expressions_;
@@ -58,6 +71,14 @@ private:
 	BufferIterator** lt_buffer_iterator_;
 
 	int already_finish_;
+
+private:
+	NewSchema *ns_;
+
+	vector<void *> pointers_;
+//	vector<void *> **ranges_;
+
+	unsigned temp_cur_;
 };
 
 }

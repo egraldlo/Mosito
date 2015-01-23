@@ -54,6 +54,9 @@ using namespace std;
 /* configure log type. */
 #define LOGGER error
 
+/* the cpu core of the machine. */
+#define CPU_CORE 4
+
 static int counter=0;
 
 static void print_tuple(void *sta) {

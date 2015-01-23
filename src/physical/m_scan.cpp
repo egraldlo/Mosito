@@ -36,14 +36,15 @@ bool Scan::prelude() {
 
 #ifdef SINGLE_NODE_TEST
 	stringstream filename;
-	filename<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_theron_worker_port();
+//	filename<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_theron_worker_port();
+	filename<<scan_ser_obj_->file_path_;
 	splits_stream_=fopen(filename.str().c_str(),"rb");
 	buffer_=new char[BLOCK_SIZE];
 #endif
 	startTimer(&tm_);
 	int size;
-	Block *block=new Block(BLOCK_SIZE);
 	while((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
+		Block *block=new Block(BLOCK_SIZE);
 		block->storeBlock(buffer_,size);
 		MemoryStore::getInstance()->blocks_.push_back(block);
 	}

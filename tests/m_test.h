@@ -104,13 +104,16 @@ int main(int argc, char** argv) {
 //	physical::main_shuffle_3();
 
 	/* for deploy test. */
-	main_coordinator(argc, argv);
+//	main_coordinator(argc, argv);
 
 	/* for producer-consumer buffer test. */
 //	main_pcbuffer();
 
 	/* for configuration test. */
 //	main_configuration();
+
+	/* for sort test */
+	sort_intern_test();
 
 //	sql();
 	return 0;

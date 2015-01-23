@@ -25,8 +25,8 @@ Debug::~Debug() {
 }
 
 bool Debug::prelude() {
-	child_->prelude();
 	startTimer(&time_);
+	child_->prelude();
 #ifndef EXPERIMENT_TEST
 
 	/* TODO: output_ must be compute. */
@@ -60,9 +60,9 @@ bool Debug::execute(Block *) {
 #endif
 		}
 #ifdef TIMING
-	if(++count_ > 8990) {
-		cout<<"the query time consume: "<<getSecond(time_)<<endl;
-	}
+//	if(++count_ > 8990) {
+//		cout<<"the query time consume: "<<getSecond(time_)<<endl;
+//	}
 //	cout<<"the query time consume: "<<getSecond(time_)<<endl;
 #endif
 	}
@@ -70,7 +70,8 @@ bool Debug::execute(Block *) {
 }
 
 bool Debug::postlude() {
-	pthread_kill(pt_, SIGTERM);
+//	pthread_kill(pt_, SIGTERM);
+	cout<<"the query time consume: "<<getSecond(time_)<<endl;
 	Logging::getInstance()->log(trace, "kill the thread!");
 	child_->postlude();
 	return true;
@@ -109,6 +110,7 @@ void Debug::print(data_type ty,void *attr) {
 
 void *Debug::timer(void * args) {
 	unsigned long long *t=(unsigned long long *)args;
+	int senc=0;
 	while(1) {
 		usleep(100000);
 		cout<<"the query time consume: "<<getSecond(*t)<<endl;

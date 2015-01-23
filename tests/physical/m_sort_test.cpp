@@ -52,4 +52,33 @@ int sort_test(string path) {
 	return 0;
 }
 
+int sort_intern_test() {
+	string file="/home/Casa/git/Mosito/table.left.1.98g";//30000*2340
+	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+	DataType *e1=new UnLongType(t_long);
+	DataType *e2=new IntegerType(t_int);
+	DataType *e3=new IntegerType(t_int);
+	DataType *e4=new IntegerType(t_int);
+	DataType *e5=new IntegerType(t_int);
+	DataType *e6=new IntegerType(t_int);
+	vector<DataType *> ve;
+	ve.push_back(e1);
+	ve.push_back(e2);
+	ve.push_back(e3);
+	ve.push_back(e4);
+	ve.push_back(e5);
+	ve.push_back(e6);
+
+
+	QueryPlan *scan=new Scan(ve,scan_ser_obj);
+	QueryPlan *sort=new Sort(scan);
+	QueryPlan *debug=new Debug(sort);
+
+	debug->prelude();
+	debug->execute(0);
+	debug->postlude();
+
+	return 0;
+}
+
 } /* namespace physical */
