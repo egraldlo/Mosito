@@ -52,7 +52,7 @@ Buffer::Buffer(unsigned size)
 }
 
 Buffer::~Buffer() {
-
+	free(start_);
 }
 
 Block::Block(unsigned size, unsigned tuple_size)

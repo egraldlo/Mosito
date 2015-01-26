@@ -79,7 +79,8 @@ bool Scan::execute(Block *block) {
 //	}
 	if(cursor_<MemoryStore::getInstance()->blocks_.size()) {
 		/* todo: BLOCK_SIZE is not the good way. */
-		block->storeBlock(MemoryStore::getInstance()->blocks_[cursor_++]->getAddr(), BLOCK_SIZE);
+		block->storeBlock(MemoryStore::getInstance()->blocks_[cursor_]->getAddr(), BLOCK_SIZE);
+		MemoryStore::getInstance()->blocks_[cursor_++]->~Block();
 //		block=MemoryStore::getInstance()->blocks_[cursor_++];
 		return true;
 	}

@@ -25,9 +25,7 @@ using namespace std;
 
 namespace physical {
 
-typedef struct range {
-	vector<void *> rg_;
-}range;
+typedef vector<void *> range;
 
 /* sort iterator is designed to support internal sort and external sort. */
 class Sort: public UnaryNode, public QueryPlan {
@@ -44,16 +42,16 @@ public:
 	bool execute(Block *);
 	bool postlude();
 
-	NewSchema *newoutput();
 	vector<Expression *> output();
+	bool maxLast(void*, Schema *);
+
+	NewSchema *newoutput();
 
 	/* max the last tuple. */
-	bool maxLast(void*, Schema *);
-	void sort();
-//	static void *single_sort(void *);
-//	unsigned heap_out();
-
 	static bool compare(const void *left, const void *right);
+	static void *single_sort(void *);
+	void *heap_out();
+
 
 private:
 	vector<SortOrder *> expressions_;
@@ -75,8 +73,11 @@ private:
 private:
 	NewSchema *ns_;
 
-	vector<void *> pointers_;
-//	vector<void *> **ranges_;
+	vector<range> ranges_;
+
+	pthread_t pths_[CPU_CORE];
+
+	vector<Block *> blocks_;
 
 	unsigned temp_cur_;
 };

@@ -53,7 +53,9 @@ int sort_test(string path) {
 }
 
 int sort_intern_test() {
+//	string file="/home/Casa/git/Mosito/table.left.5567";//30000
 	string file="/home/Casa/git/Mosito/table.left.1.98g";//30000*2340
+	string file1="/home/Casa/git/Mosito/table.right.1.98g";//30000*2340
 	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
 	DataType *e1=new UnLongType(t_long);
 	DataType *e2=new IntegerType(t_int);
@@ -77,6 +79,15 @@ int sort_intern_test() {
 	debug->prelude();
 	debug->execute(0);
 	debug->postlude();
+//
+//	ScanSerObj *scan_ser_obj1=new ScanSerObj(file1);
+//	QueryPlan *scan1=new Scan(ve,scan_ser_obj1);
+//	QueryPlan *sort1=new Sort(scan1);
+//	QueryPlan *debug1=new Debug(sort1);
+//
+//	debug1->prelude();
+//	debug1->execute(0);
+//	debug1->postlude();
 
 	return 0;
 }

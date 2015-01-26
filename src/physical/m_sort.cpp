@@ -121,68 +121,6 @@ Sort::~Sort() {
 //	return true;
 //}
 
-bool Sort::prelude() {
-	child_->prelude();
-	ns_=child_->newoutput();
-
-	Logging::getInstance()->log(trace, "will get all the data and sort.");
-	void *tuple=0;
-	buffer_=new Block(BLOCK_SIZE, ns_->get_bytes());
-	while(child_->execute(buffer_)) {
-		Block *block=new Block(BLOCK_SIZE, ns_->get_bytes());
-		block->storeBlock(buffer_->getAddr(), BLOCK_SIZE);
-		BufferIterator *bi=block->createIterator();
-		while((tuple=bi->getNext())!=0) {
-			pointers_.push_back(tuple);
-		}
-	}
-
-	sort();
-	temp_cur_=0;
-	cout<<"the sort buffer has "<<pointers_.size()<<" tuples."<<endl;
-
-	return true;
-
-}
-
-bool Sort::execute(Block *block) {
-	while(temp_cur_<pointers_.size()){
-		void *desc=0;
-		block->reset();
-		while((desc=block->allocateTuple())){
-			block->storeTuple(desc, pointers_[temp_cur_]);
-			temp_cur_++;
-			if(temp_cur_<pointers_.size())
-				continue;
-			else
-				break;
-		}
-		block->assembling(BLOCK_SIZE, ns_->get_bytes());
-		return true;
-	}
-	return false;
-}
-
-bool Sort::postlude() {
-	child_->postlude();
-	return true;
-}
-
-void Sort::sort() {
-	stable_sort(pointers_.begin(),pointers_.end(),compare);
-}
-
-bool Sort::compare(const void *left, const void *right) {
-	if(*(int *)((char *)left+8)>*(int *)((char *)right+8))
-		return false;
-	else
-		return true;
-}
-
-NewSchema *Sort::newoutput(){
-	return ns_;
-};
-
 vector<Expression *> Sort::output() {
 	return child_->output();
 }
@@ -199,5 +137,122 @@ bool Sort::maxLast(void *start, Schema *schema) {
 	}
 	start=p;
 }
+
+bool Sort::prelude() {
+	child_->prelude();
+	ns_=child_->newoutput();
+
+	Logging::getInstance()->log(trace, "will get all the data and sort.");
+	void *tuple=0;
+	buffer_=new Block(BLOCK_SIZE, ns_->get_bytes());
+	schema_=new Schema(ns_);
+	while(child_->execute(buffer_)) {
+		Block *block=new Block(BLOCK_SIZE, ns_->get_bytes());
+		block->storeBlock(buffer_->getAddr(), BLOCK_SIZE);
+		blocks_.push_back(block);
+		BufferIterator *bi=block->createIterator();
+		while((tuple=bi->getNext())!=0) {
+			temp_cur_++;
+		}
+	}
+
+	unsigned every=temp_cur_/CPU_CORE+1;
+	unsigned last=temp_cur_-(every)*(CPU_CORE-1);
+	for(int i=0; i<CPU_CORE; i++) {
+		range rg;
+		ranges_.push_back(rg);
+	}
+	unsigned count=0;
+	unsigned r=0;
+	for(int i=0; i<blocks_.size(); i++) {
+		BufferIterator *bi=blocks_[i]->createIterator();
+		while((tuple=bi->getNext())!=0) {
+			if(r!=CPU_CORE-1) {
+				if(count++<every) {
+					ranges_[r].push_back(tuple);
+				}
+				else {
+					count=1;
+					r++;
+					ranges_[r].push_back(tuple);
+				}
+			}
+			else {
+				if(count++<last) {
+					ranges_[r].push_back(tuple);
+				}
+			}
+		}
+	}
+
+	for(int i=0; i<CPU_CORE; i++) {
+		pthread_create(&pths_[i], 0, single_sort, &ranges_[i]);
+	}
+	for(int i=0; i<CPU_CORE; i++) {
+		pthread_join(pths_[i], 0);
+	}
+
+	Logging::getInstance()->log(trace, "finished sorting by using multiple threads.");
+
+	return true;
+}
+
+bool Sort::execute(Block *block) {
+	/*
+	 * if we merge the sorted array, we spend 16s.
+	 * if we dont merge, we spend 9s, so merge spend much.
+	 *  */
+	while(temp_cur_){
+		void *desc=0;
+		block->reset();
+		while((desc=block->allocateTuple())){
+			void *tuple=heap_out();
+			block->storeTuple(desc, tuple);
+			if(temp_cur_--)
+				continue;
+			else
+				break;
+		}
+		block->assembling(BLOCK_SIZE, ns_->get_bytes());
+		return true;
+	}
+	return false;
+}
+
+bool Sort::postlude() {
+	child_->postlude();
+	return true;
+}
+
+void *Sort::single_sort(void *args) {
+	range *pargs=(range *)args;
+	stable_sort(pargs->begin(), pargs->end(), compare);
+}
+
+void *Sort::heap_out() {
+	void *most=*(ranges_[0].end()-1);
+	int most_cur=0;
+	for(int i=1; i<CPU_CORE; i++) {
+		if(!ranges_[i].empty()) {
+			if(compare(most, *(ranges_[i].end()-1))) {
+				most_cur=i;
+				most=*(ranges_[i].end()-1);
+			}
+		}
+	}
+	ranges_[most_cur].pop_back();
+	return most;
+}
+
+bool Sort::compare(const void *left, const void *right) {
+	if(*(int *)((char *)left+8)>*(int *)((char *)right+8))
+		return false;
+	else
+		return true;
+}
+
+NewSchema *Sort::newoutput(){
+	return ns_;
+};
 
 }
