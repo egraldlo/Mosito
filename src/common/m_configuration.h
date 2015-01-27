@@ -48,7 +48,7 @@ using namespace std;
 /* this is my experiment */
 #define EXPERIMENT
 #define EXPERIMENT_TEST
-#define TIMING
+//#define TIMING
 #define SINGLE_NODE_TEST
 
 /* configure log type. */

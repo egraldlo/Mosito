@@ -45,6 +45,13 @@ void BufferIterator::reset() {
 	current_=0;
 }
 
+int BufferIterator::get_size() {
+	/* "4" is the tail length.
+	 * TODO: tail info can be more rich.
+	 *  */
+	return *(int *)(buffer_->start_+buffer_->size_-4);
+}
+
 Buffer::Buffer(unsigned size)
 :size_(size),start_(0),free_(0){
 	start_=(char *)malloc(size_);

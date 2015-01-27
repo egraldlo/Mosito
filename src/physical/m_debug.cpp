@@ -49,17 +49,17 @@ bool Debug::prelude() {
 bool Debug::execute(Block *) {
 	BufferIterator *bi=0;
 	void *tuple;
-	while(child_->execute(buffer_)) {
-		Logging::getInstance()->log(trace,"---------------------");
+	while(child_->execute(buffer_)==true) {
+//		Logging::getInstance()->log(error,"---------------------");
 //		cout<<"actural size: "<<buffer_->getActualSize()<<endl;
-		Logging::getInstance()->log(trace,"---------------------");
+//		Logging::getInstance()->log(error,"---------------------");
+//		getchar();
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
 #ifndef TIMING
 			display(tuple);
 #endif
 		}
-		buffer_->reset();
 #ifdef TIMING
 //	if(++count_ > 8990) {
 //		cout<<"the query time consume: "<<getSecond(time_)<<endl;

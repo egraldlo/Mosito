@@ -116,12 +116,7 @@ public:
 	void reset();
 
 public:
-	inline int get_size() {
-		/* "4" is the tail length.
-		 * TODO: tail info can be more rich.
-		 *  */
-		return *(int *)(buffer_->start_+buffer_->size_-4);
-	};
+	int get_size();
 
 private:
 	Buffer *buffer_;
