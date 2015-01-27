@@ -43,11 +43,13 @@ bool Scan::prelude() {
 #endif
 	startTimer(&tm_);
 	int size;
+	blocks bs;
 	while((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
 		Block *block=new Block(BLOCK_SIZE);
 		block->storeBlock(buffer_,size);
-		MemoryStore::getInstance()->blocks_.push_back(block);
+		bs.push_back(block);
 	}
+	MemoryStore::getInstance()->blocks_.insert(make_pair(filename.str(), bs));
 	cout<<"the time spend is: "<<getSecond(tm_)<<endl;
 	cursor_=0;
 //	sleep(2);
@@ -77,10 +79,10 @@ bool Scan::execute(Block *block) {
 //			return false;
 //		}
 //	}
-	if(cursor_<MemoryStore::getInstance()->blocks_.size()) {
+	if(cursor_<MemoryStore::getInstance()->blocks_[scan_ser_obj_->file_path_].size()) {
 		/* todo: BLOCK_SIZE is not the good way. */
-		block->storeBlock(MemoryStore::getInstance()->blocks_[cursor_]->getAddr(), BLOCK_SIZE);
-		MemoryStore::getInstance()->blocks_[cursor_++]->~Block();
+		block->storeBlock(MemoryStore::getInstance()->blocks_[scan_ser_obj_->file_path_][cursor_]->getAddr(), BLOCK_SIZE);
+		MemoryStore::getInstance()->blocks_[scan_ser_obj_->file_path_][cursor_++]->~Block();
 //		block=MemoryStore::getInstance()->blocks_[cursor_++];
 		return true;
 	}

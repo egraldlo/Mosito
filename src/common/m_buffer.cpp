@@ -90,6 +90,15 @@ bool Block::storeTuple(void *desc, void *src) {
 	return true;
 }
 
+void Block::updateFree() {
+	free_=free_+tuple_size_;
+}
+
+void Block::build(int size, int number) {
+	void *p=start_+size-4;
+	*(int *)p=number;
+}
+
 bool Block::storeBlock(void *src, unsigned size) {
 	memcpy(start_,src,size);
 	free_=start_+size;
@@ -102,6 +111,7 @@ bool Block::reset() {
 }
 
 bool Block::assembling(int size, int tuple_size) {
+	size_=size;
 	void *p=start_+size-4;
 	int tuples=(size-4)/tuple_size;
 	*(int *)p=tuples;

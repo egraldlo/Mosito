@@ -59,6 +59,7 @@ bool Debug::execute(Block *) {
 			display(tuple);
 #endif
 		}
+		buffer_->reset();
 #ifdef TIMING
 //	if(++count_ > 8990) {
 //		cout<<"the query time consume: "<<getSecond(time_)<<endl;

@@ -53,8 +53,9 @@ int sort_test(string path) {
 }
 
 int sort_intern_test() {
-//	string file="/home/Casa/git/Mosito/table.left.5567";//30000
-	string file="/home/Casa/git/Mosito/table.left.1.98g";//30000*2340
+//	string file="/home/Casa/git/Mosito/table.left";//30000
+	string file="/home/Casa/git/Mosito/table.left.5567";//30000
+//	string file="/home/Casa/git/Mosito/table.left.1.98g";//30000*2340
 	string file1="/home/Casa/git/Mosito/table.right.1.98g";//30000*2340
 	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
 	DataType *e1=new UnLongType(t_long);

@@ -96,7 +96,7 @@ public:
 
 private:
 	int compare(void *, void *);
-	bool combine(void *, void *, void *);
+	bool combine(void *&, void *, void *);
 
 private:
 	/* these can be omitted in this experiments. */
@@ -113,6 +113,7 @@ private:
 	/* it's the schema of the left and right. */
 	Schema *left_schema_;
 	Schema *right_schema_;
+	Schema *output_schema_;
 
 	/* this is the temp blocks which can store the block the pipeline generate. */
 	Block *left_block_;
@@ -127,6 +128,9 @@ private:
 
 	BufferIterator *lfb_itr_;
 	BufferIterator *rfb_itr_;
+
+	unsigned count_;
+	bool over_;
 
 private:
 	MergeJoinSerObj *merge_join_ser_obj_;

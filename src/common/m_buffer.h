@@ -58,6 +58,11 @@ public:
 
 	void *allocateTuple();
 
+	/* ugly way, update the free of the block. */
+	void updateFree();
+	/* build a block which is not full. */
+	void build(int, int);
+
 	bool storeTuple(void *, void *);
 
 	bool reset();

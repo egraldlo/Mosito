@@ -194,6 +194,7 @@ bool Sort::prelude() {
 
 	Logging::getInstance()->log(trace, "finished sorting by using multiple threads.");
 
+	count_=0;
 	return true;
 }
 
@@ -208,6 +209,7 @@ bool Sort::execute(Block *block) {
 		while((desc=block->allocateTuple())){
 			void *tuple=heap_out();
 			block->storeTuple(desc, tuple);
+			++count_;
 			if(temp_cur_--)
 				continue;
 			else
@@ -221,6 +223,7 @@ bool Sort::execute(Block *block) {
 
 bool Sort::postlude() {
 	child_->postlude();
+	cout<<"数组的个数为： "<<count_<<endl;
 	return true;
 }
 
@@ -230,9 +233,17 @@ void *Sort::single_sort(void *args) {
 }
 
 void *Sort::heap_out() {
-	void *most=*(ranges_[0].end()-1);
+	/* ugly and slow way, must be changed to loser tree or heap. */
+	void *most=0;
 	int most_cur=0;
-	for(int i=1; i<CPU_CORE; i++) {
+	for(int i=0; i<CPU_CORE; i++) {
+		if(!ranges_[i].empty()) {
+			most=*(ranges_[i].end()-1);
+			most_cur=i;
+			break;
+		}
+	}
+	for(int i=most_cur+1; i<CPU_CORE; i++) {
 		if(!ranges_[i].empty()) {
 			if(compare(most, *(ranges_[i].end()-1))) {
 				most_cur=i;

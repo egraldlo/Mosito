@@ -73,4 +73,58 @@ int join_test(string left_path, string right_path) {
 	debug->postlude();
 	return 0;
 }
+
+int mergejoin_test() {
+	string file="/home/Casa/git/Mosito/table.left";//30000
+	string file1="/home/Casa/git/Mosito/table.right";//30000
+	DataType *e1=new UnLongType(t_long);
+	DataType *e2=new IntegerType(t_int);
+	DataType *e3=new IntegerType(t_int);
+	DataType *e4=new IntegerType(t_int);
+	DataType *e5=new IntegerType(t_int);
+	DataType *e6=new IntegerType(t_int);
+
+	vector<DataType *> ve;
+	ve.push_back(e1);
+	ve.push_back(e2);
+	ve.push_back(e3);
+	ve.push_back(e4);
+	ve.push_back(e5);
+	ve.push_back(e6);
+	NewSchema ns(ve);
+
+	vector<DataType *> ve1;
+	ve1.push_back(e1);
+	ve1.push_back(e2);
+	ve1.push_back(e3);
+	ve1.push_back(e4);
+	ve1.push_back(e5);
+	ve1.push_back(e6);
+	ve1.push_back(e1);
+	ve1.push_back(e2);
+	ve1.push_back(e3);
+	ve1.push_back(e4);
+	ve1.push_back(e5);
+	ve1.push_back(e6);
+	NewSchema ns1(ve1);
+
+	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+	ScanSerObj *scan_ser_obj1=new ScanSerObj(file1);
+	QueryPlan *scan=new Scan(ve,scan_ser_obj);
+	QueryPlan *scan1=new Scan(ve, scan_ser_obj1);
+	QueryPlan *sort=new Sort(scan);
+	QueryPlan *sort1=new Sort(scan1);
+
+	MergeJoinSerObj *mjso=new MergeJoinSerObj(ns, ns, ns1, sort, sort1);
+	QueryPlan *mj=new MergeJoin(mjso);
+
+	QueryPlan *debug=new Debug(mj);
+
+	debug->prelude();
+	debug->execute(0);
+	debug->postlude();
+
+	return 0;
+}
+
 } /* namespace physical */

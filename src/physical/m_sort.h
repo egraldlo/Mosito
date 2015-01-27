@@ -80,6 +80,9 @@ private:
 	vector<Block *> blocks_;
 
 	unsigned temp_cur_;
+
+private:
+	unsigned count_;
 };
 
 }
