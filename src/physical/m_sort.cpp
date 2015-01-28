@@ -139,15 +139,15 @@ bool Sort::maxLast(void *start, Schema *schema) {
 }
 
 bool Sort::prelude() {
-	child_->prelude();
-	ns_=child_->newoutput();
+	sort_ser_obj_->child_->prelude();
+//	ns_=child_->newoutput();
 
 	Logging::getInstance()->log(trace, "will get all the data and sort.");
 	void *tuple=0;
-	buffer_=new Block(BLOCK_SIZE, ns_->get_bytes());
-	schema_=new Schema(ns_);
-	while(child_->execute(buffer_)) {
-		Block *block=new Block(BLOCK_SIZE, ns_->get_bytes());
+	buffer_=new Block(BLOCK_SIZE, (sort_ser_obj_->ns_).get_bytes());
+	schema_=new Schema(&(sort_ser_obj_->ns_));
+	while(sort_ser_obj_->child_->execute(buffer_)) {
+		Block *block=new Block(BLOCK_SIZE, schema_->get_bytes());
 		block->storeBlock(buffer_->getAddr(), BLOCK_SIZE);
 		blocks_.push_back(block);
 		BufferIterator *bi=block->createIterator();
@@ -192,9 +192,9 @@ bool Sort::prelude() {
 		pthread_join(pths_[i], 0);
 	}
 
-	Logging::getInstance()->log(trace, "finished sorting by using multiple threads.");
-
 	count_=0;
+	Logging::getInstance()->log(error, "finished sorting by using multiple threads.");
+
 	return true;
 }
 
@@ -210,19 +210,22 @@ bool Sort::execute(Block *block) {
 			void *tuple=heap_out();
 			block->storeTuple(desc, tuple);
 			++count_;
-			if(temp_cur_--)
+			if(--temp_cur_)
 				continue;
-			else
-				break;
+			else {
+				cout<<"hello, I am sort false;"<<endl;
+				block->build(BLOCK_SIZE, 0);
+				return true;
+			}
 		}
-		block->assembling(BLOCK_SIZE, ns_->get_bytes());
+		block->assembling(BLOCK_SIZE, (sort_ser_obj_->ns_).get_bytes());
 		return true;
 	}
 	return false;
 }
 
 bool Sort::postlude() {
-	child_->postlude();
+	sort_ser_obj_->child_->postlude();
 	cout<<"数组的个数为： "<<count_<<endl;
 	return true;
 }
@@ -263,7 +266,7 @@ bool Sort::compare(const void *left, const void *right) {
 }
 
 NewSchema *Sort::newoutput(){
-	return ns_;
+	return &(sort_ser_obj_->ns_);
 };
 
 }

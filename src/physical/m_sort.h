@@ -27,6 +27,25 @@ namespace physical {
 
 typedef vector<void *> range;
 
+class SortSerObj {
+public:
+	SortSerObj(NewSchema ns, QueryPlan *child)
+	:ns_(ns), child_(child) {};
+	~SortSerObj() {};
+
+	SortSerObj(){};
+
+	QueryPlan *child_;
+	NewSchema ns_;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & ns_ & child_;
+	}
+};
+
 /* sort iterator is designed to support internal sort and external sort. */
 class Sort: public UnaryNode, public QueryPlan {
 public:
@@ -35,8 +54,12 @@ public:
 	 *  when global is false, sort is on the map side and sort stream by using external way.
 	 *   */
 	Sort(vector<SortOrder *> expressions, QueryPlan *child, bool global);
+	Sort(SortSerObj *sort_ser_obj)
+	:sort_ser_obj_(sort_ser_obj){};
 	Sort(QueryPlan *);
 	virtual ~Sort();
+
+	Sort(){};
 
 	bool prelude();
 	bool execute(Block *);
@@ -52,6 +75,8 @@ public:
 	static void *single_sort(void *);
 	void *heap_out();
 
+private:
+	SortSerObj *sort_ser_obj_;
 
 private:
 	vector<SortOrder *> expressions_;
@@ -83,6 +108,13 @@ private:
 
 private:
 	unsigned count_;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & boost::serialization::base_object<QueryPlan>(*this) & sort_ser_obj_;
+	}
 };
 
 }

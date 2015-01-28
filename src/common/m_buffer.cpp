@@ -106,6 +106,10 @@ void Block::build(int size, int number) {
 	*(int *)p=number;
 }
 
+unsigned Block::get_size() {
+	return *(int *)(start_+size_-4);
+}
+
 bool Block::storeBlock(void *src, unsigned size) {
 	memcpy(start_,src,size);
 	free_=start_+size;

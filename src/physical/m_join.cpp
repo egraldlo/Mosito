@@ -66,9 +66,8 @@ MergeJoin::~MergeJoin() {
  * we collect all data here, before this we will merge them in the shufflelower.
  *  */
 bool MergeJoin::prelude() {
-	merge_join_ser_obj_->left_->prelude();
-	merge_join_ser_obj_->right_->prelude();
 
+	Logging::getInstance()->log(error, "enter the open of the merge join... ...");
 	left_schema_=new Schema(&(merge_join_ser_obj_->left_schema_));
 	right_schema_=new Schema(&(merge_join_ser_obj_->right_schema_));
 	output_schema_=new Schema(&(merge_join_ser_obj_->output_schema_));
@@ -90,6 +89,9 @@ bool MergeJoin::prelude() {
 
 	unsigned tablesize_left=0;
 	unsigned tablesize_right=0;
+
+	Logging::getInstance()->log(error, "store the left tables... ...");
+	merge_join_ser_obj_->left_->prelude();
 	/* collect the left stream data. */
 	while(merge_join_ser_obj_->left_->execute(left_block_)) {
 		lb_itr_=left_block_->createIterator();
@@ -100,6 +102,8 @@ bool MergeJoin::prelude() {
 		}
 	}
 
+	Logging::getInstance()->log(error, "store the right tables... ...");
+	merge_join_ser_obj_->right_->prelude();
 	/* collect the right stream data. */
 	while(merge_join_ser_obj_->right_->execute(right_block_)) {
 		rb_itr_=right_block_->createIterator();

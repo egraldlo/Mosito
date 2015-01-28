@@ -35,10 +35,12 @@ bool Scan::prelude() {
 #endif
 
 #ifdef SINGLE_NODE_TEST
-	stringstream filename;
-//	filename<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_theron_worker_port();
-	filename<<scan_ser_obj_->file_path_;
-	splits_stream_=fopen(filename.str().c_str(),"rb");
+	/* read the configuration from configuration file. */
+	filename_<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_theron_worker_port();
+	/* for directly read from file. */
+//	filename_<<scan_ser_obj_->file_path_;
+
+	splits_stream_=fopen(filename_.str().c_str(),"rb");
 	buffer_=new char[BLOCK_SIZE];
 #endif
 	startTimer(&tm_);
@@ -49,8 +51,8 @@ bool Scan::prelude() {
 		block->storeBlock(buffer_,size);
 		bs.push_back(block);
 	}
-	MemoryStore::getInstance()->blocks_.insert(make_pair(filename.str(), bs));
-	cout<<"the time spend is: "<<getSecond(tm_)<<endl;
+	MemoryStore::getInstance()->blocks_.insert(make_pair(filename_.str(), bs));
+	cout<<filename_.str().c_str()<<" the time spend is: "<<getSecond(tm_)<<endl;
 	cursor_=0;
 //	sleep(2);
 	iscached_=MemoryStore::getInstance()->isCached();
@@ -79,10 +81,10 @@ bool Scan::execute(Block *block) {
 //			return false;
 //		}
 //	}
-	if(cursor_<MemoryStore::getInstance()->blocks_[scan_ser_obj_->file_path_].size()) {
+	if(cursor_<MemoryStore::getInstance()->blocks_[filename_.str()].size()) {
 		/* todo: BLOCK_SIZE is not the good way. */
-		block->storeBlock(MemoryStore::getInstance()->blocks_[scan_ser_obj_->file_path_][cursor_]->getAddr(), BLOCK_SIZE);
-		MemoryStore::getInstance()->blocks_[scan_ser_obj_->file_path_][cursor_++]->~Block();
+		block->storeBlock(MemoryStore::getInstance()->blocks_[filename_.str()][cursor_]->getAddr(), BLOCK_SIZE);
+		MemoryStore::getInstance()->blocks_[filename_.str()][cursor_++]->~Block();
 //		block=MemoryStore::getInstance()->blocks_[cursor_++];
 		return true;
 	}

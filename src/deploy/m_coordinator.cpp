@@ -193,3 +193,82 @@ void Coordinator::do_query() {
 	}
 
 }
+
+void Coordinator::do_join_query() {
+	while(1) {
+
+		cout<<"input a enter key and submit a query!"<<endl;
+		getchar();
+		cout<<"one query has been executed!"<<endl;
+
+		string file="table.left";
+		ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+		string file1="table.left";
+		ScanSerObj *scan_ser_obj1=new ScanSerObj(file1);
+
+		DataType *e1=new UnLongType(t_long);
+		DataType *e2=new IntegerType(t_int);
+		DataType *e3=new IntegerType(t_int);
+		DataType *e4=new IntegerType(t_int);
+		DataType *e5=new IntegerType(t_int);
+		DataType *e6=new IntegerType(t_int);
+		vector<DataType *> ve;
+		ve.push_back(e1);
+		ve.push_back(e2);
+		ve.push_back(e3);
+		ve.push_back(e4);
+		ve.push_back(e5);
+		ve.push_back(e6);
+
+		vector<DataType *> ve1;
+		ve1.push_back(e1);
+		ve1.push_back(e2);
+		ve1.push_back(e3);
+		ve1.push_back(e4);
+		ve1.push_back(e5);
+		ve1.push_back(e6);
+		ve1.push_back(e1);
+		ve1.push_back(e2);
+		ve1.push_back(e3);
+		ve1.push_back(e4);
+		ve1.push_back(e5);
+		ve1.push_back(e6);
+
+		Scan *toser=new Scan(ve,scan_ser_obj);
+		Scan *toser1=new Scan(ve,scan_ser_obj1);
+
+		SortSerObj *sso=new SortSerObj(ve, toser);
+		Sort *sort=new Sort(sso);
+		SortSerObj *sso1=new SortSerObj(ve, toser1);
+		Sort *sort1=new Sort(sso1);
+
+		vector<int> uppers;
+		uppers.push_back(5566);
+
+	#ifdef SINGLE_NODE_TEST
+		vector<int> lowers;
+		lowers.push_back(5567);
+		vector<int> lowers1;
+		lowers1.push_back(5568);
+	#endif
+
+
+		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,0);
+		ShuffleUpper *su=new ShuffleUpper(suso);
+
+		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort,1);
+		ShuffleUpper *su1=new ShuffleUpper(suso1);
+
+		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);
+		QueryPlan *join=new MergeJoin(mjso);
+
+		Debug *debug=new Debug(join);
+		/* debug can be here for print the shuffleupper data out. */
+		debug->prelude();
+		debug->execute(0);
+		debug->postlude();
+
+		getchar();
+	}
+
+}

@@ -14,6 +14,7 @@ enum JoinType{inner, left, right, full};
 #include "../../src/common/m_buffer.h"
 #include "../common/m_configuration.h"
 #include "../common/m_tree_node.h"
+#include "../common/m_logging.h"
 #include "../common/m_schema.h"
 #include "m_query_plan.h"
 

@@ -62,6 +62,8 @@ public:
 	void updateFree();
 	/* build a block which is not full. */
 	void build(int, int);
+	/* get tuples */
+	unsigned get_size();
 
 	bool storeTuple(void *, void *);
 
