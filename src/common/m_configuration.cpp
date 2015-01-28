@@ -47,6 +47,21 @@ string Configuration::get_coordinator_ip() {
 	return coordinator_ip_;
 }
 
+string Configuration::read_worker_ip() {
+	string ret;
+	try {
+		ret=(const char*)cfg_.lookup("WORKER_IP");
+		return ret;
+	}
+	catch(libconfig::SettingNotFoundException &e) {
+		e.what();
+	}
+}
+
+string Configuration::get_worker_ip() {
+	return worker_ip_;
+}
+
 int Configuration::read_theron_worker_port() {
 	int ret;
 	try {
