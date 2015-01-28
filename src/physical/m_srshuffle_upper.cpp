@@ -122,7 +122,7 @@ bool SRShuffleUpper::serialization() {
 		Message1 serialized_task=TaskInfo::serialize(tasks);
 		Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
 
-		ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_[i]);
+//		ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_[i]);
 	}
 	return true;
 }

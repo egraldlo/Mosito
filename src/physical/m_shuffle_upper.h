@@ -22,15 +22,15 @@ namespace physical {
 
 class ShuffleUpperSerObj {
 public:
-	ShuffleUpperSerObj(NewSchema, vector<int>, vector<int>, QueryPlan *, int);
+	ShuffleUpperSerObj(NewSchema, vector<string>, vector<string>, QueryPlan *, int);
 	virtual ~ShuffleUpperSerObj();
 
 	ShuffleUpperSerObj(){};
 
 public:
 	NewSchema ns_;
-	vector<int> upper_seqs_;
-	vector<int> lower_seqs_;
+	vector<string> upper_seqs_;
+	vector<string> lower_seqs_;
 	QueryPlan* child_;
 	int exchange_id_;
 

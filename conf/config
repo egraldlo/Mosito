@@ -1,8 +1,8 @@
 #COORDINATOR_IP represents the ip of the coordinator, every worker will send the message to.
-COORDINATOR_IP="127.0.0.1"
+COORDINATOR_IP="10.11.1.91"
 
 #the following is for test.
 #theron worker port represents the ports we have tested on a single node.
 THERON_WORKER_PORT=5566
 
-WORKER_IP="10.11.1.191"
+WORKER_IP="10.11.1.91"

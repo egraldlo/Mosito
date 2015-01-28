@@ -40,7 +40,6 @@ public:
 	bool aconnect(const char * ipport);
 
 	/* this function is for test. */
-	void do_query();
 	void do_join_query();
 
 private:

@@ -33,7 +33,8 @@ void Worker::init() {
 #ifdef SINGLE_NODE_TEST
 	/* for test on a single node. */
 	stringstream worker_endpoint;
-	worker_endpoint<<"worker_"<<theron_worker_port;
+	worker_endpoint<<"worker_"<<ip_port_worker.str().c_str();
+	cout<<"worker endpoint: "<<worker_endpoint.str().c_str()<<endl;
 	ConnectionEndpoint *ce=new ConnectionEndpoint(worker_endpoint.str().c_str(), ip_port_worker.str().c_str());
 	ce->Connect(ip_port_master.str().c_str());
 //	Theron::EndPoint endpoint(worker_endpoint.str().c_str(), ip_port_worker.str().c_str());
@@ -55,9 +56,9 @@ void Worker::init() {
 	/* test on a single node, so here ip must be port.
 	 * sender->m_send(ip, 32);
 	 *  */
-	stringstream worker_actor_port;
-	worker_actor_port<<theron_worker_port;
-	sender->m_send(worker_actor_port.str().c_str(), 32);
+//	stringstream worker_actor_ip;
+//	worker_actor_ip<<ip_port_worker;
+	sender->m_send(ip_port_worker.str().c_str(), 32);
 	sender->m_close();
 
 	printf("hello sending ---------------->\n");

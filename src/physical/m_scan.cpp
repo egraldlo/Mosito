@@ -36,7 +36,7 @@ bool Scan::prelude() {
 
 #ifdef SINGLE_NODE_TEST
 	/* read the configuration from configuration file. */
-	filename_<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_theron_worker_port();
+	filename_<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_worker_ip().c_str();
 	/* for directly read from file. */
 //	filename_<<scan_ser_obj_->file_path_;
 

@@ -57,8 +57,9 @@ void* Coordinator::register_worker(void *args) {
 		stringstream ip_port;
 		merger->m_single(ipinfo);
 		stringstream new_node;
-		new_node<<"worker_"<<string(ipinfo);
-		ip_port<<"tcp://"<<"127.0.0.1"<<":"<<string(ipinfo);
+		new_node<<"worker_"<<string(ipinfo).c_str();
+		cout<<"worker endpoint: "<<new_node.str().c_str()<<endl;
+		ip_port<<string(ipinfo).c_str();
 		pthis->aconnect(ip_port.str().c_str());
 		/* send the endpoints_info to the new node and then add it in. */
 		for(int i=0; i<pthis->endpoints_info_.size(); i++) {
@@ -66,8 +67,8 @@ void* Coordinator::register_worker(void *args) {
 			framework.Send(ip, Theron::Address(), Theron::Address(new_node.str().c_str()));
 		}
 		pthis->endpoints_info_.push_back(ip_port.str());
-		Logging::getInstance()->getInstance()->log(trace, ip_port.str().c_str());
-		Logging::getInstance()->getInstance()->log(trace, "one new worker is registering.");
+		Logging::getInstance()->getInstance()->log(error, ip_port.str().c_str());
+		Logging::getInstance()->getInstance()->log(error, "one new worker is registering.");
 	}
 	return 0;
 }
@@ -82,116 +83,6 @@ bool Coordinator::aconnect(const char * ipport) {
 		Logging::getInstance()->getInstance()->log(trace, "connect a machine.");
 		return true;
 	}
-}
-
-void Coordinator::do_query() {
-	/*
-	 * todo: two level query which has one node and two nodes.
-	 * 		 Scan operator + ShuffleLower + ShuffleUpper + Debug.
-	 * 		 so there is shuffle which can cover the query.
-	 *
-	 * 		 one node use coordinator and other two nodes use worker,
-	 * 		 different port can be used for simulation.
-	 *  */
-
-	while(1) {
-
-		cout<<"input a enter key and submit a query!"<<endl;
-		getchar();
-		cout<<"one query has been executed!"<<endl;
-
-		string file="table.left";
-		ScanSerObj *scan_ser_obj=new ScanSerObj(file);
-	//#ifdef SINGLE_NODE_TEST
-	//	stringstream file;
-	//	file<<"table.left."<<Configuration::getInstance()->get_theron_worker_port();
-	//	ScanSerObj *scan_ser_obj=new ScanSerObj(file.str().c_str());
-	//#endif
-		DataType *e1=new UnLongType(t_long);
-		DataType *e2=new IntegerType(t_int);
-		DataType *e3=new IntegerType(t_int);
-		DataType *e4=new IntegerType(t_int);
-		DataType *e5=new IntegerType(t_int);
-		DataType *e6=new IntegerType(t_int);
-		vector<DataType *> ve;
-		ve.push_back(e1);
-		ve.push_back(e2);
-		ve.push_back(e3);
-		ve.push_back(e4);
-		ve.push_back(e5);
-		ve.push_back(e6);
-		Scan *toser=new Scan(ve,scan_ser_obj);
-	//	Debug *toser=new Debug(scan);
-
-	//	vector<int> uppers;
-	//	uppers.push_back(1);
-	//
-	//#ifndef SINGLE_NODE_TEST
-	//	vector<int> lowers;
-	//	lowers.push_back(1);
-	//#endif
-	//
-	//#ifdef SINGLE_NODE_TEST
-	//	vector<int> lowers;
-	//	lowers.push_back(5567);
-	//	lowers.push_back(5568);
-	//	lowers.push_back(5569);
-	//	lowers.push_back(5570);
-	//	lowers.push_back(5571);
-	//
-	//#endif
-	//
-	//	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
-	//
-	//	ShuffleUpper *su=new ShuffleUpper(suso);
-	//
-	//	Debug *debug=new Debug(su);
-	//
-	//	/* debug can be here for print the shuffleupper data out. */
-	//
-	//	debug->prelude();
-	//	debug->execute(0);
-	//	debug->postlude();
-	//
-	//	getchar();
-
-		vector<int> uppers;
-		uppers.push_back(5567);
-		uppers.push_back(5568);
-
-	#ifndef SINGLE_NODE_TEST
-		vector<int> lowers;
-		lowers.push_back(1);
-	#endif
-
-	#ifdef SINGLE_NODE_TEST
-		vector<int> lowers;
-		lowers.push_back(5569);
-		lowers.push_back(5570);
-		lowers.push_back(5571);
-	#endif
-
-		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,0);
-		ShuffleUpper *su=new ShuffleUpper(suso);
-
-		vector<int> up;
-		up.push_back(5566);
-		vector<int> low;
-		low.push_back(5567);
-		low.push_back(5568);
-		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,up,low,su,84);
-		ShuffleUpper *su1=new ShuffleUpper(suso1);
-
-
-		Debug *debug=new Debug(su1);
-		/* debug can be here for print the shuffleupper data out. */
-		debug->prelude();
-		debug->execute(0);
-		debug->postlude();
-
-		getchar();
-	}
-
 }
 
 void Coordinator::do_join_query() {
@@ -242,21 +133,22 @@ void Coordinator::do_join_query() {
 		SortSerObj *sso1=new SortSerObj(ve, toser1);
 		Sort *sort1=new Sort(sso1);
 
-		vector<int> uppers;
-		uppers.push_back(5566);
+//		vector<int> uppers;
+		vector<string> uppers;
+		uppers.push_back("10.11.1.198");
 
 	#ifdef SINGLE_NODE_TEST
-		vector<int> lowers;
-		lowers.push_back(5567);
-		vector<int> lowers1;
-		lowers1.push_back(5568);
+		vector<string> lowers;
+		lowers.push_back("10.11.1.190");
+		vector<string> lowers1;
+		lowers1.push_back("10.11.1.191");
 	#endif
 
 
 		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,0);
 		ShuffleUpper *su=new ShuffleUpper(suso);
 
-		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort,1);
+		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort,5);
 		ShuffleUpper *su1=new ShuffleUpper(suso1);
 
 		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);

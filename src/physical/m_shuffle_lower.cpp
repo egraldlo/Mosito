@@ -9,7 +9,7 @@
 
 namespace physical {
 
-ShuffleLowerSerObj::ShuffleLowerSerObj(NewSchema ns, vector<int> seqs, QueryPlan* child, int exchange_id)
+ShuffleLowerSerObj::ShuffleLowerSerObj(NewSchema ns, vector<string> seqs, QueryPlan* child, int exchange_id)
 :ns_(ns), seqs_(seqs), child_(child), exchange_id_(exchange_id){
 
 }
@@ -40,7 +40,7 @@ bool ShuffleLower::prelude() {
 	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
 		/* here exchange_id_+i is for m_shuffle_upper.cpp:57 line. */
 		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_+i);
-		senders_[i]->m_connect("127.0.0.1");
+		senders_[i]->m_connect(Configuration::getInstance()->get_coordinator_ip());
 	}
 
 	buffer_=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
@@ -104,7 +104,7 @@ void * ShuffleLower::send_route(void *args) {
 				stringstream debug_co;
 				debug_co<<"-------send already: "<<pthis->debug_count_++;
 				Logging::getInstance()->log(trace, debug_co.str().c_str());
-				if(get_block_->get_size()==0) return 0;
+				if(get_block_->get_size()==0) {cout<<"lower======="<<endl; return 0;}
 			}
 			else {
 				continue;

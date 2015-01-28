@@ -30,6 +30,8 @@ bool Configuration::initilize() {
 	cout<<"coordinator_ip_: "<<coordinator_ip_<<endl;
 	theron_worker_port_=read_theron_worker_port();
 	cout<<"theron_worker_port_: "<<theron_worker_port_<<endl;
+	worker_ip_=read_worker_ip();
+	cout<<"worker_ip_: "<<worker_ip_<<endl;
 }
 
 string Configuration::read_coordinator_ip() {
