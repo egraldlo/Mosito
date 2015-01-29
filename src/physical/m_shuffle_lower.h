@@ -79,6 +79,7 @@ private:
 	Block *buffer_;
 
 	int debug_count_;
+	bool meet_zero_;
 
 private:
 	friend class boost::serialization::access;

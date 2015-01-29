@@ -229,7 +229,14 @@ bool MergeJoin::execute(Block *block) {
 			l=lfb_itr_->getNext();
 		}
 	}
-	return false;
+	if(over_) {
+		return false;
+	}
+	else {
+		block->build(BLOCK_SIZE, 0);
+		over_=true;
+		return true;
+	}
 }
 
 int MergeJoin::compare(void *left, void *right) {

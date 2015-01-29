@@ -54,11 +54,14 @@ bool Debug::execute(Block *) {
 //		cout<<"actural size: "<<buffer_->getActualSize()<<endl;
 //		Logging::getInstance()->log(error,"---------------------");
 //		getchar();
+		if(buffer_->get_size()==0)
+			break;
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
 #ifndef TIMING
 			display(tuple);
 #endif
+			++count_;
 		}
 #ifdef TIMING
 //	if(++count_ > 8990) {
@@ -72,7 +75,7 @@ bool Debug::execute(Block *) {
 
 bool Debug::postlude() {
 //	pthread_kill(pt_, SIGTERM);
-	cout<<"the query time consume: "<<getSecond(time_)<<endl;
+	cout<<"the query time consume: "<<getSecond(time_)<<" total: "<<count_<<endl;
 	Logging::getInstance()->log(trace, "kill the thread!");
 	child_->postlude();
 	return true;

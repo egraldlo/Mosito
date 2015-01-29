@@ -39,12 +39,13 @@ bool ShuffleLower::prelude() {
 	/* todo: modify here, the port_base is for testing. */
 	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
 		/* here exchange_id_+i is for m_shuffle_upper.cpp:57 line. */
-		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_+i);
-		senders_[i]->m_connect(Configuration::getInstance()->get_coordinator_ip());
+		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_);
+		senders_[i]->m_connect(shuffle_ser_obj_->seqs_[i].c_str());
 	}
 
 	buffer_=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
 	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->seqs_.size());
+	meet_zero_=false;
 	debug_count_=0;
 
 	/* pthread a send thread to send the blocks out in the pcbuffer. */
@@ -83,7 +84,7 @@ bool ShuffleLower::execute(Block *block) {
 bool ShuffleLower::postlude() {
 	shuffle_ser_obj_->child_->postlude();
 	pthread_join(send_p_, 0);
-	Logging::getInstance()->log(trace, "enter the shuffle lower close function.");
+	Logging::getInstance()->log(error, "enter the shuffle lower close function.");
 	return true;
 }
 
@@ -97,16 +98,17 @@ void * ShuffleLower::send_route(void *args) {
 			/* todo: a ugly coding here, must use a general way. */
 			empty_or_not_=pthis->pcbuffer_->get(get_block_, i);
 			if(empty_or_not_==true) {
-//				block_temp_=get_block_;
+				block_temp_->reset();
 				block_temp_->storeBlock(get_block_->getAddr(), BLOCK_SIZE);
 				pthis->senders_[i]->m_send((const char *)block_temp_->getAddr(), BLOCK_SIZE);
 				Logging::getInstance()->log(trace, "send a block to the upper node.");
 				stringstream debug_co;
 				debug_co<<"-------send already: "<<pthis->debug_count_++;
 				Logging::getInstance()->log(trace, debug_co.str().c_str());
-				if(get_block_->get_size()==0) {cout<<"lower======="<<endl; return 0;}
+				if(get_block_->get_size()==0) {pthis->meet_zero_=true;}
 			}
 			else {
+				if(pthis->meet_zero_==true) return 0;
 				continue;
 			}
 		}

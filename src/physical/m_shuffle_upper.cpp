@@ -54,7 +54,7 @@ bool ShuffleUpper::prelude() {
 		 * todo: modify here, the port_base is for testing.
 		 * todo: here +1 just for "2" of 1-2-3.
 		 * */
-		merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE+shuffle_ser_obj_->exchange_id_+1);
+		merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE+shuffle_ser_obj_->exchange_id_);
 		merger_->m_socket();
 	}
 	merger_->m_accept();
@@ -117,7 +117,7 @@ bool ShuffleUpper::execute(Block *block) {
 }
 
 bool ShuffleUpper::postlude() {
-	shuffle_ser_obj_->child_->postlude();
+//	shuffle_ser_obj_->child_->postlude();
 	Logging::getInstance()->log(trace, "enter the shuffle upper close function.");
 	pthread_join(receive_p_,0);
 	return true;

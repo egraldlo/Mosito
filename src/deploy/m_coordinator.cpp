@@ -134,6 +134,9 @@ void Coordinator::do_join_query() {
 		Sort *sort1=new Sort(sso1);
 
 //		vector<int> uppers;
+		vector<string> mostuppers;
+		mostuppers.push_back("10.11.1.197");
+
 		vector<string> uppers;
 		uppers.push_back("10.11.1.198");
 
@@ -154,7 +157,10 @@ void Coordinator::do_join_query() {
 		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);
 		QueryPlan *join=new MergeJoin(mjso);
 
-		Debug *debug=new Debug(join);
+		ShuffleUpperSerObj *suso2=new ShuffleUpperSerObj(ve1,mostuppers,uppers,join,10);
+		ShuffleUpper *su2=new ShuffleUpper(suso2);
+
+		Debug *debug=new Debug(su2);
 		/* debug can be here for print the shuffleupper data out. */
 		debug->prelude();
 		debug->execute(0);

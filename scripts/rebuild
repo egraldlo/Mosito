@@ -2,5 +2,5 @@
 make distclean
 ./build clean
 ./build.sh init
-./configure --prefix=/home/casa/Mosito/install
+./configure --prefix=/home/Casa/git/Mosito/install
 make install -j 8
