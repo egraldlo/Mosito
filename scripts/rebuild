@@ -1,0 +1,6 @@
+#!/bin/sh
+make distclean
+./build clean
+./build.sh init
+./configure --prefix=/home/Casa/git/Mosito/install
+make install -j 8

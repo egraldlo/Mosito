@@ -30,6 +30,8 @@ bool Configuration::initilize() {
 	cout<<"coordinator_ip_: "<<coordinator_ip_<<endl;
 	theron_worker_port_=read_theron_worker_port();
 	cout<<"theron_worker_port_: "<<theron_worker_port_<<endl;
+	worker_ip_=read_worker_ip();
+	cout<<"worker_ip_: "<<worker_ip_<<endl;
 }
 
 string Configuration::read_coordinator_ip() {
@@ -45,6 +47,21 @@ string Configuration::read_coordinator_ip() {
 
 string Configuration::get_coordinator_ip() {
 	return coordinator_ip_;
+}
+
+string Configuration::read_worker_ip() {
+	string ret;
+	try {
+		ret=(const char*)cfg_.lookup("WORKER_IP");
+		return ret;
+	}
+	catch(libconfig::SettingNotFoundException &e) {
+		e.what();
+	}
+}
+
+string Configuration::get_worker_ip() {
+	return worker_ip_;
 }
 
 int Configuration::read_theron_worker_port() {

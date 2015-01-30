@@ -18,6 +18,8 @@
 
 #include "../common/m_data_type.h"
 #include "../physical/m_scan.h"
+#include "../physical/m_sort.h"
+#include "../physical/m_join.h"
 #include "../physical/m_debug.h"
 #include "../physical/m_shuffle_upper.h"
 #include "../physical/m_shuffle_lower.h"
@@ -34,7 +36,9 @@ void register_data(Archive &ar) {
 template <class Archive>
 void register_obj(Archive &ar) {
 	ar.register_type(static_cast<Scan *>(NULL));
+	ar.register_type(static_cast<Sort *>(NULL));
 	ar.register_type(static_cast<Debug *>(NULL));
+	ar.register_type(static_cast<MergeJoin *>(NULL));
 	ar.register_type(static_cast<ShuffleUpper *>(NULL));
 	ar.register_type(static_cast<ShuffleLower *>(NULL));
 }

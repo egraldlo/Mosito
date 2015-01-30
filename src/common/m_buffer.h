@@ -58,6 +58,13 @@ public:
 
 	void *allocateTuple();
 
+	/* ugly way, update the free of the block. */
+	void updateFree();
+	/* build a block which is not full. */
+	void build(int, int);
+	/* get tuples */
+	unsigned get_size();
+
 	bool storeTuple(void *, void *);
 
 	bool reset();
@@ -111,12 +118,7 @@ public:
 	void reset();
 
 public:
-	inline int get_size() {
-		/* "4" is the tail length.
-		 * TODO: tail info can be more rich.
-		 *  */
-		return *(int *)(buffer_->start_+buffer_->size_-4);
-	};
+	int get_size();
 
 private:
 	Buffer *buffer_;

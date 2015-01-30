@@ -32,8 +32,8 @@ public:
 	bool get(Block *&, int);
 
 private:
-	CircleQueue<Block> **data_;
-//	Block ***data_;
+//	CircleQueue<Block> **data_;
+	BlockCircleQueue **data_;
 	NewSchema ns_;
 	int row_;
 };
@@ -43,11 +43,11 @@ public:
 	SortedPCBuffer(NewSchema & ns, int row){}
 	virtual ~SortedPCBuffer(){}
 
-private:
+	FlexBlock **flex_block_;
+
+public:
 	NewSchema getSchema();
 
-private:
-	FlexBlock **flex_block_;
 };
 
 #endif /* M_PC_BUFFER_H_ */

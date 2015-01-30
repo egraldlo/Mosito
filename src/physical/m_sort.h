@@ -12,15 +12,39 @@
 #include "../expressions/m_sort_order.h"
 #include "../common/m_configuration.h"
 #include "../common/m_tree_node.h"
+#include "../common/m_logging.h"
 #include "../common/m_schema.h"
 #include "m_query_plan.h"
 
 #include <vector>
+#include <iterator>
+#include <algorithm>
 using namespace std;
 
 #include <stdio.h>
 
 namespace physical {
+
+typedef vector<void *> range;
+
+class SortSerObj {
+public:
+	SortSerObj(NewSchema ns, QueryPlan *child)
+	:ns_(ns), child_(child) {};
+	~SortSerObj() {};
+
+	SortSerObj(){};
+
+	QueryPlan *child_;
+	NewSchema ns_;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & ns_ & child_;
+	}
+};
 
 /* sort iterator is designed to support internal sort and external sort. */
 class Sort: public UnaryNode, public QueryPlan {
@@ -30,17 +54,29 @@ public:
 	 *  when global is false, sort is on the map side and sort stream by using external way.
 	 *   */
 	Sort(vector<SortOrder *> expressions, QueryPlan *child, bool global);
+	Sort(SortSerObj *sort_ser_obj)
+	:sort_ser_obj_(sort_ser_obj){};
+	Sort(QueryPlan *);
 	virtual ~Sort();
+
+	Sort(){};
 
 	bool prelude();
 	bool execute(Block *);
 	bool postlude();
 
-	NewSchema *newoutput(){};
 	vector<Expression *> output();
+	bool maxLast(void*, Schema *);
+
+	NewSchema *newoutput();
 
 	/* max the last tuple. */
-	bool maxLast(void*, Schema *);
+	static bool compare(const void *left, const void *right);
+	static void *single_sort(void *);
+	void *heap_out();
+
+private:
+	SortSerObj *sort_ser_obj_;
 
 private:
 	vector<SortOrder *> expressions_;
@@ -58,6 +94,27 @@ private:
 	BufferIterator** lt_buffer_iterator_;
 
 	int already_finish_;
+
+private:
+	NewSchema *ns_;
+
+	vector<range> ranges_;
+
+	pthread_t pths_[CPU_CORE];
+
+	vector<Block *> blocks_;
+
+	unsigned temp_cur_;
+
+private:
+	unsigned count_;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & boost::serialization::base_object<QueryPlan>(*this) & sort_ser_obj_;
+	}
 };
 
 }

@@ -15,6 +15,8 @@
 #include "../../src/common/m_configuration.h"
 #include "../../src/executor/m_executor.h"
 #include "../../src/physical/m_scan.h"
+#include "../../src/physical/m_join.h"
+#include "../../src/physical/m_sort.h"
 #include "../../src/physical/m_shuffle_upper.h"
 
 #include "../../third_party/theron/Theron/Defines.h"
@@ -38,7 +40,8 @@ public:
 	bool aconnect(const char * ipport);
 
 	/* this function is for test. */
-	void do_query();
+	void do_join_query();
+	void do_final_query();
 
 private:
 	static void* register_worker(void *);

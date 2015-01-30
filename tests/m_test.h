@@ -112,6 +112,12 @@ int main(int argc, char** argv) {
 	/* for configuration test. */
 //	main_configuration();
 
+	/* for sort test */
+//	sort_intern_test();
+
+	/* for merge join test. */
+//	mergejoin_test();
+
 //	sql();
 	return 0;
 }

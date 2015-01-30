@@ -83,6 +83,7 @@ private:
 	ScanSerObj *scan_ser_obj_;
 
 	FILE *splits_stream_;
+	stringstream filename_;
 	char *buffer_;
 
 	unsigned cursor_;

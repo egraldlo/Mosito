@@ -78,29 +78,16 @@ bool SRShuffleUpper::prelude() {
 bool SRShuffleUpper::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
-
-	/* we will use one to multiple model.
-	char *data=(char *)malloc(BLOCK_SIZE);
-	if(merger_->m_receive(data)) {
-		Logging::getInstance()->log(trace, "get a block from the sender!");
-		block->storeBlock(data, BLOCK_SIZE);
-//		getchar();
-		return true;
-	}
-	else {
-		Logging::getInstance()->log(trace, "receive all the blocks from the sender.");
-		return false;
-	}
-	*/
-
 	/* todo: a traverse strategy must be used here. */
 	bool empty_or_not_;
 	while(1) {
 		for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
-			/* todo: a ugly coding here, must use a general way. */
+			/*
+			 * the receiver receive the data and store the data as a whole block.
+			 * there is a loser tree here to generate a global sorted data.
+			 * */
 			empty_or_not_=pcbuffer_->get(block_temp_, i);
 			if(empty_or_not_==true) {
-//				block=block_temp_;
 				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
 				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
 				return true;
@@ -135,7 +122,7 @@ bool SRShuffleUpper::serialization() {
 		Message1 serialized_task=TaskInfo::serialize(tasks);
 		Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
 
-		ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_[i]);
+//		ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_[i]);
 	}
 	return true;
 }

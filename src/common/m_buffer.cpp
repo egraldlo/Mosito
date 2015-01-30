@@ -45,6 +45,13 @@ void BufferIterator::reset() {
 	current_=0;
 }
 
+int BufferIterator::get_size() {
+	/* "4" is the tail length.
+	 * TODO: tail info can be more rich.
+	 *  */
+	return *(int *)(buffer_->start_+buffer_->size_-4);
+}
+
 Buffer::Buffer(unsigned size)
 :size_(size),start_(0),free_(0){
 	start_=(char *)malloc(size_);
@@ -52,7 +59,7 @@ Buffer::Buffer(unsigned size)
 }
 
 Buffer::~Buffer() {
-
+	free(start_);
 }
 
 Block::Block(unsigned size, unsigned tuple_size)
@@ -90,6 +97,19 @@ bool Block::storeTuple(void *desc, void *src) {
 	return true;
 }
 
+void Block::updateFree() {
+	free_=free_+tuple_size_;
+}
+
+void Block::build(int size, int number) {
+	void *p=start_+size-4;
+	*(int *)p=number;
+}
+
+unsigned Block::get_size() {
+	return *(int *)(start_+size_-4);
+}
+
 bool Block::storeBlock(void *src, unsigned size) {
 	memcpy(start_,src,size);
 	free_=start_+size;
@@ -102,6 +122,7 @@ bool Block::reset() {
 }
 
 bool Block::assembling(int size, int tuple_size) {
+	size_=size;
 	void *p=start_+size-4;
 	int tuples=(size-4)/tuple_size;
 	*(int *)p=tuples;

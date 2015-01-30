@@ -161,7 +161,7 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 		/* select will return the number of active fds. */
 		switch(select(maxfd+1, &fds, 0, 0, (timeval *)0)) {
 		case -1: exit(-1); break;
-		case 0: break;
+		case 0: {cout<<"warmming!!"<<endl;break;}
 		default:
 			for(int i=0; i<nlower_; i++) {
 				if(FD_ISSET(map_lower_[i], &fds)) {
@@ -175,10 +175,12 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					 * todo: here the size of data_ is not BLOCK_SIZE.
 					 * */
 					Logging::getInstance()->log(trace, "store the data into the block.");
+					block->reset();
 					block->storeBlock(data_, BLOCK_SIZE);
 					Logging::getInstance()->log(trace, "put the block into the pc_buffer.");
 					pcbuffer->put(block, i);
 					stringstream debug_co;
+					if(block->get_size()==0) {return false;}
 					debug_co<<"the deubg count number is: "<<debug_count_++;
 					Logging::getInstance()->log(trace, debug_co.str().c_str());
 				}
@@ -188,4 +190,3 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 
 	return true;
 }
-

@@ -11,7 +11,7 @@ ExecutorMaster* ExecutorMaster::executormaster_=0;
 
 ExecutorSlave* ExecutorSlave::executorslave_=0;
 
-bool ExecutorMaster::sendToMultiple(Message1& serialized_task, int ips) {
+bool ExecutorMaster::sendToMultiple(Message1& serialized_task, string ips) {
 	/*
 	 * executorslave will recieve the message and deserialize the messsage to taskinfo,
 	 * and executorslave will put the task into the threadpool.
@@ -26,7 +26,7 @@ bool ExecutorMaster::sendToMultiple(Message1& serialized_task, int ips) {
 #ifdef SINGLE_NODE_TEST
 	/* actor_slave will be add ip: ip+actor_slave. */
 	stringstream actor_name;
-	actor_name<<"actor_slave_"<<ips;
+	actor_name<<"actor_slave_"<<ips.c_str();
 	cout<<"actor_name: "<<actor_name.str().c_str()<<endl;
 	framework_->Send(serialized_task, Theron::Address(), Theron::Address(actor_name.str().c_str()));
 #endif
@@ -54,7 +54,7 @@ void ExecutorSlave::init_executor() {
 
 #ifdef SINGLE_NODE_TEST
 	stringstream actor_name;
-	actor_name<<"actor_slave_"<<Configuration::getInstance()->get_theron_worker_port();
+	actor_name<<"actor_slave_"<<Configuration::getInstance()->get_worker_ip().c_str();
 	cout<<"actor_name: "<<actor_name.str().c_str()<<endl;
 	es_actor_=new ExecutorSlaveActor(*framework_, actor_name.str().c_str());
 #endif

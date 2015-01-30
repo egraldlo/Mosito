@@ -25,8 +25,8 @@ Debug::~Debug() {
 }
 
 bool Debug::prelude() {
-	child_->prelude();
 	startTimer(&time_);
+	child_->prelude();
 #ifndef EXPERIMENT_TEST
 
 	/* TODO: output_ must be compute. */
@@ -49,20 +49,24 @@ bool Debug::prelude() {
 bool Debug::execute(Block *) {
 	BufferIterator *bi=0;
 	void *tuple;
-	while(child_->execute(buffer_)) {
-		Logging::getInstance()->log(trace,"---------------------");
+	while(child_->execute(buffer_)==true) {
+//		Logging::getInstance()->log(error,"---------------------");
 //		cout<<"actural size: "<<buffer_->getActualSize()<<endl;
-		Logging::getInstance()->log(trace,"---------------------");
+//		Logging::getInstance()->log(error,"---------------------");
+//		getchar();
+		if(buffer_->get_size()==0)
+			break;
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
 #ifndef TIMING
 			display(tuple);
 #endif
+			++count_;
 		}
 #ifdef TIMING
-	if(++count_ > 8990) {
-		cout<<"the query time consume: "<<getSecond(time_)<<endl;
-	}
+//	if(++count_ > 8990) {
+//		cout<<"the query time consume: "<<getSecond(time_)<<endl;
+//	}
 //	cout<<"the query time consume: "<<getSecond(time_)<<endl;
 #endif
 	}
@@ -70,7 +74,8 @@ bool Debug::execute(Block *) {
 }
 
 bool Debug::postlude() {
-	pthread_kill(pt_, SIGTERM);
+//	pthread_kill(pt_, SIGTERM);
+	cout<<"the query time consume: "<<getSecond(time_)<<" total: "<<count_<<endl;
 	Logging::getInstance()->log(trace, "kill the thread!");
 	child_->postlude();
 	return true;
@@ -109,6 +114,7 @@ void Debug::print(data_type ty,void *attr) {
 
 void *Debug::timer(void * args) {
 	unsigned long long *t=(unsigned long long *)args;
+	int senc=0;
 	while(1) {
 		usleep(100000);
 		cout<<"the query time consume: "<<getSecond(*t)<<endl;

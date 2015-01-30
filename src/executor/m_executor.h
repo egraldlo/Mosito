@@ -41,7 +41,7 @@ public:
 		}
 	}
 
-	bool sendToMultiple(Message1 &, int);
+	bool sendToMultiple(Message1 &, string);
 
 	void init_executor();
 

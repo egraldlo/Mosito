@@ -40,7 +40,7 @@ using namespace std;
 /* worker theron port */
 #define WORKER_THERON 5546
 /* port base for test */
-#define PORT_BASE 9876
+#define PORT_BASE 6689
 
 /* every column in the PC buffer has COLUMN_CON blocks */
 #define COLUMN_CON 20
@@ -53,6 +53,9 @@ using namespace std;
 
 /* configure log type. */
 #define LOGGER error
+
+/* the cpu core of the machine. */
+#define CPU_CORE 4
 
 static int counter=0;
 
@@ -117,6 +120,9 @@ public:
 	string read_coordinator_ip();
 	string get_coordinator_ip();
 
+	string read_worker_ip();
+	string get_worker_ip();
+
 	int read_theron_worker_port();
 	int get_theron_worker_port();
 
@@ -130,6 +136,7 @@ private:
 	unsigned heap_size_;
 	unsigned heap_sort_buffer_init_size_;
 
+	string worker_ip_;
 	string coordinator_ip_;
 	/* for test on a single node. */
 	int theron_worker_port_;

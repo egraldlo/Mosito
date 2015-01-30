@@ -11,7 +11,10 @@
 #include "../common/m_buffer.h"
 
 #include <vector>
+#include <map>
 using namespace std;
+
+typedef vector<Block *> blocks;
 
 class MemoryStore {
 public:
@@ -37,7 +40,7 @@ public:
 		}
 	}
 
-	vector<Block *> blocks_;
+	map<string, blocks> blocks_;
 
 private:
 	static MemoryStore *memstore_;
