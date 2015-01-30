@@ -106,8 +106,24 @@ void Block::build(int size, int number) {
 	*(int *)p=number;
 }
 
-unsigned Block::get_size() {
-	return *(int *)(start_+size_-4);
+int Block::compare_start_end(vector<int> bounds) {
+	int ret;
+	int start=*(int *)((char *)start_+8);
+	int end=*(int *)((char *)start_+tuple_size_*(get_size()-1)+8);
+	for(int i=0; i<bounds.size(); i++) {
+		if(start<bounds[i] && end<bounds[i]) {
+			ret=i;
+			break;
+		}
+		if(end>bounds[i]) {
+			continue;
+		}
+		if(start>bounds[i] && end<bounds[i]) {
+			ret=-1;
+			break;
+		}
+	}
+	return ret;
 }
 
 bool Block::storeBlock(void *src, unsigned size) {

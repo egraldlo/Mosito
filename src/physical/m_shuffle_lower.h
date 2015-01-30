@@ -79,8 +79,9 @@ private:
 	Block *buffer_;
 
 	int debug_count_;
-	bool meet_zero_;
+	int meet_zero_;
 
+	vector<int> ranges_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
