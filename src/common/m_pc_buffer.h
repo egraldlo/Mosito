@@ -32,8 +32,8 @@ public:
 	bool get(Block *&, int);
 
 private:
-	CircleQueue<Block> **data_;
-//	Block ***data_;
+//	CircleQueue<Block> **data_;
+	BlockCircleQueue **data_;
 	NewSchema ns_;
 	int row_;
 };

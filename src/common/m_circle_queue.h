@@ -8,6 +8,8 @@
 #ifndef M_CIRCLE_QUEUE_H_
 #define M_CIRCLE_QUEUE_H_
 
+#include "m_buffer.h"
+
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
@@ -77,11 +79,11 @@ public:
 			pthread_mutex_unlock(&lock_);
 			return false;
 		}
-		sem_wait(&empty_);
+//		sem_wait(&empty_);
 //		pthread_mutex_lock(&lock_);
 		rear_->node_=node;
 		rear_=rear_->next_;
-		sem_post(&full_);
+//		sem_post(&full_);
 		pthread_mutex_unlock(&lock_);
 		return true;
 	}
@@ -93,11 +95,11 @@ public:
 			pthread_mutex_unlock(&lock_);
 			return 0;
 		}
-		sem_wait(&full_);
+//		sem_wait(&full_);
 //		pthread_mutex_lock(&lock_);
 		Q *ret=front_->node_;
 		front_=front_->next_;
-		sem_post(&empty_);
+//		sem_post(&empty_);
 		pthread_mutex_unlock(&lock_);
 		return ret;
 	}
@@ -116,4 +118,88 @@ private:
 	sem_t full_,empty_;
 
 };
+
+struct BlockCircleNode {
+	Block *node_;
+	BlockCircleNode *next_;
+};
+
+class BlockCircleQueue {
+public:
+	BlockCircleQueue(int capacity):queue_capacity_(capacity){
+		pthread_mutex_init(&lock_,0);
+		/* head node can be convenient for handle */
+		head_=(BlockCircleNode *)malloc(sizeof(BlockCircleNode));
+		head_->node_=0;head_->next_=0;
+		BlockCircleNode *temp,*real_head=0;
+		BlockCircleNode *cur_tail=head_;
+		for(unsigned i=0;i<queue_capacity_+1;i++) {
+			/* insert the node from the tail, by using a temp */
+			temp=(BlockCircleNode*)malloc(sizeof(BlockCircleNode));
+			temp->node_=0;temp->next_=0;
+			temp->node_=new Block(BLOCK_SIZE);
+			if(i==0){
+				front_=rear_=real_head=temp;
+				cur_tail->next_=temp;
+				cur_tail=cur_tail->next_;
+			}
+			else if(i==queue_capacity_){
+				temp->next_=real_head;
+				cur_tail->next_=temp;
+				cur_tail=cur_tail->next_;//no need
+			}
+			else{
+				cur_tail->next_=temp;
+				cur_tail=cur_tail->next_;
+			}
+		}
+	};
+
+	virtual ~BlockCircleQueue(){
+		/* free the queue memory space. */
+		BlockCircleNode *p,*q=head_;
+		for(unsigned i=0;i<=queue_capacity_+1;i++) {
+			p=q;
+			q=p->next_;
+			free(p);
+		}
+		pthread_mutex_destroy(&lock_);
+	};
+
+	bool push(Block *node) {
+		/* if the queue is full, return false. eg:
+		 * 0(head)+9(tail)=full, "(9-0+10)%(10)==9" is full like follows.
+		 * */
+		pthread_mutex_lock(&lock_);
+		if(rear_->next_==front_){
+			pthread_mutex_unlock(&lock_);
+			return false;
+		}
+		rear_->node_->storeBlock(node->getAddr(), BLOCK_SIZE);
+		rear_=rear_->next_;
+		pthread_mutex_unlock(&lock_);
+		return true;
+	}
+
+	Block* pop() {
+		/* if the queue is empty, return 0 */
+		pthread_mutex_lock(&lock_);
+		if(rear_==front_) {
+			pthread_mutex_unlock(&lock_);
+			return 0;
+		}
+		Block *ret=front_->node_;
+		front_=front_->next_;
+		pthread_mutex_unlock(&lock_);
+		return ret;
+	}
+private:
+	int queue_capacity_;// actually the whole queue has queue_capacity_+1(head)+1(tail) nodes.
+	BlockCircleNode * head_;// a head to make queue handling more convenient.
+	BlockCircleNode * front_;
+	BlockCircleNode * rear_;
+
+	pthread_mutex_t lock_;
+};
+
 #endif /* M_CIRCLE_QUEUE_H_ */

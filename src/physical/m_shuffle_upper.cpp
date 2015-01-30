@@ -93,7 +93,6 @@ bool ShuffleUpper::execute(Block *block) {
 	}
 	*/
 
-	block->reset();
 	/* todo: a traverse strategy must be used here. */
 	bool empty_or_not_;
 	while(1) {
@@ -102,6 +101,7 @@ bool ShuffleUpper::execute(Block *block) {
 			empty_or_not_=pcbuffer_->get(block_temp_, i);
 			if(empty_or_not_==true) {
 //				block=block_temp_;
+				block->reset();
 				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
 				if(block->get_size()==0) return false;
 				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");

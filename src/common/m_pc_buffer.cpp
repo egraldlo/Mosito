@@ -10,9 +10,9 @@
 PCBuffer::PCBuffer(NewSchema &ns, int row)
 :ns_(ns), row_(row) {
 	// TODO Auto-generated constructor stub
-	data_=new CircleQueue<Block>*[row];
+	data_=new BlockCircleQueue*[row];
 	for(int i=0; i<row; i++) {
-		data_[i]=new CircleQueue<Block>(COLUMN_CON);
+		data_[i]=new BlockCircleQueue(COLUMN_CON);
 	}
 }
 
@@ -21,17 +21,7 @@ PCBuffer::~PCBuffer() {
 }
 
 bool PCBuffer::get(Block* &block, int column) {
-	/*
-	if(data_[column]->empty()!=true) {
-		block=data_[column]->pop();
-		Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
-		return true;
-	}
-	else {
-		Logging::getInstance()->log(error, "the buffer is empty now.");
-		return false;
-	}
-	*/
+	/* 20150130
 	if(data_[column]->empty()) {
 		return false;
 	}
@@ -39,13 +29,11 @@ bool PCBuffer::get(Block* &block, int column) {
 		block=data_[column]->pop();
 		Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
 		return true;
-	}
-	/*before commit 54
-	while(data_[column]->empty());
-	block=data_[column]->pop();
+	}*/
+
+	while((block=data_[column]->pop())==0);
 	Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
 	return true;
-	*/
 }
 
 bool PCBuffer::put(Block *block, int column) {

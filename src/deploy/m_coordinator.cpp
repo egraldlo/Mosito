@@ -170,3 +170,78 @@ void Coordinator::do_join_query() {
 	}
 
 }
+
+void Coordinator::do_final_query() {
+
+	DataType *e1=new UnLongType(t_long);
+	DataType *e2=new IntegerType(t_int);
+	DataType *e3=new IntegerType(t_int);
+	DataType *e4=new IntegerType(t_int);
+	DataType *e5=new IntegerType(t_int);
+	DataType *e6=new IntegerType(t_int);
+	vector<DataType *> ve;
+	ve.push_back(e1);
+	ve.push_back(e2);
+	ve.push_back(e3);
+	ve.push_back(e4);
+	ve.push_back(e5);
+	ve.push_back(e6);
+
+	vector<DataType *> ve1;
+	ve1.push_back(e1);
+	ve1.push_back(e2);
+	ve1.push_back(e3);
+	ve1.push_back(e4);
+	ve1.push_back(e5);
+	ve1.push_back(e6);
+	ve1.push_back(e1);
+	ve1.push_back(e2);
+	ve1.push_back(e3);
+	ve1.push_back(e4);
+	ve1.push_back(e5);
+	ve1.push_back(e6);
+
+	vector<string> lowers;
+	lowers.push_back("10.11.1.191");
+	lowers.push_back("10.11.1.192");
+	lowers.push_back("10.11.1.193");
+	lowers.push_back("10.11.1.194");
+	vector<string> uppers;
+	uppers.push_back("10.11.1.191");
+	uppers.push_back("10.11.1.192");
+	uppers.push_back("10.11.1.193");
+	uppers.push_back("10.11.1.194");
+	vector<string> coor;
+	coor.push_back("10.11.1.190");
+
+
+	string file_left="table.left";
+	ScanSerObj *scan_ser_obj_left=new ScanSerObj(file_left);
+	string file_right="table.left";
+	ScanSerObj *scan_ser_obj_right=new ScanSerObj(file_right);
+
+	QueryPlan *scan_left=new Scan(ve,scan_ser_obj_left);
+	QueryPlan *scan_right=new Scan(ve,scan_ser_obj_right);
+
+	ShuffleUpperSerObj *suso_left=new ShuffleUpperSerObj(ve,uppers,lowers,scan_left,0);
+	QueryPlan *shuffle_left=new ShuffleUpper(suso_left);
+
+	ShuffleUpperSerObj *suso_right=new ShuffleUpperSerObj(ve,uppers,lowers,scan_right,0);
+	QueryPlan *shuffle_right=new ShuffleUpper(suso_right);
+
+	MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,shuffle_left,shuffle_right);
+	QueryPlan *join=new MergeJoin(mjso);
+
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,coor,uppers,join,0);
+	QueryPlan *shuffle=new ShuffleUpper(suso);
+
+	Debug *debug=new Debug(shuffle);
+
+	/* debug can be here for print the shuffleupper data out. */
+	debug->prelude();
+	debug->execute(0);
+	debug->postlude();
+
+	getchar();
+}
+

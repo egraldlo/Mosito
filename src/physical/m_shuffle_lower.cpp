@@ -105,10 +105,13 @@ void * ShuffleLower::send_route(void *args) {
 				stringstream debug_co;
 				debug_co<<"-------send already: "<<pthis->debug_count_++;
 				Logging::getInstance()->log(trace, debug_co.str().c_str());
-				if(get_block_->get_size()==0) {pthis->meet_zero_=true;}
+				if(get_block_->get_size()==0) {
+//					pthis->meet_zero_=true;
+					return 0;
+				}
 			}
 			else {
-				if(pthis->meet_zero_==true) return 0;
+//				if(pthis->meet_zero_==true) return 0;
 				continue;
 			}
 		}

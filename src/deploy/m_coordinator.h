@@ -41,6 +41,7 @@ public:
 
 	/* this function is for test. */
 	void do_join_query();
+	void do_final_query();
 
 private:
 	static void* register_worker(void *);
