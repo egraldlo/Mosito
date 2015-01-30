@@ -64,6 +64,7 @@ bool Merger::m_socket() {
 
 	data_=new char[BLOCK_SIZE];
 	debug_count_=0;
+	meet_zero_=0;
 
 	return true;
 }
@@ -180,7 +181,10 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					Logging::getInstance()->log(trace, "put the block into the pc_buffer.");
 					pcbuffer->put(block, i);
 					stringstream debug_co;
-					if(block->get_size()==0) {return false;}
+					if(block->get_size()==0) {
+						if(++meet_zero_==nlower_)
+							return false;
+					}
 					debug_co<<"the deubg count number is: "<<debug_count_++;
 					Logging::getInstance()->log(trace, debug_co.str().c_str());
 				}

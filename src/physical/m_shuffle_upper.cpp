@@ -63,6 +63,7 @@ bool ShuffleUpper::prelude() {
 	usleep(10000);
 
 	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->lower_seqs_.size());
+	meet_zero_=0;
 
 	/* pthread a receive thread and gather the blocks in the pcbuffer. */
 	if(pthread_create(&receive_p_, 0, receive_route, this)==0) {
@@ -103,7 +104,10 @@ bool ShuffleUpper::execute(Block *block) {
 //				block=block_temp_;
 				block->reset();
 				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
-				if(block->get_size()==0) return false;
+				if(block->get_size()==0) {
+					if(++meet_zero_==shuffle_ser_obj_->lower_seqs_.size())
+						return false;
+				}
 				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
 				return true;
 			}

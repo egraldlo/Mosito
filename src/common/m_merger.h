@@ -42,6 +42,7 @@ public:
 	bool m_receive_select(PCBuffer *);
 
 	int debug_count_;
+	int meet_zero_;
 
 private:
 	int fd_; //fd on this node.
@@ -51,6 +52,7 @@ private:
 
 	/* data_ is the data merger receive. */
 	char *data_;
+
 };
 
 #endif /* M_MERGER_H_ */
