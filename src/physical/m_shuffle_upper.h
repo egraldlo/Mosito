@@ -83,6 +83,7 @@ private:
 	Block *block_temp_;
 
 private:
+	int debug_count_;
 	int meet_zero_;
 
 private:

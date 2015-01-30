@@ -31,7 +31,11 @@ bool PCBuffer::get(Block* &block, int column) {
 		return true;
 	}*/
 
-	while((block=data_[column]->pop())==0);
+	int seconds_=0;
+	while((block=data_[column]->pop())==0) {
+		/* waiting for a while and then return false. */
+		if(seconds_++==10) return false;
+	};
 	Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
 	return true;
 }
