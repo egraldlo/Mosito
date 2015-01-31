@@ -56,6 +56,7 @@ bool Scan::prelude() {
 			bs.push_back(block);
 		}
 		MemoryStore::getInstance()->blocks_.insert(make_pair(filename_.str(), bs));
+		fclose(splits_stream_);
 	}
 
 	cout<<filename_.str().c_str()<<" the time spend is: "<<getSecond(tm_)<<endl;
@@ -101,7 +102,6 @@ bool Scan::execute(Block *block) {
 
 bool Scan::postlude() {
 	/* the file must be closed, but ugly. todo: promotion.*/
-	fclose(splits_stream_);
 	return true;
 }
 

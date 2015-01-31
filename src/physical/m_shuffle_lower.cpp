@@ -122,8 +122,9 @@ void * ShuffleLower::send_route(void *args) {
 				debug_co<<"-------send already: "<<pthis->debug_count_++;
 				Logging::getInstance()->log(trace, debug_co.str().c_str());
 				if(get_block_->get_size()==0) {
-					if(++pthis->meet_zero_==pthis->shuffle_ser_obj_->seqs_.size())
-						return 0;
+					if(++pthis->meet_zero_==pthis->shuffle_ser_obj_->seqs_.size()){
+						pthis->senders_[i]->m_close();return 0;
+					}
 				}
 			}
 			else {

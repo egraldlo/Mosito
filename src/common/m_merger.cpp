@@ -182,8 +182,10 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					pcbuffer->put(block, i);
 					stringstream debug_co;
 					if(block->get_size()==0) {
-						if(++meet_zero_==nlower_)
+						if(++meet_zero_==nlower_) {
+							m_close();
 							return false;
+						}
 					}
 					debug_co<<"the deubg count number is: "<<debug_count_++;
 					Logging::getInstance()->log(trace, debug_co.str().c_str());
