@@ -18,6 +18,9 @@ PCBuffer::PCBuffer(NewSchema &ns, int row)
 
 PCBuffer::~PCBuffer() {
 	// TODO Auto-generated destructor stub
+	for(int i=0; i<row; i++) {
+		data_[i]->~BlockCircleQueue();
+	}
 }
 
 bool PCBuffer::get(Block* &block, int column) {

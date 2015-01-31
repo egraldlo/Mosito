@@ -161,6 +161,7 @@ public:
 		for(unsigned i=0;i<=queue_capacity_+1;i++) {
 			p=q;
 			q=p->next_;
+			p->node_->~Buffer();
 			free(p);
 		}
 		pthread_mutex_destroy(&lock_);

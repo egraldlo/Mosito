@@ -144,6 +144,7 @@ bool Sort::prelude() {
 
 	Logging::getInstance()->log(trace, "will get all the data and sort.");
 	void *tuple=0;
+	temp_cur_=0;
 	buffer_=new Block(BLOCK_SIZE, (sort_ser_obj_->ns_).get_bytes());
 	schema_=new Schema(&(sort_ser_obj_->ns_));
 	while(sort_ser_obj_->child_->execute(buffer_)) {
@@ -210,8 +211,10 @@ bool Sort::execute(Block *block) {
 			void *tuple=heap_out();
 			block->storeTuple(desc, tuple);
 			++count_;
-			if(--temp_cur_)
+			if(temp_cur_%1000==0) cout<<temp_cur_<<endl;
+			if(--temp_cur_) {
 				continue;
+			}
 			else {
 				cout<<"hello, I am sort false;"<<endl;
 				block->build(BLOCK_SIZE, 0);
@@ -225,6 +228,9 @@ bool Sort::execute(Block *block) {
 }
 
 bool Sort::postlude() {
+	blocks_.clear();
+	ranges_.clear();
+	buffer_->~Buffer();
 	sort_ser_obj_->child_->postlude();
 	cout<<"数组的个数为： "<<count_<<endl;
 	return true;

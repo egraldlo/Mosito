@@ -63,6 +63,7 @@ void* Coordinator::register_worker(void *args) {
 		pthis->aconnect(ip_port.str().c_str());
 		/* send the endpoints_info to the new node and then add it in. */
 		for(int i=0; i<pthis->endpoints_info_.size(); i++) {
+			usleep(1000);
 			MessageIP ip(pthis->endpoints_info_[i].c_str());
 			framework.Send(ip, Theron::Address(), Theron::Address(new_node.str().c_str()));
 		}
@@ -143,6 +144,7 @@ void Coordinator::do_join_query() {
 	#ifdef SINGLE_NODE_TEST
 		vector<string> lowers;
 		lowers.push_back("10.11.1.190");
+		lowers.push_back("10.11.1.191");
 		vector<string> lowers1;
 		lowers1.push_back("10.11.1.191");
 	#endif

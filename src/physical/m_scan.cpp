@@ -102,6 +102,7 @@ bool Scan::execute(Block *block) {
 
 bool Scan::postlude() {
 	/* the file must be closed, but ugly. todo: promotion.*/
+	delete[] buffer_;
 	return true;
 }
 

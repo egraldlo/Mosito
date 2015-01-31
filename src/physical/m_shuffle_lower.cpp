@@ -98,6 +98,7 @@ bool ShuffleLower::execute(Block *block) {
 }
 
 bool ShuffleLower::postlude() {
+	pcbuffer_->~PCBuffer();
 	shuffle_ser_obj_->child_->postlude();
 	pthread_join(send_p_, 0);
 	Logging::getInstance()->log(error, "enter the shuffle lower close function.");
