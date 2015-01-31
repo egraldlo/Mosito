@@ -21,7 +21,7 @@ namespace physical {
 
 class SRShuffleLowerSerObj {
 public:
-	SRShuffleLowerSerObj(NewSchema, vector<int>, QueryPlan*, int);
+	SRShuffleLowerSerObj(NewSchema, vector<string>, QueryPlan*, int);
 	virtual ~SRShuffleLowerSerObj();
 
 	/* needed constructor function. */
@@ -29,7 +29,7 @@ public:
 
 public:
 	NewSchema ns_;
-	vector<int> seqs_;
+	vector<string> seqs_;
 	QueryPlan* child_;
 	int exchange_id_;
 
@@ -67,6 +67,7 @@ public:
 	bool seriliaze(Block *, void *);
 
 private:
+	int compare_start_end(int);
 	static void *send_route(void *);
 
 private:
@@ -79,7 +80,10 @@ private:
 	Block *buffer_;
 
 	int debug_count_;
+	int meet_zero_;
 
+	vector<int> ranges_;
+	Block **blocks_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>
