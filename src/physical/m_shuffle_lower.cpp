@@ -40,6 +40,8 @@ bool ShuffleLower::prelude() {
 	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
 		/* here exchange_id_+i is for m_shuffle_upper.cpp:57 line. */
 		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_);
+		cout<<"the sender socket is: "<<PORT_BASE+shuffle_ser_obj_->exchange_id_<<endl;
+		Logging::getInstance()->log(error, shuffle_ser_obj_->seqs_[i].c_str());
 		senders_[i]->m_connect(shuffle_ser_obj_->seqs_[i].c_str());
 	}
 
@@ -47,6 +49,7 @@ bool ShuffleLower::prelude() {
 	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->seqs_.size());
 	meet_zero_=0;
 	debug_count_=0;
+	ranges_.push_back(500000);
 	ranges_.push_back(1000000);
 
 	/* pthread a send thread to send the blocks out in the pcbuffer. */

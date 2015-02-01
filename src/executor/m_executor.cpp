@@ -54,8 +54,9 @@ void ExecutorSlave::init_executor() {
 
 #ifdef SINGLE_NODE_TEST
 	stringstream actor_name;
+	framework_->SetMinThreads(5);
 	actor_name<<"actor_slave_"<<Configuration::getInstance()->get_worker_ip().c_str();
-	cout<<"actor_name: "<<actor_name.str().c_str()<<endl;
+	cout<<"actor_name: "<<actor_name.str().c_str()<<" framework: "<<framework_->GetMaxThreads()<<endl;
 	es_actor_=new ExecutorSlaveActor(*framework_, actor_name.str().c_str());
 #endif
 	getchar();

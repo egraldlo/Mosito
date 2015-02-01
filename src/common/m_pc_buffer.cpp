@@ -18,7 +18,7 @@ PCBuffer::PCBuffer(NewSchema &ns, int row)
 
 PCBuffer::~PCBuffer() {
 	// TODO Auto-generated destructor stub
-	for(int i=0; i<row; i++) {
+	for(int i=0; i<row_; i++) {
 		data_[i]->~BlockCircleQueue();
 	}
 }

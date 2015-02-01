@@ -140,6 +140,7 @@ void Coordinator::do_join_query() {
 
 		vector<string> uppers;
 		uppers.push_back("10.11.1.198");
+		uppers.push_back("10.11.1.192");
 
 	#ifdef SINGLE_NODE_TEST
 		vector<string> lowers;
@@ -150,7 +151,7 @@ void Coordinator::do_join_query() {
 	#endif
 
 
-		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,0);
+		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
 		ShuffleUpper *su=new ShuffleUpper(suso);
 
 		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort,5);
