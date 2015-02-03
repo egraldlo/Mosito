@@ -30,12 +30,18 @@ public:
 
 	bool put(Block *, int);
 	bool get(Block *&, int);
+	bool get_sorted(Block *&);
 
 private:
 //	CircleQueue<Block> **data_;
 	BlockCircleQueue **data_;
 	NewSchema ns_;
 	int row_;
+
+private:
+	Block ** merged_blocks_;
+	BufferIterator **itrs_;
+	bool begin_;
 };
 
 class SortedPCBuffer {

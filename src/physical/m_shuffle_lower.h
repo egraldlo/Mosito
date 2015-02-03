@@ -81,7 +81,8 @@ private:
 	int debug_count_;
 	int meet_zero_;
 
-	vector<int> ranges_;
+	vector<int> ranges_1_;
+	vector<int> ranges_2_;
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

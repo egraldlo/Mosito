@@ -136,25 +136,32 @@ void Coordinator::do_join_query() {
 
 //		vector<int> uppers;
 		vector<string> mostuppers;
-		mostuppers.push_back("10.11.1.197");
+		mostuppers.push_back("10.11.1.190");
 
 		vector<string> uppers;
-		uppers.push_back("10.11.1.198");
+		uppers.push_back("10.11.1.191");
 		uppers.push_back("10.11.1.192");
+		uppers.push_back("10.11.1.193");
+		uppers.push_back("10.11.1.194");
 
 	#ifdef SINGLE_NODE_TEST
 		vector<string> lowers;
-		lowers.push_back("10.11.1.190");
-		lowers.push_back("10.11.1.191");
+		lowers.push_back("10.11.1.196");
+		lowers.push_back("10.11.1.197");
+		lowers.push_back("10.11.1.198");
+		lowers.push_back("10.11.1.199");
 		vector<string> lowers1;
-		lowers1.push_back("10.11.1.191");
+		lowers1.push_back("10.11.1.196");
+		lowers1.push_back("10.11.1.197");
+		lowers1.push_back("10.11.1.198");
+		lowers1.push_back("10.11.1.199");
 	#endif
 
 
 		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
 		ShuffleUpper *su=new ShuffleUpper(suso);
 
-		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort,5);
+		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort,50);
 		ShuffleUpper *su1=new ShuffleUpper(suso1);
 
 		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);

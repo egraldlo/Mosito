@@ -120,6 +120,10 @@ public:
 
 	void* getNext();
 
+	/* for merged sort in the pcbuffer. */
+	void *getCurrent();
+	void increaseCur();
+
 	void *getNextFake();
 
 	void reset();

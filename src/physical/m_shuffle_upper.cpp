@@ -106,8 +106,10 @@ bool ShuffleUpper::execute(Block *block) {
 				block->reset();
 				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
 				if(block->get_size()==0) {
-					if(++meet_zero_==shuffle_ser_obj_->lower_seqs_.size())
+					if(++meet_zero_==shuffle_ser_obj_->lower_seqs_.size()) {
+						pthread_join(receive_p_,0);
 						return false;
+					}
 				}
 				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
 				return true;
@@ -124,7 +126,6 @@ bool ShuffleUpper::execute(Block *block) {
 bool ShuffleUpper::postlude() {
 //	shuffle_ser_obj_->child_->postlude();
 	Logging::getInstance()->log(trace, "enter the shuffle upper close function.");
-	pthread_join(receive_p_,0);
 	return true;
 }
 

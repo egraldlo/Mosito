@@ -30,6 +30,20 @@ void *BufferIterator::getNext() {
 	}
 }
 
+void *BufferIterator::getCurrent() {
+	unsigned tuple_size=buffer_->getActualSize();
+	if(current_==get_size()) {
+		return 0;
+	}
+	else {
+		return buffer_->start_+current_*tuple_size;
+	}
+}
+
+void BufferIterator::increaseCur() {
+	current_++;
+}
+
 /*
  * this function is used by merge join, cross join between two
  * equal tuple sets.

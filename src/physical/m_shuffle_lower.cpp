@@ -49,8 +49,11 @@ bool ShuffleLower::prelude() {
 	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->seqs_.size());
 	meet_zero_=0;
 	debug_count_=0;
-	ranges_.push_back(500000);
-	ranges_.push_back(1000000);
+	ranges_1_.push_back(1000000);
+	ranges_2_.push_back(250000);
+	ranges_2_.push_back(500000);
+	ranges_2_.push_back(750000);
+	ranges_2_.push_back(1000000);
 
 	/* pthread a send thread to send the blocks out in the pcbuffer. */
 	if(pthread_create(&send_p_, 0, send_route, this)==0) {
@@ -89,7 +92,10 @@ bool ShuffleLower::execute(Block *block) {
 				}
 				return false;
 			}
-			range_=buffer_->compare_start_end(ranges_);
+			if(shuffle_ser_obj_->exchange_id_==10)
+				range_=buffer_->compare_start_end(ranges_1_);
+			else
+				range_=buffer_->compare_start_end(ranges_2_);
 			if(range_==-1) continue;
 			pcbuffer_->put(buffer_, range_);
 		}
@@ -101,7 +107,7 @@ bool ShuffleLower::execute(Block *block) {
 }
 
 bool ShuffleLower::postlude() {
-	pcbuffer_->~PCBuffer();
+//	pcbuffer_->~PCBuffer();
 	shuffle_ser_obj_->child_->postlude();
 	pthread_join(send_p_, 0);
 	Logging::getInstance()->log(error, "enter the shuffle lower close function.");
