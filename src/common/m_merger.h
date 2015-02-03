@@ -8,6 +8,7 @@
 #ifndef M_MERGER_H_
 #define M_MERGER_H_
 
+#include "../common/m_timer.h"
 #include "../common/m_logging.h"
 #include "../common/m_pc_buffer.h"
 

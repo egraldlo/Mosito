@@ -49,11 +49,11 @@ bool ShuffleLower::prelude() {
 	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->seqs_.size());
 	meet_zero_=0;
 	debug_count_=0;
-	ranges_1_.push_back(1000000);
-	ranges_2_.push_back(250000);
-	ranges_2_.push_back(500000);
-	ranges_2_.push_back(750000);
-	ranges_2_.push_back(1000000);
+	ranges_1_.push_back(10000000);
+	ranges_2_.push_back(2500000);
+	ranges_2_.push_back(5000000);
+	ranges_2_.push_back(7500000);
+	ranges_2_.push_back(10000000);
 
 	/* pthread a send thread to send the blocks out in the pcbuffer. */
 	if(pthread_create(&send_p_, 0, send_route, this)==0) {
@@ -97,7 +97,8 @@ bool ShuffleLower::execute(Block *block) {
 			else
 				range_=buffer_->compare_start_end(ranges_2_);
 			if(range_==-1) continue;
-			pcbuffer_->put(buffer_, range_);
+			if(shuffle_ser_obj_->exchange_id_!=10)
+				pcbuffer_->put(buffer_, range_);
 		}
 		else {
 			return false;

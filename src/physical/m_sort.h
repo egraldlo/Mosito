@@ -14,6 +14,7 @@
 #include "../common/m_tree_node.h"
 #include "../common/m_logging.h"
 #include "../common/m_schema.h"
+#include "../common/m_timer.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -75,6 +76,8 @@ public:
 	static void *single_sort(void *);
 	void *heap_out();
 
+	int compare_start_end(unsigned long value);
+
 private:
 	SortSerObj *sort_ser_obj_;
 
@@ -106,8 +109,11 @@ private:
 
 	unsigned temp_cur_;
 
+	vector<int> dist_ranges_;
+
 private:
 	unsigned count_;
+	unsigned long long time_;
 
 private:
 	friend class boost::serialization::access;

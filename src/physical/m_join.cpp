@@ -245,11 +245,11 @@ int MergeJoin::compare(void *left, void *right) {
 	 * todo: a binding strategy to bind the 'conditions_' to child's input
 	 * left_keys_ and right_keys_,
 	 * */
-	if(*(int *)((char *)left+8)==*(int *)((char *)right+8))
+	if(*(unsigned long *)((char *)left+8)==*(unsigned long *)((char *)right+8))
 		return 1;
-	if(*(int *)((char *)left+8)<*(int *)((char *)right+8))
+	if(*(unsigned long *)((char *)left+8)<*(unsigned long *)((char *)right+8))
 		return 0;
-	if(*(int *)((char *)left+8)>*(int *)((char *)right+8))
+	if(*(unsigned long *)((char *)left+8)>*(unsigned long *)((char *)right+8))
 		return -1;
 }
 

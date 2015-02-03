@@ -93,7 +93,7 @@ bool SRShuffleLower::execute(Block *block) {
 			 *  */
 			bi=buffer_->createIterator();
 			while((tuple=bi->getNext())!=0) {
-				range_=compare_start_end(*(int *)((char *)tuple+8));
+				range_=compare_start_end(*(unsigned long *)((char *)tuple+8));
 				while((space=blocks_[range_]->allocateTuple())!=0) {
 					blocks_[range_]->storeTuple(space, tuple);
 				}

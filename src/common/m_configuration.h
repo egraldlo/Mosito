@@ -51,6 +51,9 @@ using namespace std;
 #define TIMING
 #define SINGLE_NODE_TEST
 
+/* 256*1024 histogram is 1 MB */
+#define HIST_SIZE 262144
+
 /* configure log type. */
 #define LOGGER error
 

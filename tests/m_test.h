@@ -22,6 +22,7 @@
 #include "common/m_synchronize_test.cpp"
 #include "common/m_sender_test.cpp"
 #include "analysis/m_km_test.cpp"
+#include "analysis/m_histogram_test.cpp"
 #include "deploy/m_coordinator_test.cpp"
 #include "physical/m_shuffle_lower_test.cpp"
 #include "common/m_configuration_test.cpp"
@@ -104,7 +105,7 @@ int main(int argc, char** argv) {
 //	physical::main_shuffle_3();
 
 	/* for deploy test. */
-	main_coordinator(argc, argv);
+//	main_coordinator(argc, argv);
 
 	/* for producer-consumer buffer test. */
 //	main_pcbuffer();
@@ -117,6 +118,10 @@ int main(int argc, char** argv) {
 
 	/* for merge join test. */
 //	mergejoin_test();
+
+	/* for histogram test. */
+	string path="/home/Casa/git/Mosito/table.his1";
+	main_his(path.c_str());
 
 //	sql();
 	return 0;

@@ -144,6 +144,8 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 	fd_set fds;
 
 	Block *block=new Block(BLOCK_SIZE, pcbuffer->getSchema().totalsize_);
+	unsigned long long time_;
+	startTimer(&time_);
 
 	while(1) {
 		/* set the fds empty. */
@@ -176,6 +178,7 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					 * todo: here the size of data_ is not BLOCK_SIZE.
 					 * */
 					Logging::getInstance()->log(trace, "store the data into the block.");
+					cout<<"the query time consume: "<<getSecond(time_)<<" total"<<endl;
 					block->reset();
 					block->storeBlock(data_, BLOCK_SIZE);
 					Logging::getInstance()->log(trace, "put the block into the pc_buffer.");

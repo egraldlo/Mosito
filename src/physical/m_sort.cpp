@@ -157,32 +157,28 @@ bool Sort::prelude() {
 		}
 	}
 
-	unsigned every=temp_cur_/CPU_CORE+1;
-	unsigned last=temp_cur_-(every)*(CPU_CORE-1);
+	dist_ranges_.push_back(1250000);
+	dist_ranges_.push_back(2500000);
+	dist_ranges_.push_back(3750000);
+	dist_ranges_.push_back(5000000);
+	dist_ranges_.push_back(6250000);
+	dist_ranges_.push_back(7500000);
+	dist_ranges_.push_back(87500000);
+	dist_ranges_.push_back(10000000);
+
 	for(int i=0; i<CPU_CORE; i++) {
 		range rg;
 		ranges_.push_back(rg);
 	}
-	unsigned count=0;
+
 	unsigned r=0;
+	startTimer(&time_);
 	for(int i=0; i<blocks_.size(); i++) {
 		BufferIterator *bi=blocks_[i]->createIterator();
 		while((tuple=bi->getNext())!=0) {
-			if(r!=CPU_CORE-1) {
-				if(count++<every) {
-					ranges_[r].push_back(tuple);
-				}
-				else {
-					count=1;
-					r++;
-					ranges_[r].push_back(tuple);
-				}
-			}
-			else {
-				if(count++<last) {
-					ranges_[r].push_back(tuple);
-				}
-			}
+			unsigned long value=*(unsigned long *)((char *)tuple+8);
+			r=compare_start_end(value);
+			ranges_[r].push_back(tuple);
 		}
 	}
 
@@ -195,24 +191,28 @@ bool Sort::prelude() {
 
 	count_=0;
 	Logging::getInstance()->log(error, "finished sorting by using multiple threads.");
+	cout<<"the sort time consume: "<<getSecond(time_)<<" total "<<endl;
 
 	return true;
 }
 
 bool Sort::execute(Block *block) {
-	/*
-	 * if we merge the sorted array, we spend 16s.
-	 * if we dont merge, we spend 9s, so merge spend much.
-	 *  */
+    /*
+     * sequentially read from the ranges_[0]--[CPU_CORE-1]
+     * */
 	while(temp_cur_){
 		void *desc=0;
+		void *tuple=0;
 		block->reset();
 		while((desc=block->allocateTuple())){
-			void *tuple=heap_out();
-			block->storeTuple(desc, tuple);
-			++count_;
-			if(temp_cur_%1000==0) cout<<temp_cur_<<endl;
-			if(--temp_cur_) {
+			if(!ranges_[count_].empty()) {
+				tuple=*(ranges_[count_].end()-1);
+				block->storeTuple(desc, tuple);
+				ranges_[count_].pop_back();
+				if(ranges_[count_].empty())
+					count_++;
+			}
+			if(temp_cur_--) {
 				continue;
 			}
 			else {
@@ -265,7 +265,7 @@ void *Sort::heap_out() {
 }
 
 bool Sort::compare(const void *left, const void *right) {
-	if(*(int *)((char *)left+8)>*(int *)((char *)right+8))
+	if(*(unsigned long *)((char *)left+8)>*(unsigned long *)((char *)right+8))
 		return false;
 	else
 		return true;
@@ -274,5 +274,11 @@ bool Sort::compare(const void *left, const void *right) {
 NewSchema *Sort::newoutput(){
 	return &(sort_ser_obj_->ns_);
 };
+
+int Sort::compare_start_end(unsigned long value) {
+	for(int i=0; i<dist_ranges_.size(); i++) {
+		if(value<dist_ranges_[i]) return i;
+	}
+}
 
 }
