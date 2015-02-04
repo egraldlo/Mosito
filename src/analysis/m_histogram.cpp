@@ -89,3 +89,57 @@ void Histogram::eval(const char *path) {
 	}
 	cout<<"timer: "<<getSecond(timer_)<<endl;
 }
+
+void Histogram::getbound(unsigned long &start, unsigned long &end) {
+	BufferIterator *bi=0;
+		unsigned long long timer_;
+		startTimer(&timer_);
+		for(unsigned i=0; i<blocks_.size(); i++) {
+			bi=blocks_[i]->createIterator();
+			void *tuple=0;
+			unsigned range=0;
+			while((tuple=bi->getNext())!=0) {
+				unsigned long value=*(unsigned long *)((char *)tuple+8);
+				if(value>end) end=value;
+				if(value<start) start=value;
+			}
+		}
+		cout<<"timer:---- "<<getSecond(timer_)<<endl;
+}
+
+void *Histogram1::bound(void *args) {
+	Args1 *ar=(Args1 *)args;
+	BufferIterator *bi=0;
+	void *tuple=0;
+	for(unsigned i=ar->i; i<ar->ts->blocks_.size(); ) {
+		bi=ar->ts->blocks_[i]->createIterator();
+		unsigned long value;
+		unsigned range=0;
+		while((tuple=bi->getNext())!=0) {
+			value=*(unsigned long *)((char *)tuple+8);
+			if(value>ar->ts->end_[ar->i]) ar->ts->end_[ar->i]=value;
+			if(value<ar->ts->start_[ar->i]) ar->ts->start_[ar->i]=value;
+		}
+		i=i+CPU_CORE;
+	}
+	return 0;
+
+}
+
+void Histogram1::getbound(unsigned long &start, unsigned long &end) {
+	unsigned long long timer_;
+	startTimer(&timer_);
+	for(unsigned i=0; i<CPU_CORE; i++) {
+		Args ag;
+		ag.i=i;
+		ag.ts=this;
+		pthread_create(&pths_[i], 0, bound, &ag);
+	}
+
+	for(unsigned i=0; i<CPU_CORE; i++) {
+		pthread_join(pths_[i], 0);
+	}
+
+	cout<<"timer: ---"<<getSecond(timer_)<<"      start: "<<start_[0]<<"  end: "<<end_[0]<<endl;
+}
+

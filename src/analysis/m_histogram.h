@@ -24,24 +24,24 @@ using namespace std;
 class Hist {
 public:
 	Hist() {
-		sl_=new SpineLock();
-//		pthread_mutex_init(&lock_, 0);
+//		sl_=new SpineLock();
+		pthread_mutex_init(&lock_, 0);
 		counter_=0;
 	}
 	~Hist() {
-//		pthread_mutex_destroy(&lock_);
+		pthread_mutex_destroy(&lock_);
 	}
 
-	inline void increase() {
-		sl_->acquire();
-//		pthread_mutex_lock(&lock_);
+	void increase() {
+//		sl_->acquire();
+		pthread_mutex_lock(&lock_);
 		counter_++;
-		sl_->release();
-//		pthread_mutex_unlock(&lock_);
+//		sl_->release();
+		pthread_mutex_unlock(&lock_);
 	}
 
-//	pthread_mutex_t lock_;
-	SpineLock *sl_;
+	pthread_mutex_t lock_;
+//	SpineLock *sl_;
 	unsigned counter_;
 };
 
@@ -51,6 +51,7 @@ public:
 	virtual ~Histogram();
 
 	void eval(const char *);
+	void getbound(unsigned long&, unsigned long&);
 
 //	void pthreads_eval(const char *);
 //	static void *pthread_eval(void *args);
@@ -81,8 +82,15 @@ public:
 
 	void pthreads_eval(const char *);
 	static void *pthread_e(void *args);
+	static void *bound(void *args);
+	void getbound(unsigned long&, unsigned long&);
 
 	struct Args {
+		Histogram1 *ts;
+		int i;
+	};
+
+	struct Args1 {
 		Histogram1 *ts;
 		int i;
 	};
@@ -90,6 +98,8 @@ public:
 public:
 	Hist **hist_;
 	vector<Block *> blocks_;
+	unsigned long start_[CPU_CORE];
+	unsigned long end_[CPU_CORE];
 
 private:
 	pthread_t pths_[CPU_CORE];

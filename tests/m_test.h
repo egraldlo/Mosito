@@ -113,15 +113,15 @@ int main(int argc, char** argv) {
 	/* for configuration test. */
 //	main_configuration();
 
-	/* for sort test */
-//	sort_intern_test();
-
 	/* for merge join test. */
 //	mergejoin_test();
 
 	/* for histogram test. */
 	string path="/home/Casa/git/Mosito/table.his1";
 	main_his(path.c_str());
+
+	/* for sort test */
+//	sort_intern_test();
 
 //	sql();
 	return 0;
