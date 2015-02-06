@@ -64,6 +64,7 @@ bool Merger::m_socket() {
 
 	data_=new char[BLOCK_SIZE];
 	debug_count_=0;
+	meet_zero_=0;
 
 	return true;
 }
@@ -143,6 +144,8 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 	fd_set fds;
 
 	Block *block=new Block(BLOCK_SIZE, pcbuffer->getSchema().totalsize_);
+	unsigned long long time_;
+	startTimer(&time_);
 
 	while(1) {
 		/* set the fds empty. */
@@ -174,13 +177,19 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					 * construct a block from the data and put it into the pcbuffer.
 					 * todo: here the size of data_ is not BLOCK_SIZE.
 					 * */
+					if(ret!=BLOCK_SIZE) break;
 					Logging::getInstance()->log(trace, "store the data into the block.");
 					block->reset();
 					block->storeBlock(data_, BLOCK_SIZE);
 					Logging::getInstance()->log(trace, "put the block into the pc_buffer.");
 					pcbuffer->put(block, i);
 					stringstream debug_co;
-					if(block->get_size()==0) {return false;}
+					if(block->get_size()==0) {
+						if(++meet_zero_==nlower_) {
+//							m_close();
+							return true;
+						}
+					}
 					debug_co<<"the deubg count number is: "<<debug_count_++;
 					Logging::getInstance()->log(trace, debug_co.str().c_str());
 				}

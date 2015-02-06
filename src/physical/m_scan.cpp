@@ -40,18 +40,25 @@ bool Scan::prelude() {
 	/* for directly read from file. */
 //	filename_<<scan_ser_obj_->file_path_;
 
-	splits_stream_=fopen(filename_.str().c_str(),"rb");
 	buffer_=new char[BLOCK_SIZE];
 #endif
 	startTimer(&tm_);
-	int size;
-	blocks bs;
-	while((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
-		Block *block=new Block(BLOCK_SIZE);
-		block->storeBlock(buffer_,size);
-		bs.push_back(block);
+	if(MemoryStore::getInstance()->blocks_.find(filename_.str())!=MemoryStore::getInstance()->blocks_.end()) {
+		cout<<"file is aready in the memory."<<endl;
 	}
-	MemoryStore::getInstance()->blocks_.insert(make_pair(filename_.str(), bs));
+	else {
+		splits_stream_=fopen(filename_.str().c_str(),"rb");
+		int size;
+		blocks bs;
+		while((size=fread(buffer_,1,BLOCK_SIZE,splits_stream_))!=0) {
+			Block *block=new Block(BLOCK_SIZE);
+			block->storeBlock(buffer_,size);
+			bs.push_back(block);
+		}
+		MemoryStore::getInstance()->blocks_.insert(make_pair(filename_.str(), bs));
+		fclose(splits_stream_);
+	}
+
 	cout<<filename_.str().c_str()<<" the time spend is: "<<getSecond(tm_)<<endl;
 	cursor_=0;
 //	sleep(2);
@@ -83,8 +90,8 @@ bool Scan::execute(Block *block) {
 //	}
 	if(cursor_<MemoryStore::getInstance()->blocks_[filename_.str()].size()) {
 		/* todo: BLOCK_SIZE is not the good way. */
-		block->storeBlock(MemoryStore::getInstance()->blocks_[filename_.str()][cursor_]->getAddr(), BLOCK_SIZE);
-		MemoryStore::getInstance()->blocks_[filename_.str()][cursor_++]->~Block();
+		block->storeBlock(MemoryStore::getInstance()->blocks_[filename_.str()][cursor_++]->getAddr(), BLOCK_SIZE);
+//		MemoryStore::getInstance()->blocks_[filename_.str()][cursor_++]->~Block();
 //		block=MemoryStore::getInstance()->blocks_[cursor_++];
 		return true;
 	}
@@ -94,7 +101,8 @@ bool Scan::execute(Block *block) {
 }
 
 bool Scan::postlude() {
-	fclose(splits_stream_);
+	/* the file must be closed, but ugly. todo: promotion.*/
+//	delete[] buffer_;
 	return true;
 }
 

@@ -11,9 +11,11 @@
 #include "../../src/common/m_trees.h"
 #include "../expressions/m_sort_order.h"
 #include "../common/m_configuration.h"
+#include "../common/m_synchronize.h"
 #include "../common/m_tree_node.h"
 #include "../common/m_logging.h"
 #include "../common/m_schema.h"
+#include "../common/m_timer.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -25,7 +27,29 @@ using namespace std;
 
 namespace physical {
 
+#ifndef MULTI_PARTITION
 typedef vector<void *> range;
+#endif
+
+#ifdef MULTI_PARTITION
+struct range {
+//public:
+//	range();
+//	~range();
+	vector<void *> ranges;
+//	pthread_mutex_t lock_;
+	SpineLock *lock_;
+
+	inline void put(void *tuple) {
+//		pthread_mutex_lock(&lock_);
+		lock_->acquire();
+		ranges.push_back(tuple);
+		lock_->release();
+//		pthread_mutex_unlock(&lock_);
+	}
+
+};
+#endif
 
 class SortSerObj {
 public:
@@ -73,7 +97,21 @@ public:
 	/* max the last tuple. */
 	static bool compare(const void *left, const void *right);
 	static void *single_sort(void *);
+
+#ifndef MULTI_PARTITION
 	void *heap_out();
+#endif
+
+	int compare_start_end(unsigned long value);
+
+#ifdef MULTI_PARTITION
+	static void *single_partition(void *);
+public:
+	struct Argument {
+		Sort *pthis;
+		int range;
+	};
+#endif
 
 private:
 	SortSerObj *sort_ser_obj_;
@@ -106,8 +144,11 @@ private:
 
 	unsigned temp_cur_;
 
+	vector<int> dist_ranges_;
+
 private:
 	unsigned count_;
+	unsigned long long time_;
 
 private:
 	friend class boost::serialization::access;

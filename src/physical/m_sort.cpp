@@ -144,6 +144,7 @@ bool Sort::prelude() {
 
 	Logging::getInstance()->log(trace, "will get all the data and sort.");
 	void *tuple=0;
+	temp_cur_=0;
 	buffer_=new Block(BLOCK_SIZE, (sort_ser_obj_->ns_).get_bytes());
 	schema_=new Schema(&(sort_ser_obj_->ns_));
 	while(sort_ser_obj_->child_->execute(buffer_)) {
@@ -155,67 +156,163 @@ bool Sort::prelude() {
 			temp_cur_++;
 		}
 	}
+//	 dist_ranges_.push_back(625000);
+//	dist_ranges_.push_back(12500000);
+//	dist_ranges_.push_back(1875000);
+//	dist_ranges_.push_back(2500000);
+//	dist_ranges_.push_back(3125000);
+//	dist_ranges_.push_back(37500000);
+//	dist_ranges_.push_back(4375000);
+	dist_ranges_.push_back(2500);
+	dist_ranges_.push_back(5000);
+//	dist_ranges_.push_back(5625000);
+//	dist_ranges_.push_back(62500000);
+//	dist_ranges_.push_back(6875000);
+//	dist_ranges_.push_back(7500000);
+//	dist_ranges_.push_back(8125000);
+//	dist_ranges_.push_back(87500000);
+//	dist_ranges_.push_back(9375000);
+	dist_ranges_.push_back(7500);
+	dist_ranges_.push_back(10000);
 
-	unsigned every=temp_cur_/CPU_CORE+1;
-	unsigned last=temp_cur_-(every)*(CPU_CORE-1);
+	/*
+	 *  range number: 10255782
+		range number: 10244956
+		range number: 10251702
+		range number: 10249582
+		range number: 10257296
+		range number: 10241886
+		range number: 10196842
+		range number: 10201954
+
+		range number: 10251824
+		range number: 10245351
+		range number: 10249813
+		range number: 10250504
+		range number: 10252037
+		range number: 10247249
+		range number: 10199066
+		range number: 10204156
+
+		range number: 10252072
+		range number: 10241256
+		range number: 10255216
+		range number: 10261856
+		range number: 10252796
+		range number: 10243164
+		range number: 10194676
+		range number: 10198964
+
+
+	 *
+	 *  */
+
 	for(int i=0; i<CPU_CORE; i++) {
+#ifndef MULTI_PARTITION
 		range rg;
+#endif
+#ifdef MULTI_PARTITION
+		range rg;
+//		range *rg=new range();
+//		pthread_mutex_init(&rg.lock_, 0);
+		SpineLock *sl=new SpineLock();
+		rg.lock_=sl;
+		vector<void *> ranges;
+		rg.ranges=ranges;
 		ranges_.push_back(rg);
+#endif
+#ifndef MULTI_PARTITION
+		ranges_.push_back(rg);
+#endif
 	}
-	unsigned count=0;
+
 	unsigned r=0;
+	/* blocks_ is the vector of the data in memory. */
+	startTimer(&time_);
+
+#ifdef MULTI_PARTITION
+	/* partition phase. */
+	for(int i=0; i<CPU_CORE; i++) {
+		Argument argument;
+		argument.pthis=this;
+		argument.range=i;
+		pthread_create(&pths_[i], 0, single_partition, &argument);
+	}
+	for(int i=0; i<CPU_CORE; i++) {
+		pthread_join(pths_[i], 0);
+	}
+	cout<<"the partition time consume: "<<getSecond(time_)<<" total "<<endl;
+
+	/* sort phase. */
+	for(int i=0; i<CPU_CORE; i++) {
+		vector<void *> *ranges=&ranges_[i].ranges;
+		cout<<"range number: "<<ranges->size()<<endl;
+		pthread_create(&pths_[i], 0, single_sort, ranges);
+	}
+	for(int i=0; i<CPU_CORE; i++) {
+		pthread_join(pths_[i], 0);
+	}
+	count_=1;
+#endif
+
+#ifndef MULTI_PARTITION
 	for(int i=0; i<blocks_.size(); i++) {
 		BufferIterator *bi=blocks_[i]->createIterator();
 		while((tuple=bi->getNext())!=0) {
-			if(r!=CPU_CORE-1) {
-				if(count++<every) {
-					ranges_[r].push_back(tuple);
-				}
-				else {
-					count=1;
-					r++;
-					ranges_[r].push_back(tuple);
-				}
-			}
-			else {
-				if(count++<last) {
-					ranges_[r].push_back(tuple);
-				}
-			}
+			unsigned long value=*(unsigned long *)((char *)tuple+8);
+			r=compare_start_end(value);
+			ranges_[r].push_back(tuple);
 		}
 	}
+	cout<<"the partition time consume: "<<getSecond(time_)<<" total "<<endl;
 
+	/* sort phase. */
 	for(int i=0; i<CPU_CORE; i++) {
 		pthread_create(&pths_[i], 0, single_sort, &ranges_[i]);
 	}
 	for(int i=0; i<CPU_CORE; i++) {
 		pthread_join(pths_[i], 0);
 	}
-
 	count_=0;
+#endif
+
 	Logging::getInstance()->log(error, "finished sorting by using multiple threads.");
+	cout<<"the sort time consume: "<<getSecond(time_)<<" total "<<endl;
 
 	return true;
 }
 
 bool Sort::execute(Block *block) {
-	/*
-	 * if we merge the sorted array, we spend 16s.
-	 * if we dont merge, we spend 9s, so merge spend much.
-	 *  */
+    /*
+     * sequentially read from the ranges_[0]--[CPU_CORE-1]
+     * */
 	while(temp_cur_){
 		void *desc=0;
+		void *tuple=0;
 		block->reset();
 		while((desc=block->allocateTuple())){
-			void *tuple=heap_out();
-			block->storeTuple(desc, tuple);
-			++count_;
-			if(--temp_cur_)
-				continue;
-			else {
-				cout<<"hello, I am sort false;"<<endl;
-				block->build(BLOCK_SIZE, 0);
-				return true;
+#ifdef MULTI_PARTITION
+			if(!ranges_[count_].ranges.empty()) {
+				tuple=*(ranges_[count_].ranges.end()-1);
+				block->storeTuple(desc, tuple);
+				ranges_[count_].ranges.pop_back();
+				if(ranges_[count_].ranges.empty()) {
+					count_--;
+				}
+			}
+#endif
+#ifndef MULTI_PARTITION
+			if(!ranges_[count_].empty()) {
+				tuple=*(ranges_[count_].end()-1);
+				block->storeTuple(desc, tuple);
+				ranges_[count_].pop_back();
+				if(ranges_[count_].empty())
+					count_++;
+			}
+#endif
+			--temp_cur_;
+			if(temp_cur_==0) {
+				break;
 			}
 		}
 		block->assembling(BLOCK_SIZE, (sort_ser_obj_->ns_).get_bytes());
@@ -225,16 +322,44 @@ bool Sort::execute(Block *block) {
 }
 
 bool Sort::postlude() {
+//	blocks_.clear();
+//	ranges_.clear();
+//	buffer_->~Buffer();
 	sort_ser_obj_->child_->postlude();
-	cout<<"数组的个数为： "<<count_<<endl;
+//	cout<<"数组的个数为： "<<count_<<endl;
 	return true;
 }
 
+#ifdef MULTI_PARTITION
+void *Sort::single_partition(void *args) {
+	Argument *argument=(Argument *)args;
+	BufferIterator *bi=0;
+	void *tuple=0;
+	for(unsigned i=argument->range; i<argument->pthis->blocks_.size(); ) {
+		bi=argument->pthis->blocks_[i]->createIterator();
+		unsigned long value;
+		int part=0;
+		while((tuple=bi->getNext())!=0) {
+			value=*(unsigned long *)((char *)tuple+8);
+			part=value/2500;
+			argument->pthis->ranges_[part].put(tuple);
+		}
+		i=i+CPU_CORE;
+	}
+	return 0;
+}
+#endif
+
 void *Sort::single_sort(void *args) {
+#ifdef MULTI_PARTITION
+	vector<void *> *pargs=(vector<void *> *)args;
+#endif
+#ifndef MULTI_PARTITION
 	range *pargs=(range *)args;
+#endif
 	stable_sort(pargs->begin(), pargs->end(), compare);
 }
-
+#ifndef MULTI_PARTITION
 void *Sort::heap_out() {
 	/* ugly and slow way, must be changed to loser tree or heap. */
 	void *most=0;
@@ -257,9 +382,10 @@ void *Sort::heap_out() {
 	ranges_[most_cur].pop_back();
 	return most;
 }
+#endif
 
 bool Sort::compare(const void *left, const void *right) {
-	if(*(int *)((char *)left+8)>*(int *)((char *)right+8))
+	if(*(unsigned long *)((char *)left+8)>*(unsigned long *)((char *)right+8))
 		return false;
 	else
 		return true;
@@ -268,5 +394,11 @@ bool Sort::compare(const void *left, const void *right) {
 NewSchema *Sort::newoutput(){
 	return &(sort_ser_obj_->ns_);
 };
+
+int Sort::compare_start_end(unsigned long value) {
+	for(int i=0; i<dist_ranges_.size(); i++) {
+		if(value<dist_ranges_[i]) return i;
+	}
+}
 
 }

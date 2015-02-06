@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 #include <string>
+#include <vector>
 #include <iostream>
 using namespace std;
 
@@ -62,8 +63,15 @@ public:
 	void updateFree();
 	/* build a block which is not full. */
 	void build(int, int);
+	void tag(int, int);
 	/* get tuples */
-	unsigned get_size();
+	inline unsigned get_size() {
+		return *(int *)(start_+size_-4);
+	}
+
+	/* ugly! ugly! ugly! */
+	/* get the first tuple */
+	int compare_start_end(vector<int>);
 
 	bool storeTuple(void *, void *);
 
@@ -112,6 +120,10 @@ public:
 	virtual ~BufferIterator();
 
 	void* getNext();
+
+	/* for merged sort in the pcbuffer. */
+	void *getCurrent();
+	void increaseCur();
 
 	void *getNextFake();
 

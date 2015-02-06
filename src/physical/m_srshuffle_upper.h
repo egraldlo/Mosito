@@ -12,7 +12,7 @@
 #include "../common/m_pc_buffer.h"
 #include "../common/m_tree_node.h"
 #include "../common/m_merger.h"
-#include "m_srshuffle_lower.h"
+#include "m_shuffle_lower.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -22,15 +22,15 @@ namespace physical {
 
 class SRShuffleUpperSerObj {
 public:
-	SRShuffleUpperSerObj(NewSchema, vector<int>, vector<int>, QueryPlan *, int);
+	SRShuffleUpperSerObj(NewSchema, vector<string>, vector<string>, QueryPlan *, int);
 	virtual ~SRShuffleUpperSerObj();
 
 	SRShuffleUpperSerObj(){};
 
 public:
 	NewSchema ns_;
-	vector<int> upper_seqs_;
-	vector<int> lower_seqs_;
+	vector<string> upper_seqs_;
+	vector<string> lower_seqs_;
 	QueryPlan* child_;
 	int exchange_id_;
 
@@ -81,6 +81,10 @@ private:
 	PCBuffer *pcbuffer_;
 
 	Block *block_temp_;
+
+private:
+	int debug_count_;
+	int meet_zero_;
 
 private:
 	friend class boost::serialization::access;

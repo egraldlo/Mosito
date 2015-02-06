@@ -30,6 +30,20 @@ void *BufferIterator::getNext() {
 	}
 }
 
+void *BufferIterator::getCurrent() {
+	unsigned tuple_size=buffer_->getActualSize();
+	if(current_==get_size()) {
+		return 0;
+	}
+	else {
+		return buffer_->start_+current_*tuple_size;
+	}
+}
+
+void BufferIterator::increaseCur() {
+	current_++;
+}
+
 /*
  * this function is used by merge join, cross join between two
  * equal tuple sets.
@@ -106,8 +120,29 @@ void Block::build(int size, int number) {
 	*(int *)p=number;
 }
 
-unsigned Block::get_size() {
-	return *(int *)(start_+size_-4);
+void Block::tag(int size, int tg) {
+	void *p=start_+size-8;
+	*(int *)p=tg;
+}
+
+int Block::compare_start_end(vector<int> bounds) {
+	int ret;
+	unsigned long start=*(unsigned long *)((char *)start_+8);
+	unsigned long end=*(unsigned long *)((char *)start_+tuple_size_*(get_size()-1)+8);
+	for(int i=0; i<bounds.size(); i++) {
+		if(start<bounds[i] && end<bounds[i]) {
+			ret=i;
+			break;
+		}
+		if(end>bounds[i]) {
+			continue;
+		}
+		if(start>bounds[i] && end<bounds[i]) {
+			ret=-1;
+			break;
+		}
+	}
+	return ret;
 }
 
 bool Block::storeBlock(void *src, unsigned size) {

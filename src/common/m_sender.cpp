@@ -65,8 +65,14 @@ bool Sender::m_send(const char *data, unsigned size) {
 		return false;
 	}
 	else {
-		Logging::getInstance()->log(trace,"sending data successfully!");
-		return true;
+		if(ret==size){
+			Logging::getInstance()->log(trace,"sending data successfully!");
+			return true;
+		}
+		else {
+			Logging::getInstance()->log(error,"error in sending data!");
+			return false;
+		}
 	}
 }
 

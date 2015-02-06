@@ -9,7 +9,7 @@
 
 namespace physical {
 
-SRShuffleLowerSerObj::SRShuffleLowerSerObj(NewSchema ns, vector<int> seqs, QueryPlan* child, int exchange_id)
+SRShuffleLowerSerObj::SRShuffleLowerSerObj(NewSchema ns, vector<string> seqs, QueryPlan* child, int exchange_id)
 :ns_(ns), seqs_(seqs), child_(child), exchange_id_(exchange_id){
 
 }
@@ -35,17 +35,23 @@ bool SRShuffleLower::prelude() {
 	/* create a thread to send the block into the upper. */
 	Logging::getInstance()->log(trace, "enter the shuffle lower open function.");
 	senders_=new Sender*[shuffle_ser_obj_->seqs_.size()];
+	/* the block array to store the blocks. */
+	blocks_=new Block*[shuffle_ser_obj_->seqs_.size()];
 
 	/* todo: modify here, the port_base is for testing. */
 	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
 		/* here exchange_id_+i is for m_shuffle_upper.cpp:57 line. */
-		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_+i);
-		senders_[i]->m_connect("127.0.0.1");
+		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_);
+		senders_[i]->m_connect(shuffle_ser_obj_->seqs_[i].c_str());
+		blocks_[i]=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
 	}
 
 	buffer_=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
 	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->seqs_.size());
+
+	meet_zero_=0;
 	debug_count_=0;
+	ranges_.push_back(1000000);
 
 	/* pthread a send thread to send the blocks out in the pcbuffer. */
 	if(pthread_create(&send_p_, 0, send_route, this)==0) {
@@ -66,15 +72,37 @@ bool SRShuffleLower::execute(Block *block) {
 	 * this function will get the data from the lower pipeline and
 	 * store the blocks into pcbuffer.
 	 * */
+
+	BufferIterator *bi=0;
 	while(1) {
-		for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
-			if(shuffle_ser_obj_->child_->execute(buffer_)){
-				pcbuffer_->put(buffer_, i);
-		//			senders_[i]->m_send((const char *)buffer_->getAddr(),BLOCK_SIZE);
-			}
-			else {
+		int range_=0;
+		void *tuple=0;
+		void *space=0;
+		if(shuffle_ser_obj_->child_->execute(buffer_)){
+			if(buffer_->get_size()==0) {
+				for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
+					buffer_->build(BLOCK_SIZE, 0);
+					pcbuffer_->put(buffer_, i);
+				}
 				return false;
 			}
+			/*
+			 * here we can use partition function to range partition
+			 * the data. and put the i-range block into the pcbuffer.
+			 * need a block array to allocate the block array.
+			 *  */
+			bi=buffer_->createIterator();
+			while((tuple=bi->getNext())!=0) {
+				range_=compare_start_end(*(unsigned long *)((char *)tuple+8));
+				while((space=blocks_[range_]->allocateTuple())!=0) {
+					blocks_[range_]->storeTuple(space, tuple);
+				}
+				pcbuffer_->put(blocks_[range_], range_);
+				blocks_[range_]->reset();
+			}
+		}
+		else {
+			return false;
 		}
 	}
 	return true;
@@ -83,8 +111,14 @@ bool SRShuffleLower::execute(Block *block) {
 bool SRShuffleLower::postlude() {
 	shuffle_ser_obj_->child_->postlude();
 	pthread_join(send_p_, 0);
-	Logging::getInstance()->log(trace, "enter the shuffle lower close function.");
+	Logging::getInstance()->log(error, "enter the shuffle lower close function.");
 	return true;
+}
+
+int SRShuffleLower::compare_start_end(int value) {
+	for(int i=0; i<ranges_.size(); i++) {
+		if(value<ranges_[i]) return i;
+	}
 }
 
 void * SRShuffleLower::send_route(void *args) {
@@ -97,13 +131,18 @@ void * SRShuffleLower::send_route(void *args) {
 			/* todo: a ugly coding here, must use a general way. */
 			empty_or_not_=pthis->pcbuffer_->get(get_block_, i);
 			if(empty_or_not_==true) {
-//				block_temp_=get_block_;
+				block_temp_->reset();
 				block_temp_->storeBlock(get_block_->getAddr(), BLOCK_SIZE);
 				pthis->senders_[i]->m_send((const char *)block_temp_->getAddr(), BLOCK_SIZE);
 				Logging::getInstance()->log(trace, "send a block to the upper node.");
 				stringstream debug_co;
 				debug_co<<"-------send already: "<<pthis->debug_count_++;
 				Logging::getInstance()->log(trace, debug_co.str().c_str());
+				if(get_block_->get_size()==0) {
+					if(++pthis->meet_zero_==pthis->shuffle_ser_obj_->seqs_.size()){
+						pthis->senders_[i]->m_close();return 0;
+					}
+				}
 			}
 			else {
 				continue;

@@ -54,8 +54,8 @@ bool Debug::execute(Block *) {
 //		cout<<"actural size: "<<buffer_->getActualSize()<<endl;
 //		Logging::getInstance()->log(error,"---------------------");
 //		getchar();
-		if(buffer_->get_size()==0)
-			break;
+//		if(buffer_->get_size()==0)
+//			break;
 		bi=buffer_->createIterator();
 		while((tuple=bi->getNext())!=0) {
 #ifndef TIMING

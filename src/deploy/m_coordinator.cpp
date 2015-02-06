@@ -63,6 +63,7 @@ void* Coordinator::register_worker(void *args) {
 		pthis->aconnect(ip_port.str().c_str());
 		/* send the endpoints_info to the new node and then add it in. */
 		for(int i=0; i<pthis->endpoints_info_.size(); i++) {
+			usleep(100000);
 			MessageIP ip(pthis->endpoints_info_[i].c_str());
 			framework.Send(ip, Theron::Address(), Theron::Address(new_node.str().c_str()));
 		}
@@ -98,32 +99,32 @@ void Coordinator::do_join_query() {
 		ScanSerObj *scan_ser_obj1=new ScanSerObj(file1);
 
 		DataType *e1=new UnLongType(t_long);
-		DataType *e2=new IntegerType(t_int);
-		DataType *e3=new IntegerType(t_int);
-		DataType *e4=new IntegerType(t_int);
-		DataType *e5=new IntegerType(t_int);
-		DataType *e6=new IntegerType(t_int);
+		DataType *e2=new UnLongType(t_long);
+//		DataType *e3=new IntegerType(t_int);
+//		DataType *e4=new IntegerType(t_int);
+//		DataType *e5=new IntegerType(t_int);
+//		DataType *e6=new IntegerType(t_int);
 		vector<DataType *> ve;
 		ve.push_back(e1);
 		ve.push_back(e2);
-		ve.push_back(e3);
-		ve.push_back(e4);
-		ve.push_back(e5);
-		ve.push_back(e6);
+//		ve.push_back(e3);
+//		ve.push_back(e4);
+//		ve.push_back(e5);
+//		ve.push_back(e6);
 
 		vector<DataType *> ve1;
 		ve1.push_back(e1);
 		ve1.push_back(e2);
-		ve1.push_back(e3);
-		ve1.push_back(e4);
-		ve1.push_back(e5);
-		ve1.push_back(e6);
+//		ve1.push_back(e3);
+//		ve1.push_back(e4);
+//		ve1.push_back(e5);
+//		ve1.push_back(e6);
 		ve1.push_back(e1);
 		ve1.push_back(e2);
-		ve1.push_back(e3);
-		ve1.push_back(e4);
-		ve1.push_back(e5);
-		ve1.push_back(e6);
+//		ve1.push_back(e3);
+//		ve1.push_back(e4);
+//		ve1.push_back(e5);
+//		ve1.push_back(e6);
 
 		Scan *toser=new Scan(ve,scan_ser_obj);
 		Scan *toser1=new Scan(ve,scan_ser_obj1);
@@ -135,23 +136,38 @@ void Coordinator::do_join_query() {
 
 //		vector<int> uppers;
 		vector<string> mostuppers;
-		mostuppers.push_back("10.11.1.197");
+		mostuppers.push_back("10.11.1.190");
 
 		vector<string> uppers;
-		uppers.push_back("10.11.1.198");
+		uppers.push_back("10.11.1.191");
+		uppers.push_back("10.11.1.192");
+		uppers.push_back("10.11.1.193");
+		uppers.push_back("10.11.1.194");
 
 	#ifdef SINGLE_NODE_TEST
 		vector<string> lowers;
-		lowers.push_back("10.11.1.190");
+		lowers.push_back("10.11.1.191");
+		lowers.push_back("10.11.1.192");
+		lowers.push_back("10.11.1.193");
+		lowers.push_back("10.11.1.194");
+//		lowers.push_back("10.11.1.196");
+//		lowers.push_back("10.11.1.197");
+//		lowers.push_back("10.11.1.198");
+//		lowers.push_back("10.11.1.199");
 		vector<string> lowers1;
 		lowers1.push_back("10.11.1.191");
+		lowers1.push_back("10.11.1.192");
+//		lowers1.push_back("10.11.1.196");
+//		lowers1.push_back("10.11.1.197");
+//		lowers1.push_back("10.11.1.198");
+//		lowers1.push_back("10.11.1.199");
 	#endif
 
 
-		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,0);
+		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
 		ShuffleUpper *su=new ShuffleUpper(suso);
 
-		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort,5);
+		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort1,50);
 		ShuffleUpper *su1=new ShuffleUpper(suso1);
 
 		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);

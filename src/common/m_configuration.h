@@ -50,12 +50,17 @@ using namespace std;
 #define EXPERIMENT_TEST
 #define TIMING
 #define SINGLE_NODE_TEST
+#define MULTI_PARTITION
+
+/* 256*1024 histogram is 1 MB */
+#define HIST_SIZE 262144
 
 /* configure log type. */
 #define LOGGER error
 
 /* the cpu core of the machine. */
 #define CPU_CORE 4
+#define MUL 4
 
 static int counter=0;
 
