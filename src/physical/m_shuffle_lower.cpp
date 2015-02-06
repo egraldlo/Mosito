@@ -126,7 +126,7 @@ void * ShuffleLower::send_route(void *args) {
 				debug_co<<"-------send already: "<<pthis->debug_count_++;
 				Logging::getInstance()->log(trace, debug_co.str().c_str());
 //				block_temp_->storeBlock(get_block_->getAddr(), BLOCK_SIZE);
-				block_temp_->tag(BLOCK_SIZE, debug_count_);
+				block_temp_->tag(BLOCK_SIZE, pthis->debug_count_);
 				pthis->senders_[i]->m_send((const char *)block_temp_->getAddr(), BLOCK_SIZE);
 				Logging::getInstance()->log(trace, "send a block to the upper node.");
 				if(block_temp_->get_size()==0) {
