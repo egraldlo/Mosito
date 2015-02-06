@@ -52,8 +52,10 @@ bool ShuffleLower::prelude() {
 	count_child_=0;
 	ranges_1_.push_back(10000);
 //	ranges_2_.push_back(2500000);
+	ranges_2_.push_back(2500);
 	ranges_2_.push_back(5000);
 //	ranges_2_.push_back(7500000);
+	ranges_2_.push_back(7500);
 	ranges_2_.push_back(10000);
 
 	/* pthread a send thread to send the blocks out in the pcbuffer. */

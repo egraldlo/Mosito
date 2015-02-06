@@ -59,7 +59,7 @@ using namespace std;
 #define LOGGER error
 
 /* the cpu core of the machine. */
-#define CPU_CORE 2
+#define CPU_CORE 4
 #define MUL 4
 
 static int counter=0;

@@ -141,13 +141,15 @@ void Coordinator::do_join_query() {
 		vector<string> uppers;
 		uppers.push_back("10.11.1.191");
 		uppers.push_back("10.11.1.192");
-//		uppers.push_back("10.11.1.193");
-//		uppers.push_back("10.11.1.194");
+		uppers.push_back("10.11.1.193");
+		uppers.push_back("10.11.1.194");
 
 	#ifdef SINGLE_NODE_TEST
 		vector<string> lowers;
 		lowers.push_back("10.11.1.191");
 		lowers.push_back("10.11.1.192");
+		lowers.push_back("10.11.1.193");
+		lowers.push_back("10.11.1.194");
 //		lowers.push_back("10.11.1.196");
 //		lowers.push_back("10.11.1.197");
 //		lowers.push_back("10.11.1.198");

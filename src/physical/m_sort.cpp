@@ -163,6 +163,7 @@ bool Sort::prelude() {
 //	dist_ranges_.push_back(3125000);
 //	dist_ranges_.push_back(37500000);
 //	dist_ranges_.push_back(4375000);
+	dist_ranges_.push_back(2500);
 	dist_ranges_.push_back(5000);
 //	dist_ranges_.push_back(5625000);
 //	dist_ranges_.push_back(62500000);
@@ -171,6 +172,7 @@ bool Sort::prelude() {
 //	dist_ranges_.push_back(8125000);
 //	dist_ranges_.push_back(87500000);
 //	dist_ranges_.push_back(9375000);
+	dist_ranges_.push_back(7500);
 	dist_ranges_.push_back(10000);
 
 	/*
@@ -339,7 +341,7 @@ void *Sort::single_partition(void *args) {
 		int part=0;
 		while((tuple=bi->getNext())!=0) {
 			value=*(unsigned long *)((char *)tuple+8);
-			part=value/5000;
+			part=value/2500;
 			argument->pthis->ranges_[part].put(tuple);
 		}
 		i=i+CPU_CORE;
