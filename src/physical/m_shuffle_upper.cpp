@@ -47,6 +47,15 @@ bool ShuffleUpper::prelude() {
 		merger_->m_socket();
 		Logging::getInstance()->log(error, "serialize the task and send the task to remote node.");
 
+		cout<<"the upper size is: "<<shuffle_ser_obj_->upper_seqs_.size()<<endl;
+		/* before we send the task out, we must check whether other uppers are ready. */
+		if(shuffle_ser_obj_->upper_seqs_.size()!=1) {
+			if(gather_all()==true) {
+				Logging::getInstance()->log(error, "ready for send the task out!");
+			}
+		}
+		/* waiting for accepting the connection. */
+		usleep(10000);
 		serialization();
 	}
 	else {
@@ -56,13 +65,13 @@ bool ShuffleUpper::prelude() {
 		 * */
 		merger_=new Merger(shuffle_ser_obj_->lower_seqs_.size(), PORT_BASE+shuffle_ser_obj_->exchange_id_);
 		merger_->m_socket();
+		if(send_gather()==true) Logging::getInstance()->log(error, "receive the signal!");
 	}
 	merger_->m_accept();
 
-	/* waiting for accepting the connection. */
-	usleep(10000);
 
 	pcbuffer_=new PCBuffer(shuffle_ser_obj_->ns_, shuffle_ser_obj_->lower_seqs_.size());
+	block_temp_=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
 	meet_zero_=0;
 	debug_count_=0;
 
@@ -80,21 +89,6 @@ bool ShuffleUpper::prelude() {
 bool ShuffleUpper::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
-
-	/* we will use one to multiple model.
-	char *data=(char *)malloc(BLOCK_SIZE);
-	if(merger_->m_receive(data)) {
-		Logging::getInstance()->log(trace, "get a block from the sender!");
-		block->storeBlock(data, BLOCK_SIZE);
-//		getchar();
-		return true;
-	}
-	else {
-		Logging::getInstance()->log(trace, "receive all the blocks from the sender.");
-		return false;
-	}
-	*/
-
 	/* todo: a traverse strategy must be used here. */
 	bool empty_or_not_;
 	while(1) {
@@ -102,7 +96,6 @@ bool ShuffleUpper::execute(Block *block) {
 			/* todo: a ugly coding here, must use a general way. */
 			empty_or_not_=pcbuffer_->get(block_temp_, i);
 			if(empty_or_not_==true) {
-//				block=block_temp_;
 				block->reset();
 				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
 				if(block->get_size()==0) {
@@ -125,7 +118,8 @@ bool ShuffleUpper::execute(Block *block) {
 
 bool ShuffleUpper::postlude() {
 //	shuffle_ser_obj_->child_->postlude();
-	Logging::getInstance()->log(trace, "enter the shuffle upper close function.");
+	merger_->m_close();
+	Logging::getInstance()->log(error, "enter the shuffle upper close function.");
 	return true;
 }
 
@@ -146,6 +140,46 @@ bool ShuffleUpper::serialization() {
 		ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_[i]);
 	}
 	return true;
+}
+
+bool ShuffleUpper::gather_all() {
+	int receive_=0;
+	cout<<"hello=========================================="<<endl;
+	Merger *m=new Merger(shuffle_ser_obj_->upper_seqs_.size()-1, 10000+shuffle_ser_obj_->exchange_id_);
+	Sender *s=new Sender(10001+shuffle_ser_obj_->exchange_id_);
+	m->m_socket();
+	if(m->m_accept()==true) {
+		for(int i=0; i<shuffle_ser_obj_->upper_seqs_.size()-1; i++) {
+			s->m_connect(shuffle_ser_obj_->upper_seqs_[i+1]);
+		}
+		s->m_close();
+		m->m_close();
+		return true;
+	};
+}
+
+bool ShuffleUpper::send_gather() {
+	cout<<"hello8888888888888888888888888888888888888888888888"<<endl;
+	Merger *m=new Merger(1, 10001+shuffle_ser_obj_->exchange_id_);
+	Sender *s=new Sender(10000+shuffle_ser_obj_->exchange_id_);
+	m->m_socket();
+	while(true) {
+		if(s->m_connect(shuffle_ser_obj_->upper_seqs_[0])==false) {
+			usleep(1000);
+			continue;
+		}
+		else {
+			break;
+		}
+	}
+//	while(!s->m_connect(shuffle_ser_obj_->upper_seqs_[0])) {
+//		cout<<"waiting....."<<endl;
+//	};
+	if(m->m_accept()==true) {
+		s->m_close();
+		m->m_close();
+		return true;
+	}
 }
 
 NewSchema *ShuffleUpper::newoutput() {

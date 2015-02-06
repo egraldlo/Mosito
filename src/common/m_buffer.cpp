@@ -120,6 +120,11 @@ void Block::build(int size, int number) {
 	*(int *)p=number;
 }
 
+void Block::tag(int size, int tg) {
+	void *p=start_+size-8;
+	*(int *)p=tg;
+}
+
 int Block::compare_start_end(vector<int> bounds) {
 	int ret;
 	unsigned long start=*(unsigned long *)((char *)start_+8);

@@ -95,24 +95,24 @@ bool MergeJoin::prelude() {
 	/* collect the left stream data. */
 	while(merge_join_ser_obj_->left_->execute(left_block_)) {
 		lb_itr_=left_block_->createIterator();
-		lb_itr_->reset();
 		while((ltuple=lb_itr_->getNext())!=0) {
 			left_flex_block_->storeTupleOK(ltuple);
 			tablesize_left++;
 		}
 	}
+	merge_join_ser_obj_->left_->postlude();
 
 	Logging::getInstance()->log(error, "store the right tables... ...");
 	merge_join_ser_obj_->right_->prelude();
 	/* collect the right stream data. */
 	while(merge_join_ser_obj_->right_->execute(right_block_)) {
 		rb_itr_=right_block_->createIterator();
-		rb_itr_->reset();
 		while((rtuple=rb_itr_->getNext())!=0) {
 			right_flex_block_->storeTupleOK(rtuple);
 			tablesize_right++;
 		}
 	}
+	merge_join_ser_obj_->right_->postlude();
 
 	left_flex_block_->assembling(tablesize_left*left_schema_->get_bytes()+4, left_schema_->get_bytes());
 	right_flex_block_->assembling(tablesize_right*right_schema_->get_bytes()+4, right_schema_->get_bytes());
@@ -120,7 +120,6 @@ bool MergeJoin::prelude() {
 	rfb_itr_=right_flex_block_->createIterator();
 
 	cout<<"左右表的大小为--： "<<tablesize_left<<"  "<<tablesize_right<<endl;
-//	getchar();
 
 	over_=false;
 	return true;
@@ -149,30 +148,15 @@ bool MergeJoin::execute(Block *block) {
 
 	block->reset();
 
-//	if(over_) {
-//		cout<<"this block has tupleshahahahhahahhaha: "<<count_<<endl;
-//		getchar();
-//		return false;
-//	}
 	while(l&&r) {
 		if(compare(l, r)==1) {
 			if((desc=block->allocateTuple())!=0) {
 				combine(desc, l, r);
 				block->updateFree();
 				++count_;
-//				for(unsigned i=0; i<output_schema_->get_columns(); i++) {
-//					print(output_schema_->getDataType(i)->get_type(),
-//							output_schema_->get_addr(desc, i));
-//				}
-//				cout<<endl<<count_++<<endl;
-//				usleep(10000);
 			}
 			else {
-//				cout<<"this block has tuples: "<<count_<<endl;
-//				getchar();
 				block->build(BLOCK_SIZE, count_);
-//				if(!(l&&r))
-//					over_=true;
 				return true;
 			}
 			fake_l=lfb_itr_->getNextFake();
@@ -185,11 +169,7 @@ bool MergeJoin::execute(Block *block) {
 						++count_;
 					}
 					else {
-//						cout<<"this block has tuples: "<<count_<<endl;
-//						getchar();
 						block->build(BLOCK_SIZE, count_);
-//						if(!(l&&r))
-//							over_=true;
 						return true;
 					}
 					fake_l=lfb_itr_->getNextFake();
@@ -206,11 +186,7 @@ bool MergeJoin::execute(Block *block) {
 						++count_;
 					}
 					else {
-//						cout<<"this block has tuples: "<<count_<<endl;
-//						getchar();
 						block->build(BLOCK_SIZE, count_);
-//						if(!(l&&r))
-//							over_=true;
 						return true;
 					}
 					fake_r=lfb_itr_->getNextFake();
@@ -229,14 +205,8 @@ bool MergeJoin::execute(Block *block) {
 			l=lfb_itr_->getNext();
 		}
 	}
-	if(over_) {
-		return false;
-	}
-	else {
-		block->build(BLOCK_SIZE, 0);
-		over_=true;
-		return true;
-	}
+	cout<<"----------------->merge all the tuples."<<endl;
+	return false;
 }
 
 int MergeJoin::compare(void *left, void *right) {
@@ -260,8 +230,7 @@ bool MergeJoin::combine(void *&des, void *left, void *right) {
 }
 
 bool MergeJoin::postlude() {
-	merge_join_ser_obj_->left_->postlude();
-	merge_join_ser_obj_->right_->postlude();
+	Logging::getInstance()->log(error, "the merge join finished........");
 	return true;
 }
 

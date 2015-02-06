@@ -159,19 +159,19 @@ bool Sort::prelude() {
 //	 dist_ranges_.push_back(625000);
 //	dist_ranges_.push_back(12500000);
 //	dist_ranges_.push_back(1875000);
-	dist_ranges_.push_back(2500000);
+//	dist_ranges_.push_back(2500000);
 //	dist_ranges_.push_back(3125000);
 //	dist_ranges_.push_back(37500000);
 //	dist_ranges_.push_back(4375000);
-	dist_ranges_.push_back(5000000);
+	dist_ranges_.push_back(5000);
 //	dist_ranges_.push_back(5625000);
 //	dist_ranges_.push_back(62500000);
 //	dist_ranges_.push_back(6875000);
-	dist_ranges_.push_back(7500000);
+//	dist_ranges_.push_back(7500000);
 //	dist_ranges_.push_back(8125000);
 //	dist_ranges_.push_back(87500000);
 //	dist_ranges_.push_back(9375000);
-	dist_ranges_.push_back(10000000);
+	dist_ranges_.push_back(10000);
 
 	/*
 	 *  range number: 10255782
@@ -250,7 +250,7 @@ bool Sort::prelude() {
 	for(int i=0; i<CPU_CORE; i++) {
 		pthread_join(pths_[i], 0);
 	}
-	count_=7;
+	count_=1;
 #endif
 
 #ifndef MULTI_PARTITION
@@ -296,8 +296,6 @@ bool Sort::execute(Block *block) {
 				ranges_[count_].ranges.pop_back();
 				if(ranges_[count_].ranges.empty()) {
 					count_--;
-					if(count_==-1)
-						break;
 				}
 			}
 #endif
@@ -310,13 +308,9 @@ bool Sort::execute(Block *block) {
 					count_++;
 			}
 #endif
-			if(temp_cur_--) {
-				continue;
-			}
-			else {
-				cout<<"hello, I am sort false;"<<endl;
-				block->build(BLOCK_SIZE, 0);
-				return true;
+			--temp_cur_;
+			if(temp_cur_==0) {
+				break;
 			}
 		}
 		block->assembling(BLOCK_SIZE, (sort_ser_obj_->ns_).get_bytes());
@@ -326,11 +320,11 @@ bool Sort::execute(Block *block) {
 }
 
 bool Sort::postlude() {
-	blocks_.clear();
-	ranges_.clear();
-	buffer_->~Buffer();
+//	blocks_.clear();
+//	ranges_.clear();
+//	buffer_->~Buffer();
 	sort_ser_obj_->child_->postlude();
-	cout<<"数组的个数为： "<<count_<<endl;
+//	cout<<"数组的个数为： "<<count_<<endl;
 	return true;
 }
 
@@ -345,7 +339,7 @@ void *Sort::single_partition(void *args) {
 		int part=0;
 		while((tuple=bi->getNext())!=0) {
 			value=*(unsigned long *)((char *)tuple+8);
-			part=value/2500000;
+			part=value/5000;
 			argument->pthis->ranges_[part].put(tuple);
 		}
 		i=i+CPU_CORE;

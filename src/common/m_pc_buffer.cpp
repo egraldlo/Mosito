@@ -28,53 +28,49 @@ PCBuffer::~PCBuffer() {
 }
 
 bool PCBuffer::get(Block* &block, int column) {
-	/* 20150130
-	if(data_[column]->empty()) {
-		return false;
-	}
-	else {
-		block=data_[column]->pop();
-		Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
-		return true;
-	}*/
-
 	int seconds_=0;
-	while((block=data_[column]->pop())==0) {
+	while((data_[column]->pop(block))==false) {
 		/* waiting for a while and then return false. */
 		if(seconds_++==10) return false;
 	};
+
+//	int seconds_=0;
+//	while((block=data_[column]->pop())==0) {
+//		/* waiting for a while and then return false. */
+//		if(seconds_++==10) return false;
+//	};
 	Logging::getInstance()->log(trace, "get a block from the pcbuffer.");
 	return true;
 }
 
-bool PCBuffer::get_sorted(Block *&block) {
-	if(!begin_) {
-		for(int i=0; i<row_; i++) {
-			merged_blocks_[i]->storeBlock(data_[i]->pop()->getAddr(), BLOCK_SIZE);
-			itrs_[i]=merged_blocks_[i]->createIterator();
-		}
-		begin_=true;
-	}
-
-	void *desc=0;
-	while((desc=block->allocateTuple())!=0) {
-		void *tuple=0;
-		void *most=0;
-		int most_cur=0;
-		for(int i=0; i<row_; i++) {
-			if(!itrs_[i]->getCurrent()==0) {
-				if(data_[i]->pop()->get_size()==0) {
-
-				}
-			}
-		}
-		/* choose the needed one tuple. */
-		block->storeTuple(desc, tuple);
-	}
-
-	/* build a 0-size one block. */
-	return true;
-}
+//bool PCBuffer::get_sorted(Block *&block) {
+//	if(!begin_) {
+//		for(int i=0; i<row_; i++) {
+//			merged_blocks_[i]->storeBlock(data_[i]->pop()->getAddr(), BLOCK_SIZE);
+//			itrs_[i]=merged_blocks_[i]->createIterator();
+//		}
+//		begin_=true;
+//	}
+//
+//	void *desc=0;
+//	while((desc=block->allocateTuple())!=0) {
+//		void *tuple=0;
+//		void *most=0;
+//		int most_cur=0;
+//		for(int i=0; i<row_; i++) {
+//			if(!itrs_[i]->getCurrent()==0) {
+//				if(data_[i]->pop()->get_size()==0) {
+//
+//				}
+//			}
+//		}
+//		/* choose the needed one tuple. */
+//		block->storeTuple(desc, tuple);
+//	}
+//
+//	/* build a 0-size one block. */
+//	return true;
+//}
 
 bool PCBuffer::put(Block *block, int column) {
 	while(!data_[column]->push(block));

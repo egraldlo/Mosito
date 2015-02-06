@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
 //	physical::main_shuffle_3();
 
 	/* for deploy test. */
-//	main_coordinator(argc, argv);
+	main_coordinator(argc, argv);
 
 	/* for producer-consumer buffer test. */
 //	main_pcbuffer();
@@ -117,8 +117,8 @@ int main(int argc, char** argv) {
 //	mergejoin_test();
 
 	/* for histogram test. */
-	string path="/home/Casa/git/Mosito/table.his1";
-	main_his(path.c_str());
+//	string path="/home/Casa/git/Mosito/table.his1";
+//	main_his(path.c_str());
 
 	/* for sort test */
 //	sort_intern_test();

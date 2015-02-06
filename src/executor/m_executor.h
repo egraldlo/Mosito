@@ -15,6 +15,7 @@
 #include "../common/m_message.h"
 #include "../common/m_logging.h"
 #include "../physical/m_query_plan.h"
+#include "../common/m_thread_pool.h"
 using namespace physical;
 
 #include <string>
@@ -56,7 +57,10 @@ class ExecutorSlave {
 public:
 	ExecutorSlave(Theron::EndPoint *end)
 	:endpoint_(end) {};
-	ExecutorSlave() {};
+	ExecutorSlave() {
+		ttp_=new TaskThreadPool(5,5);
+		ttp_->init_thread_pool();
+	};
 	virtual ~ExecutorSlave() {};
 
 	static ExecutorSlave *getInstance() {
@@ -71,6 +75,7 @@ public:
 
 	void init_executor();
 
+	TaskThreadPool *ttp_;
 private:
 	static ExecutorSlave *executorslave_;
 	ExecutorSlaveActor *es_actor_;
@@ -91,7 +96,8 @@ private:
 	void handler(const Message1 &message, const Theron::Address from) {
 		cout<<"hello, the task is: "<<message.message<<endl;
 		TaskInfo task=TaskInfo::deserialize(message);
-		task.run();
+		ExecutorSlave::getInstance()->ttp_->add_into_thread_pool(&task);
+//		task.run();
 		cout<<"finished executing the task."<<endl;
 	};
 

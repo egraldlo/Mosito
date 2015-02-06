@@ -63,6 +63,7 @@ public:
 	void updateFree();
 	/* build a block which is not full. */
 	void build(int, int);
+	void tag(int, int);
 	/* get tuples */
 	inline unsigned get_size() {
 		return *(int *)(start_+size_-4);

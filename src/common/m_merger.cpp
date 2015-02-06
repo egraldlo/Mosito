@@ -177,8 +177,8 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					 * construct a block from the data and put it into the pcbuffer.
 					 * todo: here the size of data_ is not BLOCK_SIZE.
 					 * */
+					if(ret!=BLOCK_SIZE) break;
 					Logging::getInstance()->log(trace, "store the data into the block.");
-					cout<<"the query time consume: "<<getSecond(time_)<<" total"<<endl;
 					block->reset();
 					block->storeBlock(data_, BLOCK_SIZE);
 					Logging::getInstance()->log(trace, "put the block into the pc_buffer.");
@@ -186,8 +186,8 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 					stringstream debug_co;
 					if(block->get_size()==0) {
 						if(++meet_zero_==nlower_) {
-							m_close();
-							return false;
+//							m_close();
+							return true;
 						}
 					}
 					debug_co<<"the deubg count number is: "<<debug_count_++;

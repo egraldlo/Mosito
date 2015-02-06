@@ -68,6 +68,8 @@ public:
 	bool deseriliaze();
 
 private:
+	bool gather_all();
+	bool send_gather();
 	bool serialization();
 
 	static void *receive_route(void *);

@@ -36,9 +36,9 @@ bool Scan::prelude() {
 
 #ifdef SINGLE_NODE_TEST
 	/* read the configuration from configuration file. */
-//	filename_<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_worker_ip().c_str();
+	filename_<<scan_ser_obj_->file_path_<<"."<<Configuration::getInstance()->get_worker_ip().c_str();
 	/* for directly read from file. */
-	filename_<<scan_ser_obj_->file_path_;
+//	filename_<<scan_ser_obj_->file_path_;
 
 	buffer_=new char[BLOCK_SIZE];
 #endif
@@ -102,7 +102,7 @@ bool Scan::execute(Block *block) {
 
 bool Scan::postlude() {
 	/* the file must be closed, but ugly. todo: promotion.*/
-	delete[] buffer_;
+//	delete[] buffer_;
 	return true;
 }
 

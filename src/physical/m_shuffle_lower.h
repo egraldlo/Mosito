@@ -79,6 +79,7 @@ private:
 	Block *buffer_;
 
 	int debug_count_;
+	int count_child_;
 	int meet_zero_;
 
 	vector<int> ranges_1_;
