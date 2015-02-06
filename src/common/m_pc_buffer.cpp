@@ -43,7 +43,7 @@ bool PCBuffer::get(Block* &block, int column) {
 	return true;
 }
 
-//bool PCBuffer::get_sorted(Block *&block) {
+bool PCBuffer::get_sorted(Block *&block) {
 //	if(!begin_) {
 //		for(int i=0; i<row_; i++) {
 //			merged_blocks_[i]->storeBlock(data_[i]->pop()->getAddr(), BLOCK_SIZE);
@@ -67,10 +67,10 @@ bool PCBuffer::get(Block* &block, int column) {
 //		/* choose the needed one tuple. */
 //		block->storeTuple(desc, tuple);
 //	}
-//
-//	/* build a 0-size one block. */
-//	return true;
-//}
+
+	/* build a 0-size one block. */
+	return true;
+}
 
 bool PCBuffer::put(Block *block, int column) {
 	while(!data_[column]->push(block));

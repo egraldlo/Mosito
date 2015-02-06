@@ -30,7 +30,7 @@ public:
 
 	bool put(Block *, int);
 	bool get(Block *&, int);
-//	bool get_sorted(Block *&);
+	bool get_sorted(Block *&);
 
 private:
 //	CircleQueue<Block> **data_;
