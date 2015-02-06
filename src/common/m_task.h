@@ -65,7 +65,7 @@ public:
 
 	inline void run() {
 		ser_qp_->prelude();
-		ser_qp_->execute(0);
+		while(ser_qp_->execute(0));
 		ser_qp_->postlude();
 	}
 

@@ -95,12 +95,21 @@ public:
 private:
 	void handler(const Message1 &message, const Theron::Address from) {
 		cout<<"hello, the task is: "<<message.message<<endl;
-		TaskInfo task=TaskInfo::deserialize(message);
-		ExecutorSlave::getInstance()->ttp_->add_into_thread_pool(&task);
-//		task.run();
+		//at here I must new a TaskInfo, it a waste-time error.
+		TaskInfo *task=new TaskInfo();
+		*task=(TaskInfo::deserialize(message));
+		//here we can add the task into the thread pool.
+		/* ExecutorSlave::getInstance()->ttp_->add_into_thread_pool(task); */
+		pthread_t pths;
+		pthread_create(&pths, 0, run, &task);
 		cout<<"finished executing the task."<<endl;
 	};
 
+	static void *run(void *args) {
+		TaskInfo *task=(TaskInfo *)args;
+		task->run();
+		return 0;
+	}
 };
 
 #endif /* M_EXECUTOR_H_ */

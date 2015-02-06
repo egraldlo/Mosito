@@ -118,25 +118,25 @@ bool ShuffleUpper::execute(Block *block) {
 
 bool ShuffleUpper::postlude() {
 //	shuffle_ser_obj_->child_->postlude();
-	merger_->m_close();
+//	merger_->m_close();
 	Logging::getInstance()->log(error, "enter the shuffle upper close function.");
 	return true;
 }
 
 bool ShuffleUpper::serialization() {
-	for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
-		ShuffleLowerSerObj *slso=new
-				ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
-						shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
-		ShuffleLower *sl=new ShuffleLower(slso);
-		/*
-		 * send the serialized tasks to the lower nodes.
-		 * here, we need the actor mode of master node and slave nodes.
-		 * */
-		TaskInfo tasks(sl);
-		Message1 serialized_task=TaskInfo::serialize(tasks);
-		Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
+	ShuffleLowerSerObj *slso=new
+			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
+					shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
+	ShuffleLower *sl=new ShuffleLower(slso);
+	/*
+	 * send the serialized tasks to the lower nodes.
+	 * here, we need the actor mode of master node and slave nodes.
+	 * */
+	TaskInfo tasks(sl);
+	Message1 serialized_task=TaskInfo::serialize(tasks);
+	Logging::getInstance()->log(trace, "ready for send the task to multiple nodes.");
 
+	for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
 		ExecutorMaster::getInstance()->sendToMultiple(serialized_task, shuffle_ser_obj_->lower_seqs_[i]);
 	}
 	return true;

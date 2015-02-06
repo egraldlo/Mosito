@@ -77,7 +77,7 @@ bool ShuffleLower::execute(Block *block) {
 	 * this function will get the data from the lower pipeline and
 	 * store the blocks into pcbuffer.
 	 * */
-	while(1) {
+	while(true) {
 		int range_=0;
 		if(shuffle_ser_obj_->child_->execute(buffer_)){
 			if(shuffle_ser_obj_->exchange_id_==10)
@@ -105,6 +105,7 @@ bool ShuffleLower::postlude() {
 //	pcbuffer_->~PCBuffer();
 	shuffle_ser_obj_->child_->postlude();
 	pthread_join(send_p_, 0);
+//	delete[] senders_;
 	Logging::getInstance()->log(error, "enter the shuffle lower close function.");
 	return true;
 }
