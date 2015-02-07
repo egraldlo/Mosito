@@ -85,7 +85,7 @@ bool ShuffleLower::execute(Block *block) {
 			else
 				range_=buffer_->compare_start_end(ranges_2_);
 			if(range_==-1) continue;
-			if(shuffle_ser_obj_->exchange_id_!=10)
+//			if(shuffle_ser_obj_->exchange_id_!=10)
 				pcbuffer_->put(buffer_, range_);
 			count_child_++;
 		}

@@ -86,30 +86,50 @@ bool ShuffleUpper::prelude() {
 	return true;
 }
 
+//bool ShuffleUpper::execute(Block *block) {
+//	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
+//	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
+//	/* todo: a traverse strategy must be used here. */
+//	bool empty_or_not_;
+//	while(1) {
+//		for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
+//			/* todo: a ugly coding here, must use a general way. */
+//			empty_or_not_=pcbuffer_->get(block_temp_, i);
+//			if(empty_or_not_==true) {
+//				block->reset();
+//				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
+//				if(block->get_size()==0) {
+//					if(++meet_zero_==shuffle_ser_obj_->lower_seqs_.size()) {
+//						pthread_join(receive_p_,0);
+//						return false;
+//					}
+//				}
+//				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
+//				return true;
+//			}
+//			else {
+//				continue;
+//			}
+//		}
+//	}
+//	/* todo: no return false in this function. */
+//	return true;
+//}
+
 bool ShuffleUpper::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
 	/* todo: a traverse strategy must be used here. */
 	bool empty_or_not_;
 	while(1) {
-		for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
-			/* todo: a ugly coding here, must use a general way. */
-			empty_or_not_=pcbuffer_->get(block_temp_, i);
-			if(empty_or_not_==true) {
-				block->reset();
-				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
-				if(block->get_size()==0) {
-					if(++meet_zero_==shuffle_ser_obj_->lower_seqs_.size()) {
-						pthread_join(receive_p_,0);
-						return false;
-					}
-				}
-				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
-				return true;
-			}
-			else {
-				continue;
-			}
+		block->reset();
+		if(pcbuffer_->get_sorted(block_temp_)==true) {
+			block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
+			return true;
+		}
+		else {
+			pthread_join(receive_p_,0);
+			return false;
 		}
 	}
 	/* todo: no return false in this function. */

@@ -173,7 +173,7 @@ void Coordinator::do_join_query() {
 		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);
 		QueryPlan *join=new MergeJoin(mjso);
 
-		ShuffleUpperSerObj *suso2=new ShuffleUpperSerObj(ve1,mostuppers,uppers,join,10);
+		ShuffleUpperSerObj *suso2=new ShuffleUpperSerObj(ve,mostuppers,uppers,sort,10);
 		ShuffleUpper *su2=new ShuffleUpper(suso2);
 
 		Debug *debug=new Debug(su2);

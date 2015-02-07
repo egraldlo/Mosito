@@ -43,37 +43,67 @@ bool PCBuffer::get(Block* &block, int column) {
 	return true;
 }
 
+bool maxLast(void *start, NewSchema *schema) {
+	char *p=(char *)malloc(schema->get_bytes());
+	for(int i=0;i<schema->vd_.size();i++) {
+		if(schema->vd_[i]->get_type()==t_long) {
+			*(unsigned long *)(p+8*i)=ULONG_MAX;
+		}
+	}
+	start=p;
+}
+
 bool PCBuffer::get_sorted(Block *&block) {
-//	if(!begin_) {
-//		for(int i=0; i<row_; i++) {
-//			merged_blocks_[i]->storeBlock(data_[i]->pop()->getAddr(), BLOCK_SIZE);
-//			itrs_[i]=merged_blocks_[i]->createIterator();
-//		}
-//		begin_=true;
-//	}
-//
-//	void *desc=0;
-//	while((desc=block->allocateTuple())!=0) {
-//		void *tuple=0;
-//		void *most=0;
-//		int most_cur=0;
-//		for(int i=0; i<row_; i++) {
-//			if(!itrs_[i]->getCurrent()==0) {
-//				if(data_[i]->pop()->get_size()==0) {
-//
-//				}
-//			}
-//		}
-//		/* choose the needed one tuple. */
-//		block->storeTuple(desc, tuple);
-//	}
+	if(!begin_) {
+		for(int i=0; i<row_; i++) {
+			while(data_[i]->pop(merged_blocks_[i])==false);
+			itrs_[i]=merged_blocks_[i]->createIterator();
+		}
+		CompareTemp *comp=new CompareTemp();
+		lt_=new LoserTree(comp);
+		array_=new void*[row_+1];
+		for(int i=0; i<row_; i++) {
+			array_[i+1]=itrs_[i]->getNext();
+		}
+		lt_->initialize(array_, row_);
+		begin_=true;
+	}
+
+	void *desc=0;
+	void *tuple=0;
+	block->reset();
+	while((desc=block->allocateTuple())!=0) {
+		int winner=lt_->Winner();
+		block->storeTuple(tuple, lt_->Win());
+		if((tuple=itrs_[winner-1]->getNext())==0) {
+			merged_blocks_[winner-1]->reset();
+			data_[winner-1]->pop(merged_blocks_[winner-1]);
+			if(merged_blocks_[winner-1]->get_size()==0) {
+				maxLast(array_[winner], &ns_);
+				//if finished we can return.
+				if(++finished_==row_) {
+					block->build(BLOCK_SIZE, 0);
+					return false;
+				}
+			}
+			tuple=itrs_[winner-1]->getNext();
+		}
+		lt_->Load(winner, tuple);
+		if(lt_->replay(winner)!=0)
+			break;
+	}
 
 	/* build a 0-size one block. */
 	return true;
 }
 
 bool PCBuffer::put(Block *block, int column) {
-	while(!data_[column]->push(block));
+//	while(!data_[column]->push(block));
+	int seconds_=0;
+	while((data_[column]->push(block))==false) {
+		/* waiting for a while and then return false. */
+		if(seconds_++==10) return false;
+	};
 	Logging::getInstance()->log(trace, "put a block into the pcbuffer.");
 	return true;
 }

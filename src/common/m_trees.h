@@ -31,10 +31,25 @@ private:
 	vector<SortOrderRef *> vs_;
 };
 
+class CompareTemp {
+public:
+	CompareTemp(){};
+	~CompareTemp(){};
+
+	inline bool compare(void *left, void *right) {
+		if(*(unsigned long *)((char *)left+8)<*(unsigned long *)((char *)right+8)) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+};
+
 class LoserTree {
 public:
 	LoserTree();
-	LoserTree(Comparator *comparator);
+	LoserTree(CompareTemp *comparator);
 	virtual ~LoserTree();
 
 	/* here we define the winner function as function pointer.
@@ -85,7 +100,7 @@ private:
 	 *  */
 	void **L;
 
-	Comparator *comparator_;
+	CompareTemp *comparator_;
 };
 
 class Heap {
