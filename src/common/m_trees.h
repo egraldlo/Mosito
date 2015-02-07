@@ -37,7 +37,7 @@ public:
 	~CompareTemp(){};
 
 	inline bool compare(void *left, void *right) {
-		if(*(unsigned long *)((char *)left+8)<*(unsigned long *)((char *)right+8)) {
+		if(*(unsigned long *)((char *)left+8)>*(unsigned long *)((char *)right+8)) {
 			return false;
 		}
 		else {

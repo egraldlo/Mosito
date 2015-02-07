@@ -41,6 +41,7 @@ public:
 	bool m_merge(void *);
 
 	bool m_receive_select(PCBuffer *);
+	bool m_receive_select1(PCBuffer *);
 
 	int debug_count_;
 	int meet_zero_;

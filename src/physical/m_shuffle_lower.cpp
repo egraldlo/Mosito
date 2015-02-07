@@ -86,13 +86,18 @@ bool ShuffleLower::execute(Block *block) {
 				range_=buffer_->compare_start_end(ranges_2_);
 			if(range_==-1) continue;
 //			if(shuffle_ser_obj_->exchange_id_!=10)
-				pcbuffer_->put(buffer_, range_);
+//				pcbuffer_->put(buffer_, range_);
+			/*
+			 * if put fail, then put it into a vector
+			 * then we can put all the vectors.
+			 *  */
+			while(!pcbuffer_->put(buffer_, range_));
 			count_child_++;
 		}
 		else {
 			for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
 				buffer_->build(BLOCK_SIZE, 0);
-				pcbuffer_->put(buffer_, i);
+				while(!pcbuffer_->put(buffer_, i));
 			}
 			cout<<":::::::::"<<count_child_<<endl;
 			return false;

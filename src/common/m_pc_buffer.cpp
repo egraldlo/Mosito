@@ -18,6 +18,7 @@ PCBuffer::PCBuffer(NewSchema &ns, int row)
 		merged_blocks_[i]=new Block(BLOCK_SIZE, ns.get_bytes());
 	}
 	begin_=false;
+	finished_=0;
 }
 
 PCBuffer::~PCBuffer() {
@@ -74,25 +75,31 @@ bool PCBuffer::get_sorted(Block *&block) {
 	block->reset();
 	while((desc=block->allocateTuple())!=0) {
 		int winner=lt_->Winner();
-		block->storeTuple(tuple, lt_->Win());
+		void *temp=lt_->Win();
+		cout<<*(unsigned long *)((char *)temp+8)<<endl;
+		block->storeTuple(desc, temp);
 		if((tuple=itrs_[winner-1]->getNext())==0) {
 			merged_blocks_[winner-1]->reset();
-			data_[winner-1]->pop(merged_blocks_[winner-1]);
+			while(!data_[winner-1]->pop(merged_blocks_[winner-1]));
 			if(merged_blocks_[winner-1]->get_size()==0) {
-				maxLast(array_[winner], &ns_);
+				maxLast(tuple, &ns_);
+				lt_->Load(winner, tuple);
 				//if finished we can return.
 				if(++finished_==row_) {
 					block->build(BLOCK_SIZE, 0);
 					return false;
 				}
 			}
-			tuple=itrs_[winner-1]->getNext();
+			else {
+				itrs_[winner-1]=merged_blocks_[winner-1]->createIterator();
+				tuple=itrs_[winner-1]->getNext();
+				lt_->Load(winner, tuple);
+			}
 		}
-		lt_->Load(winner, tuple);
 		if(lt_->replay(winner)!=0)
 			break;
 	}
-
+	block->assembling(BLOCK_SIZE, ns_.totalsize_);
 	/* build a 0-size one block. */
 	return true;
 }

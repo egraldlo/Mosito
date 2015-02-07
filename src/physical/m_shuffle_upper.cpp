@@ -122,7 +122,7 @@ bool ShuffleUpper::execute(Block *block) {
 	/* todo: a traverse strategy must be used here. */
 	bool empty_or_not_;
 	while(1) {
-		block->reset();
+		block_temp_->reset();
 		if(pcbuffer_->get_sorted(block_temp_)==true) {
 			block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
 			return true;
