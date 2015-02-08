@@ -24,6 +24,7 @@
 #include "../physical/m_shuffle_upper.h"
 #include "../physical/m_shuffle_upper1.h"
 #include "../physical/m_shuffle_lower.h"
+#include "../physical/m_shuffle_lower1.h"
 using namespace physical;
 
 #pragma auto_inline
@@ -43,6 +44,7 @@ void register_obj(Archive &ar) {
 	ar.register_type(static_cast<ShuffleUpper *>(NULL));
 	ar.register_type(static_cast<ShuffleUpper1 *>(NULL));
 	ar.register_type(static_cast<ShuffleLower *>(NULL));
+	ar.register_type(static_cast<ShuffleLower1 *>(NULL));
 }
 
 #endif /* M_SERIALIZATION_H_ */

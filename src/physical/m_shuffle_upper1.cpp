@@ -124,10 +124,19 @@ bool ShuffleUpper1::postlude() {
 }
 
 bool ShuffleUpper1::serialization() {
-	ShuffleLowerSerObj *slso=new
-			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
-					shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
-	ShuffleLower *sl=new ShuffleLower(slso);
+	QueryPlan *sl=0;
+//	if(shuffle_ser_obj_->exchange_id_==10) {
+//		ShuffleLowerSerObj *slso=new
+//				ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
+//						shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
+//		sl=new ShuffleLower(slso);
+//	}
+//	else {
+		ShuffleLower1SerObj *slso=new
+				ShuffleLower1SerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
+						shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
+		sl=new ShuffleLower1(slso);
+//	}
 	/*
 	 * send the serialized tasks to the lower nodes.
 	 * here, we need the actor mode of master node and slave nodes.

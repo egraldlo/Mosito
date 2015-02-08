@@ -50,7 +50,7 @@ using namespace std;
 #define EXPERIMENT_TEST
 #define TIMING
 #define SINGLE_NODE_TEST
-#define MULTI_PARTITION
+//#define MULTI_PARTITION
 
 /* 256*1024 histogram is 1 MB */
 #define HIST_SIZE 262144

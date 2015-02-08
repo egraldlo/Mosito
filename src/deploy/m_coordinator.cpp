@@ -166,13 +166,19 @@ void Coordinator::do_join_query() {
 	#endif
 
 
-		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
-		QueryPlan *su=new ShuffleUpper(suso);
+		ShuffleUpper1SerObj *suso=new ShuffleUpper1SerObj(ve,uppers,lowers,toser,500);
+		QueryPlan *su=new ShuffleUpper1(suso);
 
-		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort1,50);
-		QueryPlan *su1=new ShuffleUpper(suso1);
+		ShuffleUpper1SerObj *suso1=new ShuffleUpper1SerObj(ve,uppers,lowers1,toser1,50);
+		QueryPlan *su1=new ShuffleUpper1(suso1);
 
-		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);
+		SortSerObj *sso3=new SortSerObj(ve, su);
+		Sort *sort3=new Sort(sso3);
+
+		SortSerObj *sso4=new SortSerObj(ve, su1);
+		Sort *sort4=new Sort(sso4);
+
+		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,sort3,sort4);
 		QueryPlan *join=new MergeJoin(mjso);
 
 		ShuffleUpper1SerObj *suso2=new ShuffleUpper1SerObj(ve1,mostuppers,uppers,join,10);

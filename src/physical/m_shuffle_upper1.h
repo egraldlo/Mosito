@@ -13,6 +13,7 @@
 #include "../common/m_tree_node.h"
 #include "../common/m_merger.h"
 #include "m_shuffle_lower.h"
+#include "m_shuffle_lower1.h"
 #include "m_query_plan.h"
 
 #include <vector>
