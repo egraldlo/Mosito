@@ -18,6 +18,7 @@
 #include "../../src/physical/m_join.h"
 #include "../../src/physical/m_sort.h"
 #include "../../src/physical/m_shuffle_upper.h"
+#include "../../src/physical/m_shuffle_upper1.h"
 
 #include "../../third_party/theron/Theron/Defines.h"
 #include "../../third_party/theron/Theron/Theron.h"
