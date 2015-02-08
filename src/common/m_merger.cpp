@@ -207,9 +207,12 @@ bool Merger::m_receive_select1(PCBuffer *pcbuffer) {
 	 *  */
 	fd_set fds;
 
+	vector<bool> finishes;
+
 	Block **blocks=new Block*[nlower_];
 	for(int i=0; i<nlower_; i++) {
 		blocks[i]=new Block(BLOCK_SIZE, pcbuffer->getSchema().totalsize_);
+		finishes.push_back(false);
 	}
 	unsigned long long time_;
 	startTimer(&time_);
@@ -224,6 +227,7 @@ bool Merger::m_receive_select1(PCBuffer *pcbuffer) {
 			maxfd=map_lower_[i];
 		}
 	}
+
 	while(1) {
 
 		Logging::getInstance()->getInstance()->log(trace, "hello? this is the select syscall.");
@@ -246,27 +250,40 @@ bool Merger::m_receive_select1(PCBuffer *pcbuffer) {
 		}
 
 		FD_ZERO(&fds);
-		for(int i=0; i<nlower_; i++) {
-			if(!blocks[i]->empty()) {
-				if(pcbuffer->put(blocks[i], i)) {
-					if(blocks[i]->get_size()==0) {
-						if(++meet_zero_==nlower_) {
-							return true;
+		int countA=0;
+		while(true) {
+			for(int i=0; i<nlower_; i++) {
+				if(finishes[i]==true)
+					continue;
+				if(!blocks[i]->empty()) {
+					if(pcbuffer->put(blocks[i], i)) {
+						if(blocks[i]->get_size()==0) {
+							finishes[i]=true;
+							if(++meet_zero_==nlower_) {
+								return true;
+							}
+						}
+						else {
+							stringstream debug_co;
+							debug_co<<"the deubg count number is: "<<debug_count_++<<"  "<<*(unsigned long *)((char *)blocks[i]->getAddr()+8);
+							Logging::getInstance()->log(trace, debug_co.str().c_str());
+							blocks[i]->reset();
+							countA++;
+							FD_SET(map_lower_[i], &fds);
 						}
 					}
-					stringstream debug_co;
-					debug_co<<"the deubg count number is: "<<debug_count_++<<"  "<<*(unsigned long *)((char *)blocks[i]->getAddr()+8);
-					Logging::getInstance()->log(trace, debug_co.str().c_str());
-					blocks[i]->reset();
-					FD_SET(map_lower_[i], &fds);
+					else {
+						continue;
+					}
 				}
 				else {
-					continue;
+					countA++;
+					FD_SET(map_lower_[i], &fds);
 				}
 			}
-			else {
-				FD_SET(map_lower_[i], &fds);
-			}
+			cout<<"countA: "<<countA<<endl;
+			if(countA!=0)
+				break;
 		}
 
 	}

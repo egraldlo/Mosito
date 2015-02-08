@@ -82,9 +82,13 @@ bool PCBuffer::get_sorted(Block *&block) {
 			merged_blocks_[winner-1]->reset();
 			while(!data_[winner-1]->pop(merged_blocks_[winner-1]));
 			if(merged_blocks_[winner-1]->get_size()==0) {
-				maxLast(tuple, &ns_);
-				lt_->Load(winner, tuple);
-				//if finished we can return.
+				char *add=(char *)malloc(ns_.totalsize_);
+				for(int i=0;i<ns_.vd_.size();i++) {
+					if(ns_.vd_[i]->get_type()==t_long) {
+						*(unsigned long *)(add+8*i)=ULONG_MAX;
+					}
+				}
+				tuple=add;
 				if(++finished_==row_) {
 					block->build(BLOCK_SIZE, 0);
 					return false;
@@ -93,9 +97,9 @@ bool PCBuffer::get_sorted(Block *&block) {
 			else {
 				itrs_[winner-1]=merged_blocks_[winner-1]->createIterator();
 				tuple=itrs_[winner-1]->getNext();
-				lt_->Load(winner, tuple);
 			}
 		}
+		lt_->Load(winner, tuple);
 		if(lt_->replay(winner)!=0)
 			break;
 	}
