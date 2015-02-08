@@ -17,5 +17,5 @@ libphysical_a_SOURCES = \
 	m_shuffle_lower.cpp		m_shuffle_lower.h \
 	m_bcshuffle_upper.cpp   m_bcshuffle_upper.h \
 	m_bcshuffle_lower.cpp	m_bcshuffle_lower.h \
-	m_srshuffle_upper.cpp	m_srshuffle_upper.h \
-	m_srshuffle_lower.cpp	m_srshuffle_lower.h
+	m_shuffle_upper1.cpp		m_shuffle_upper1.h \
+	m_shuffle_lower1.cpp		m_shuffle_lower1.h

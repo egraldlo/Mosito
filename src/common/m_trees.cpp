@@ -59,7 +59,7 @@ LoserTree::LoserTree() {
 
 }
 
-LoserTree::LoserTree(Comparator *comparator)
+LoserTree::LoserTree(CompareTemp *comparator)
 :comparator_(comparator){
 
 }

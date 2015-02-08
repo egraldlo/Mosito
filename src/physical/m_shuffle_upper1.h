@@ -1,12 +1,12 @@
 /*
- * m_srshuffle_upper.h
+ * m_shuffle_upper1.h
  *
- *  Created on: Jan 21, 2015
+ *  Created on: Feb 8, 2015
  *      Author: Casa
  */
 
-#ifndef M_SRSHUFFLE_UPPER_H_
-#define M_SRSHUFFLE_UPPER_H_
+#ifndef M_SHUFFLE_UPPER1_H_
+#define M_SHUFFLE_UPPER1_H_
 
 #include "../../src/expressions/m_expression.h"
 #include "../common/m_pc_buffer.h"
@@ -20,12 +20,12 @@ using namespace std;
 
 namespace physical {
 
-class SRShuffleUpperSerObj {
+class ShuffleUpper1SerObj {
 public:
-	SRShuffleUpperSerObj(NewSchema, vector<string>, vector<string>, QueryPlan *, int);
-	virtual ~SRShuffleUpperSerObj();
+	ShuffleUpper1SerObj(NewSchema, vector<string>, vector<string>, QueryPlan *, int);
+	virtual ~ShuffleUpper1SerObj();
 
-	SRShuffleUpperSerObj(){};
+	ShuffleUpper1SerObj(){};
 
 public:
 	NewSchema ns_;
@@ -42,14 +42,14 @@ private:
 	}
 };
 
-class SRShuffleUpper: public UnaryNode, public QueryPlan {
+class ShuffleUpper1: public UnaryNode, public QueryPlan {
 public:
-	SRShuffleUpper(vector<Expression *> expressions, QueryPlan *child);
-	SRShuffleUpper(SRShuffleUpperSerObj *shuffle_ser_obj)
+	ShuffleUpper1(vector<Expression *> expressions, QueryPlan *child);
+	ShuffleUpper1(ShuffleUpper1SerObj *shuffle_ser_obj)
 	:shuffle_ser_obj_(shuffle_ser_obj){};
-	SRShuffleUpper(Merger *);
-	SRShuffleUpper(){};
-	virtual ~SRShuffleUpper();
+	ShuffleUpper1(Merger *);
+	ShuffleUpper1(){};
+	virtual ~ShuffleUpper1();
 
 
 	bool prelude();
@@ -68,13 +68,15 @@ public:
 	bool deseriliaze();
 
 private:
+	bool gather_all();
+	bool send_gather();
 	bool serialization();
 
 	static void *receive_route(void *);
 
 private:
 	Merger *merger_;
-	SRShuffleUpperSerObj *shuffle_ser_obj_;
+	ShuffleUpper1SerObj *shuffle_ser_obj_;
 
 private:
 	pthread_t receive_p_;
@@ -96,4 +98,4 @@ private:
 };
 
 }
-#endif /* M_SRSHUFFLE_UPPER_H_ */
+#endif /* M_SHUFFLE_UPPER1_H_ */

@@ -199,3 +199,95 @@ bool Merger::m_receive_select(PCBuffer *pcbuffer) {
 
 	return true;
 }
+
+bool Merger::m_receive_select1(PCBuffer *pcbuffer) {
+	/*
+	 * in a simple version, we try to use select because that number of connections is small,
+	 * to put the blocks the merger receive into the producer-consumer buffer.
+	 *  */
+	fd_set fds;
+
+	vector<bool> finishes;
+
+	Block **blocks=new Block*[nlower_];
+	for(int i=0; i<nlower_; i++) {
+		blocks[i]=new Block(BLOCK_SIZE, pcbuffer->getSchema().totalsize_);
+		finishes.push_back(false);
+	}
+	unsigned long long time_;
+	startTimer(&time_);
+
+	/* set the fds empty. */
+	FD_ZERO(&fds);
+	int maxfd=0;
+	for(int i=0; i<nlower_; i++) {
+		/* set the fds which will be listened in fds. */
+		FD_SET(map_lower_[i], &fds);
+		if(map_lower_[i]>maxfd) {
+			maxfd=map_lower_[i];
+		}
+	}
+
+	while(1) {
+
+		Logging::getInstance()->getInstance()->log(trace, "hello? this is the select syscall.");
+
+		/* select will return the number of active fds. */
+		switch(select(maxfd+1, &fds, 0, 0, (timeval *)0)) {
+		case -1: exit(-1); break;
+		case 0: {cout<<"warmming!!"<<endl;break;}
+		default:
+			for(int i=0; i<nlower_; i++) {
+				if(FD_ISSET(map_lower_[i], &fds)) {
+					int ret;
+					/* receive the data from the sender. */
+					if((ret=recv(map_lower_[i], data_, BLOCK_SIZE, MSG_WAITALL))==-1) {
+						Logging::getInstance()->log(error,"error in receive data!");
+					}
+					blocks[i]->storeBlock(data_, BLOCK_SIZE);
+				}
+			}
+		}
+
+		FD_ZERO(&fds);
+		int countA=0;
+		while(true) {
+			for(int i=0; i<nlower_; i++) {
+				if(finishes[i]==true)
+					continue;
+				if(!blocks[i]->empty()) {
+					if(pcbuffer->put(blocks[i], i)) {
+						if(blocks[i]->get_size()==0) {
+							finishes[i]=true;
+							if(++meet_zero_==nlower_) {
+								return true;
+							}
+						}
+						else {
+							stringstream debug_co;
+							debug_co<<"the deubg count number is: "<<debug_count_++<<"  "<<*(unsigned long *)((char *)blocks[i]->getAddr()+8);
+							Logging::getInstance()->log(trace, debug_co.str().c_str());
+							blocks[i]->reset();
+							countA++;
+							FD_SET(map_lower_[i], &fds);
+						}
+					}
+					else {
+						continue;
+					}
+				}
+				else {
+					countA++;
+					FD_SET(map_lower_[i], &fds);
+				}
+			}
+			cout<<"countA: "<<countA<<endl;
+			if(countA!=0)
+				break;
+		}
+
+	}
+
+	return true;
+}
+

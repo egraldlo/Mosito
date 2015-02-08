@@ -22,6 +22,7 @@
 #include "../physical/m_join.h"
 #include "../physical/m_debug.h"
 #include "../physical/m_shuffle_upper.h"
+#include "../physical/m_shuffle_upper1.h"
 #include "../physical/m_shuffle_lower.h"
 using namespace physical;
 
@@ -40,6 +41,7 @@ void register_obj(Archive &ar) {
 	ar.register_type(static_cast<Debug *>(NULL));
 	ar.register_type(static_cast<MergeJoin *>(NULL));
 	ar.register_type(static_cast<ShuffleUpper *>(NULL));
+	ar.register_type(static_cast<ShuffleUpper1 *>(NULL));
 	ar.register_type(static_cast<ShuffleLower *>(NULL));
 }
 

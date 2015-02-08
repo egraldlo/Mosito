@@ -11,6 +11,7 @@
 #include "../expressions/m_expression.h"
 #include "../common/m_circle_queue.h"
 #include "../common/m_logging.h"
+#include "../common/m_trees.h"
 #include "m_buffer.h"
 
 /*
@@ -30,7 +31,7 @@ public:
 
 	bool put(Block *, int);
 	bool get(Block *&, int);
-//	bool get_sorted(Block *&);
+	bool get_sorted(Block *&);
 
 private:
 //	CircleQueue<Block> **data_;
@@ -41,6 +42,9 @@ private:
 private:
 	Block ** merged_blocks_;
 	BufferIterator **itrs_;
+	LoserTree *lt_;
+	void **array_;
+	int finished_;
 	bool begin_;
 };
 

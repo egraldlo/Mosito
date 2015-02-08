@@ -157,6 +157,8 @@ void Coordinator::do_join_query() {
 		vector<string> lowers1;
 		lowers1.push_back("10.11.1.191");
 		lowers1.push_back("10.11.1.192");
+		lowers1.push_back("10.11.1.193");
+		lowers1.push_back("10.11.1.194");
 //		lowers1.push_back("10.11.1.196");
 //		lowers1.push_back("10.11.1.197");
 //		lowers1.push_back("10.11.1.198");
@@ -165,16 +167,16 @@ void Coordinator::do_join_query() {
 
 
 		ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
-		ShuffleUpper *su=new ShuffleUpper(suso);
+		QueryPlan *su=new ShuffleUpper(suso);
 
 		ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort1,50);
-		ShuffleUpper *su1=new ShuffleUpper(suso1);
+		QueryPlan *su1=new ShuffleUpper(suso1);
 
 		MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);
 		QueryPlan *join=new MergeJoin(mjso);
 
-		ShuffleUpperSerObj *suso2=new ShuffleUpperSerObj(ve1,mostuppers,uppers,join,10);
-		ShuffleUpper *su2=new ShuffleUpper(suso2);
+		ShuffleUpper1SerObj *suso2=new ShuffleUpper1SerObj(ve1,mostuppers,uppers,join,10);
+		QueryPlan *su2=new ShuffleUpper1(suso2);
 
 		Debug *debug=new Debug(su2);
 		/* debug can be here for print the shuffleupper data out. */

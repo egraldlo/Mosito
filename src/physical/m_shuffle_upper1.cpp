@@ -1,11 +1,11 @@
 /*
- * m_shuffle_upper.cpp
+ * m_shuffle_upper1.cpp
  *
- *  Created on: 2014-11-11
- *      Author: casa
+ *  Created on: Feb 8, 2015
+ *      Author: Casa
  */
 
-#include "m_shuffle_upper.h"
+#include "m_shuffle_upper1.h"
 
 #include "../../src/executor/m_executor.h"
 
@@ -15,29 +15,29 @@ namespace physical {
  * the first step can be two level, one upper and two lowers.
  * the secod step can be three level, one upper and two mids and three lowers.
  * */
-ShuffleUpperSerObj::ShuffleUpperSerObj(NewSchema ns, vector<string> uppers, vector<string> lowers,
+ShuffleUpper1SerObj::ShuffleUpper1SerObj(NewSchema ns, vector<string> uppers, vector<string> lowers,
 		QueryPlan *child, int exchange_id)
 :ns_(ns), upper_seqs_(uppers), lower_seqs_(lowers), child_(child), exchange_id_(exchange_id){
 
 }
 
-ShuffleUpperSerObj::~ShuffleUpperSerObj() {
+ShuffleUpper1SerObj::~ShuffleUpper1SerObj() {
 
 }
 
-ShuffleUpper::ShuffleUpper(vector<Expression *> expressions, QueryPlan *child) {
+ShuffleUpper1::ShuffleUpper1(vector<Expression *> expressions, QueryPlan *child) {
 
 }
 
-ShuffleUpper::ShuffleUpper(Merger * merger) {
+ShuffleUpper1::ShuffleUpper1(Merger * merger) {
 	merger_=merger;
 }
 
-ShuffleUpper::~ShuffleUpper() {
+ShuffleUpper1::~ShuffleUpper1() {
 
 }
 
-bool ShuffleUpper::prelude() {
+bool ShuffleUpper1::prelude() {
 	/* send the task into shuffle lower. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper open function.");
 	/* ugly way. it means that we must select one master to send the tasks. */
@@ -86,64 +86,44 @@ bool ShuffleUpper::prelude() {
 	return true;
 }
 
-//bool ShuffleUpper::execute(Block *block) {
-//	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
-//	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
-//	/* todo: a traverse strategy must be used here. */
-//	bool empty_or_not_;
-//	while(1) {
-//		for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
-//			/* todo: a ugly coding here, must use a general way. */
-//			empty_or_not_=pcbuffer_->get(block_temp_, i);
-//			if(empty_or_not_==true) {
-//				block->reset();
-//				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
-//				if(block->get_size()==0) {
-//					if(++meet_zero_==shuffle_ser_obj_->lower_seqs_.size()) {
-//						pthread_join(receive_p_,0);
-//						return false;
-//					}
-//				}
-//				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
-//				return true;
-//			}
-//			else {
-//				continue;
-//			}
-//		}
-//	}
-//	/* todo: no return false in this function. */
-//	return true;
-//}
-
-bool ShuffleUpper::execute(Block *block) {
+bool ShuffleUpper1::execute(Block *block) {
 	/* it's a consumer, if the buffer has blocks and pipeline it the upper operator. */
 	Logging::getInstance()->log(trace, "enter the shuffle upper next function.");
 	/* todo: a traverse strategy must be used here. */
 	bool empty_or_not_;
 	while(1) {
-		block_temp_->reset();
-		if(pcbuffer_->get_sorted(block_temp_)==true) {
-			block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
-			return true;
-		}
-		else {
-			pthread_join(receive_p_,0);
-			return false;
+		for(int i=0; i<shuffle_ser_obj_->lower_seqs_.size(); i++) {
+			/* todo: a ugly coding here, must use a general way. */
+			empty_or_not_=pcbuffer_->get(block_temp_, i);
+			if(empty_or_not_==true) {
+				block->reset();
+				block->storeBlock(block_temp_->getAddr(), BLOCK_SIZE);
+				if(block->get_size()==0) {
+					if(++meet_zero_==shuffle_ser_obj_->lower_seqs_.size()) {
+						pthread_join(receive_p_,0);
+						return false;
+					}
+				}
+				Logging::getInstance()->log(trace, "get a block from the buffer and pipeline it.");
+				return true;
+			}
+			else {
+				continue;
+			}
 		}
 	}
 	/* todo: no return false in this function. */
 	return true;
 }
 
-bool ShuffleUpper::postlude() {
+bool ShuffleUpper1::postlude() {
 //	shuffle_ser_obj_->child_->postlude();
 //	merger_->m_close();
 	Logging::getInstance()->log(error, "enter the shuffle upper close function.");
 	return true;
 }
 
-bool ShuffleUpper::serialization() {
+bool ShuffleUpper1::serialization() {
 	ShuffleLowerSerObj *slso=new
 			ShuffleLowerSerObj(shuffle_ser_obj_->ns_, shuffle_ser_obj_->upper_seqs_,
 					shuffle_ser_obj_->child_, shuffle_ser_obj_->exchange_id_);
@@ -162,7 +142,7 @@ bool ShuffleUpper::serialization() {
 	return true;
 }
 
-bool ShuffleUpper::gather_all() {
+bool ShuffleUpper1::gather_all() {
 	int receive_=0;
 	cout<<"hello=========================================="<<endl;
 	Merger *m=new Merger(shuffle_ser_obj_->upper_seqs_.size()-1, 10000+shuffle_ser_obj_->exchange_id_);
@@ -178,7 +158,7 @@ bool ShuffleUpper::gather_all() {
 	};
 }
 
-bool ShuffleUpper::send_gather() {
+bool ShuffleUpper1::send_gather() {
 	cout<<"hello8888888888888888888888888888888888888888888888"<<endl;
 	Merger *m=new Merger(1, 10001+shuffle_ser_obj_->exchange_id_);
 	Sender *s=new Sender(10000+shuffle_ser_obj_->exchange_id_);
@@ -202,12 +182,12 @@ bool ShuffleUpper::send_gather() {
 	}
 }
 
-NewSchema *ShuffleUpper::newoutput() {
+NewSchema *ShuffleUpper1::newoutput() {
 	return &(shuffle_ser_obj_->ns_);
 }
 
-void *ShuffleUpper::receive_route(void *args) {
-	ShuffleUpper *pthis=(ShuffleUpper *)(args);
+void *ShuffleUpper1::receive_route(void *args) {
+	ShuffleUpper1 *pthis=(ShuffleUpper1 *)(args);
 	if(pthis->merger_->m_receive_select(pthis->pcbuffer_)) {
 		Logging::getInstance()->log(trace, "receive all the data the senders will send.");
 	}

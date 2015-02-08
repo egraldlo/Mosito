@@ -120,6 +120,13 @@ void Block::build(int size, int number) {
 	*(int *)p=number;
 }
 
+bool Block::empty() {
+	if(start_==free_)
+		return true;
+	else
+		return false;
+}
+
 void Block::tag(int size, int tg) {
 	void *p=start_+size-8;
 	*(int *)p=tg;
