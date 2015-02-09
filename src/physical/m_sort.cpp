@@ -59,14 +59,14 @@ bool Sort::prelude() {
 		}
 	}
 //	 dist_ranges_.push_back(625000);
-//	dist_ranges_.push_back(12500000);
+	dist_ranges_.push_back(12500000);
 //	dist_ranges_.push_back(1875000);
-//	dist_ranges_.push_back(2500000);
+	dist_ranges_.push_back(25000000);
 //	dist_ranges_.push_back(3125000);
-//	dist_ranges_.push_back(37500000);
+	dist_ranges_.push_back(37500000);
 //	dist_ranges_.push_back(4375000);
-	dist_ranges_.push_back(2500);
-	dist_ranges_.push_back(5000);
+//	dist_ranges_.push_back(2500);
+	dist_ranges_.push_back(50000000);
 //	dist_ranges_.push_back(5625000);
 //	dist_ranges_.push_back(62500000);
 //	dist_ranges_.push_back(6875000);
@@ -74,8 +74,8 @@ bool Sort::prelude() {
 //	dist_ranges_.push_back(8125000);
 //	dist_ranges_.push_back(87500000);
 //	dist_ranges_.push_back(9375000);
-	dist_ranges_.push_back(7500);
-	dist_ranges_.push_back(10000);
+//	dist_ranges_.push_back(7500);
+//	dist_ranges_.push_back(10000);
 
 	for(int i=0; i<CPU_CORE; i++) {
 #ifndef MULTI_PARTITION
@@ -169,10 +169,12 @@ bool Sort::execute(Block *block) {
 				ranges_[count_].ranges.pop_back();
 				--temp_cur_;
 				if(ranges_[count_].ranges.empty()) {
+					cout<<"the sort time consume: "<<getSecond(time_)<<" total "<<endl;
 					count_++;
 				}
 			}
 			else {
+				cout<<"the sort time consume: "<<getSecond(time_)<<" total "<<endl;
 				count_++;
 			}
 #endif
@@ -221,7 +223,7 @@ void *Sort::single_partition(void *args) {
 		int part=0;
 		while((tuple=bi->getNext())!=0) {
 			value=*(unsigned long *)((char *)tuple+8);
-			part=value/2500;
+			part=value/12500000;
 			argument->pthis->ranges_[part].put(tuple);
 		}
 		i=i+CPU_CORE;

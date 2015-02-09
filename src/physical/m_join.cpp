@@ -66,7 +66,8 @@ MergeJoin::~MergeJoin() {
  * we collect all data here, before this we will merge them in the shufflelower.
  *  */
 bool MergeJoin::prelude() {
-
+	unsigned long long timer_1;
+	startTimer(&timer_1);
 	Logging::getInstance()->log(error, "enter the open of the merge join... ...");
 	left_schema_=new Schema(&(merge_join_ser_obj_->left_schema_));
 	right_schema_=new Schema(&(merge_join_ser_obj_->right_schema_));
@@ -121,6 +122,7 @@ bool MergeJoin::prelude() {
 
 	cout<<"左右表的大小为--： "<<tablesize_left<<"  "<<tablesize_right<<endl;
 	cout<<"table size: "<<tablesize_left*left_schema_->get_bytes()<<"table size: "<<tablesize_right*right_schema_->get_bytes()<<endl;
+	cout<<"the merge join time consume: "<<getSecond(timer_1)<<endl;
 
 	over_=false;
 	return true;
