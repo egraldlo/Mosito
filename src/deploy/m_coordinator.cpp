@@ -197,70 +197,73 @@ void Coordinator::do_join_query() {
 
 void Coordinator::do_final_query() {
 
+	cout<<"input a enter key and submit a query!"<<endl;
+	getchar();
+	cout<<"one query has been executed!"<<endl;
+
+	string file="table.left";
+	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+	string file1="table.left";
+	ScanSerObj *scan_ser_obj1=new ScanSerObj(file1);
+
 	DataType *e1=new UnLongType(t_long);
-	DataType *e2=new IntegerType(t_int);
-	DataType *e3=new IntegerType(t_int);
-	DataType *e4=new IntegerType(t_int);
-	DataType *e5=new IntegerType(t_int);
-	DataType *e6=new IntegerType(t_int);
+	DataType *e2=new UnLongType(t_long);
+
 	vector<DataType *> ve;
 	ve.push_back(e1);
 	ve.push_back(e2);
-	ve.push_back(e3);
-	ve.push_back(e4);
-	ve.push_back(e5);
-	ve.push_back(e6);
 
 	vector<DataType *> ve1;
 	ve1.push_back(e1);
 	ve1.push_back(e2);
-	ve1.push_back(e3);
-	ve1.push_back(e4);
-	ve1.push_back(e5);
-	ve1.push_back(e6);
 	ve1.push_back(e1);
 	ve1.push_back(e2);
-	ve1.push_back(e3);
-	ve1.push_back(e4);
-	ve1.push_back(e5);
-	ve1.push_back(e6);
 
-	vector<string> lowers;
-	lowers.push_back("10.11.1.191");
-	lowers.push_back("10.11.1.192");
-	lowers.push_back("10.11.1.193");
-	lowers.push_back("10.11.1.194");
+	Scan *toser=new Scan(ve,scan_ser_obj);
+	Scan *toser1=new Scan(ve,scan_ser_obj1);
+
+	SortSerObj *sso=new SortSerObj(ve, toser);
+	Sort *sort=new Sort(sso);
+	SortSerObj *sso1=new SortSerObj(ve, toser1);
+	Sort *sort1=new Sort(sso1);
+
+//		vector<int> uppers;
+	vector<string> mostuppers;
+	mostuppers.push_back("10.11.1.190");
+
 	vector<string> uppers;
 	uppers.push_back("10.11.1.191");
 	uppers.push_back("10.11.1.192");
 	uppers.push_back("10.11.1.193");
 	uppers.push_back("10.11.1.194");
-	vector<string> coor;
-	coor.push_back("10.11.1.190");
+
+#ifdef SINGLE_NODE_TEST
+	vector<string> lowers;
+	lowers.push_back("10.11.1.191");
+	lowers.push_back("10.11.1.192");
+	lowers.push_back("10.11.1.193");
+	lowers.push_back("10.11.1.194");
+	vector<string> lowers1;
+	lowers1.push_back("10.11.1.191");
+	lowers1.push_back("10.11.1.192");
+	lowers1.push_back("10.11.1.193");
+	lowers1.push_back("10.11.1.194");
+#endif
 
 
-	string file_left="table.left";
-	ScanSerObj *scan_ser_obj_left=new ScanSerObj(file_left);
-	string file_right="table.left";
-	ScanSerObj *scan_ser_obj_right=new ScanSerObj(file_right);
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
+	QueryPlan *su=new ShuffleUpper(suso);
 
-	QueryPlan *scan_left=new Scan(ve,scan_ser_obj_left);
-	QueryPlan *scan_right=new Scan(ve,scan_ser_obj_right);
+	ShuffleUpperSerObj *suso1=new ShuffleUpperSerObj(ve,uppers,lowers1,sort1,50);
+	QueryPlan *su1=new ShuffleUpper(suso1);
 
-	ShuffleUpperSerObj *suso_left=new ShuffleUpperSerObj(ve,uppers,lowers,scan_left,0);
-	QueryPlan *shuffle_left=new ShuffleUpper(suso_left);
-
-	ShuffleUpperSerObj *suso_right=new ShuffleUpperSerObj(ve,uppers,lowers,scan_right,0);
-	QueryPlan *shuffle_right=new ShuffleUpper(suso_right);
-
-	MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,shuffle_left,shuffle_right);
+	MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,su1);
 	QueryPlan *join=new MergeJoin(mjso);
 
-	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,coor,uppers,join,0);
-	QueryPlan *shuffle=new ShuffleUpper(suso);
+	ShuffleUpper1SerObj *suso2=new ShuffleUpper1SerObj(ve1,mostuppers,uppers,join,10);
+	QueryPlan *su2=new ShuffleUpper1(suso2);
 
-	Debug *debug=new Debug(shuffle);
-
+	Debug *debug=new Debug(su2);
 	/* debug can be here for print the shuffleupper data out. */
 	debug->prelude();
 	debug->execute(0);
@@ -269,3 +272,80 @@ void Coordinator::do_final_query() {
 	getchar();
 }
 
+void Coordinator::do_final_query1() {
+
+	cout<<"input a enter key and submit a query!"<<endl;
+	getchar();
+	cout<<"one query has been executed!"<<endl;
+
+	string file="table.left";
+	ScanSerObj *scan_ser_obj=new ScanSerObj(file);
+	string file1="table.left";
+	ScanSerObj *scan_ser_obj1=new ScanSerObj(file1);
+
+	DataType *e1=new UnLongType(t_long);
+	DataType *e2=new UnLongType(t_long);
+
+	vector<DataType *> ve;
+	ve.push_back(e1);
+	ve.push_back(e2);
+
+	vector<DataType *> ve1;
+	ve1.push_back(e1);
+	ve1.push_back(e2);
+	ve1.push_back(e1);
+	ve1.push_back(e2);
+
+	Scan *toser=new Scan(ve,scan_ser_obj);
+	Scan *toser1=new Scan(ve,scan_ser_obj1);
+
+	SortSerObj *sso=new SortSerObj(ve, toser);
+	Sort *sort=new Sort(sso);
+
+//		vector<int> uppers;
+	vector<string> mostuppers;
+	mostuppers.push_back("10.11.1.190");
+
+	vector<string> uppers;
+	uppers.push_back("10.11.1.191");
+	uppers.push_back("10.11.1.192");
+	uppers.push_back("10.11.1.193");
+	uppers.push_back("10.11.1.194");
+
+#ifdef SINGLE_NODE_TEST
+	vector<string> lowers;
+	lowers.push_back("10.11.1.191");
+	lowers.push_back("10.11.1.192");
+	lowers.push_back("10.11.1.193");
+	lowers.push_back("10.11.1.194");
+	vector<string> lowers1;
+	lowers1.push_back("10.11.1.191");
+	lowers1.push_back("10.11.1.192");
+	lowers1.push_back("10.11.1.193");
+	lowers1.push_back("10.11.1.194");
+#endif
+
+
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
+	QueryPlan *su=new ShuffleUpper(suso);
+
+	ShuffleUpper1SerObj *suso1=new ShuffleUpper1SerObj(ve,uppers,lowers1,toser1,50);
+	QueryPlan *su1=new ShuffleUpper1(suso1);
+
+	SortSerObj *sso1=new SortSerObj(ve, su1);
+	Sort *sort1=new Sort(sso1);
+
+	MergeJoinSerObj *mjso=new MergeJoinSerObj(ve,ve,ve1,su,sort1);
+	QueryPlan *join=new MergeJoin(mjso);
+
+	ShuffleUpper1SerObj *suso2=new ShuffleUpper1SerObj(ve1,mostuppers,uppers,join,10);
+	QueryPlan *su2=new ShuffleUpper1(suso2);
+
+	Debug *debug=new Debug(su2);
+	/* debug can be here for print the shuffleupper data out. */
+	debug->prelude();
+	debug->execute(0);
+	debug->postlude();
+
+	getchar();
+}

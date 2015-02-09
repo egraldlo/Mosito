@@ -120,6 +120,7 @@ bool MergeJoin::prelude() {
 	rfb_itr_=right_flex_block_->createIterator();
 
 	cout<<"左右表的大小为--： "<<tablesize_left<<"  "<<tablesize_right<<endl;
+	cout<<"table size: "<<tablesize_left*left_schema_->get_bytes()<<"table size: "<<tablesize_right*right_schema_->get_bytes()<<endl;
 
 	over_=false;
 	return true;
@@ -199,10 +200,10 @@ bool MergeJoin::execute(Block *block) {
 			r=rfb_itr_->getNext();
 		}
 		else if(compare(l, r)==0){
-			r=rfb_itr_->getNext();
+			l=lfb_itr_->getNext();
 		}
 		else {
-			l=lfb_itr_->getNext();
+			r=rfb_itr_->getNext();
 		}
 	}
 	cout<<"----------------->merge all the tuples."<<endl;

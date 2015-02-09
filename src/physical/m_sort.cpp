@@ -122,7 +122,7 @@ bool Sort::prelude() {
 	for(int i=0; i<CPU_CORE; i++) {
 		pthread_join(pths_[i], 0);
 	}
-	count_=CPU_CORE-1;
+	count_=0;
 #endif
 
 #ifndef MULTI_PARTITION
@@ -142,6 +142,7 @@ bool Sort::prelude() {
 	}
 	for(int i=0; i<CPU_CORE; i++) {
 		pthread_join(pths_[i], 0);
+		cout<<"ranges: "<<ranges_[i].size()<<endl;
 	}
 	count_=0;
 #endif
@@ -166,9 +167,13 @@ bool Sort::execute(Block *block) {
 				tuple=*(ranges_[count_].ranges.end()-1);
 				block->storeTuple(desc, tuple);
 				ranges_[count_].ranges.pop_back();
+				--temp_cur_;
 				if(ranges_[count_].ranges.empty()) {
-					count_--;
+					count_++;
 				}
+			}
+			else {
+				count_++;
 			}
 #endif
 #ifndef MULTI_PARTITION
@@ -176,11 +181,16 @@ bool Sort::execute(Block *block) {
 				tuple=*(ranges_[count_].end()-1);
 				block->storeTuple(desc, tuple);
 				ranges_[count_].pop_back();
-				if(ranges_[count_].empty())
+				--temp_cur_;
+				if(ranges_[count_].empty()) {
+					cout<<""<<endl;
 					count_++;
+				}
+			}
+			else {
+				count_++;
 			}
 #endif
-			--temp_cur_;
 			if(temp_cur_==0) {
 				break;
 			}

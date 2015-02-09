@@ -26,6 +26,8 @@ int main_coordinator(int argc, char **argv) {
 		Coordinator *coordinator=new Coordinator();
 		coordinator->init();
 		coordinator->do_join_query();
+//		coordinator->do_final_query();
+//		coordinator->do_final_query1();
 	}
 	else {
 #ifdef SINGLE_NODE_TEST
