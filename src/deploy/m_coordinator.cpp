@@ -326,7 +326,7 @@ void Coordinator::do_final_query1() {
 #endif
 
 
-	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,sort,500);
+	ShuffleUpperSerObj *suso=new ShuffleUpperSerObj(ve,uppers,lowers,toser,500);
 	QueryPlan *su=new ShuffleUpper(suso);
 
 	ShuffleUpper1SerObj *suso1=new ShuffleUpper1SerObj(ve,uppers,lowers1,toser1,50);

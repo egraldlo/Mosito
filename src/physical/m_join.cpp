@@ -86,34 +86,41 @@ bool MergeJoin::prelude() {
 	left_flex_block_=new FlexBlock(INIT_FLEX_BLOCK_SIZE,left_tuple_size_);
 	right_flex_block_=new FlexBlock(INIT_FLEX_BLOCK_SIZE,right_tuple_size_);
 
-	void *ltuple,*rtuple;
+	tablesize_left=0;
+	tablesize_right=0;
 
-	unsigned tablesize_left=0;
-	unsigned tablesize_right=0;
+	pthread_t pths[2];
 
 	Logging::getInstance()->log(error, "store the left tables... ...");
-	merge_join_ser_obj_->left_->prelude();
-	/* collect the left stream data. */
-	while(merge_join_ser_obj_->left_->execute(left_block_)) {
-		lb_itr_=left_block_->createIterator();
-		while((ltuple=lb_itr_->getNext())!=0) {
-			left_flex_block_->storeTupleOK(ltuple);
-			tablesize_left++;
-		}
-	}
-	merge_join_ser_obj_->left_->postlude();
+	pthread_create(&pths[0], 0, gather_left, this);
+
+//	merge_join_ser_obj_->left_->prelude();
+//	/* collect the left stream data. */
+//	while(merge_join_ser_obj_->left_->execute(left_block_)) {
+//		lb_itr_=left_block_->createIterator();
+//		while((ltuple=lb_itr_->getNext())!=0) {
+//			left_flex_block_->storeTupleOK(ltuple);
+//			tablesize_left++;
+//		}
+//	}
+//	merge_join_ser_obj_->left_->postlude();
 
 	Logging::getInstance()->log(error, "store the right tables... ...");
-	merge_join_ser_obj_->right_->prelude();
-	/* collect the right stream data. */
-	while(merge_join_ser_obj_->right_->execute(right_block_)) {
-		rb_itr_=right_block_->createIterator();
-		while((rtuple=rb_itr_->getNext())!=0) {
-			right_flex_block_->storeTupleOK(rtuple);
-			tablesize_right++;
-		}
+	pthread_create(&pths[1], 0, gather_right, this);
+//	merge_join_ser_obj_->right_->prelude();
+//	/* collect the right stream data. */
+//	while(merge_join_ser_obj_->right_->execute(right_block_)) {
+//		rb_itr_=right_block_->createIterator();
+//		while((rtuple=rb_itr_->getNext())!=0) {
+//			right_flex_block_->storeTupleOK(rtuple);
+//			tablesize_right++;
+//		}
+//	}
+//	merge_join_ser_obj_->right_->postlude();
+
+	for(int i=0; i<2; i++) {
+		pthread_join(pths[i], 0);
 	}
-	merge_join_ser_obj_->right_->postlude();
 
 	left_flex_block_->assembling(tablesize_left*left_schema_->get_bytes()+4, left_schema_->get_bytes());
 	right_flex_block_->assembling(tablesize_right*right_schema_->get_bytes()+4, right_schema_->get_bytes());
@@ -126,6 +133,38 @@ bool MergeJoin::prelude() {
 
 	over_=false;
 	return true;
+}
+
+void* MergeJoin::gather_left(void *args) {
+	MergeJoin *mj=(MergeJoin *)args;
+	mj->merge_join_ser_obj_->left_->prelude();
+	/* collect the left stream data. */
+	void *ltuple=0;
+	while(mj->merge_join_ser_obj_->left_->execute(mj->left_block_)) {
+		mj->lb_itr_=mj->left_block_->createIterator();
+		while((ltuple=mj->lb_itr_->getNext())!=0) {
+			mj->left_flex_block_->storeTupleOK(ltuple);
+			mj->tablesize_left++;
+		}
+	}
+	mj->merge_join_ser_obj_->left_->postlude();
+	return 0;
+}
+
+void* MergeJoin::gather_right(void *args) {
+	MergeJoin *mj=(MergeJoin *)args;
+	mj->merge_join_ser_obj_->right_->prelude();
+	/* collect the right stream data. */
+	void *rtuple=0;
+	while(mj->merge_join_ser_obj_->right_->execute(mj->right_block_)) {
+		mj->rb_itr_=mj->right_block_->createIterator();
+		while((rtuple=mj->rb_itr_->getNext())!=0) {
+			mj->right_flex_block_->storeTupleOK(rtuple);
+			mj->tablesize_right++;
+		}
+	}
+	mj->merge_join_ser_obj_->right_->postlude();
+	return 0;
 }
 
 void print(data_type ty,void *attr) {

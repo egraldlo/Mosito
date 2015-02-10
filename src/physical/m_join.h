@@ -99,6 +99,10 @@ public:
 private:
 	int compare(void *, void *);
 	bool combine(void *&, void *, void *);
+	static void* gather_left(void *);
+	static void* gather_right(void *);
+	unsigned tablesize_left;
+	unsigned tablesize_right;
 
 private:
 	/* these can be omitted in this experiments. */
