@@ -7,3 +7,6 @@
 
 4. commit-60 is the stable one which pipeline the query test, commit 61 add 
    a timer which is a ugly timer.
+   
+5. sort-combine-sflower is to combine the sort operator and shuffle lower operator
+   for a higher performance.

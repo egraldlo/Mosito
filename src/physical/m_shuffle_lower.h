@@ -11,6 +11,7 @@
 #include "../common/m_tree_node.h"
 #include "../common/m_pc_buffer.h"
 #include "../common/m_sender.h"
+#include "../common/m_timer.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -84,6 +85,24 @@ private:
 
 	vector<int> ranges_1_;
 	vector<int> ranges_2_;
+
+private:
+	/* for sort. */
+	unsigned temp_cur_;
+	Schema *schema_;
+	vector<Block *> blocks_;
+	Block *buffer0_;
+	Block **buffers_;
+	vector<vector<void *> > ranges_;
+	unsigned long long time_;
+	pthread_t pths_[CPU_CORE];
+	int count_;
+	int emptys_;
+	bool one_empty_;
+
+	static void * single_sort1(void *);
+	static bool compare1(const void *left, const void *right);
+
 private:
 	friend class boost::serialization::access;
 	template<class Archive>

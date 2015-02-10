@@ -58,24 +58,10 @@ bool Sort::prelude() {
 			temp_cur_++;
 		}
 	}
-//	 dist_ranges_.push_back(625000);
 	dist_ranges_.push_back(12500000);
-//	dist_ranges_.push_back(1875000);
 	dist_ranges_.push_back(25000000);
-//	dist_ranges_.push_back(3125000);
 	dist_ranges_.push_back(37500000);
-//	dist_ranges_.push_back(4375000);
-//	dist_ranges_.push_back(2500);
 	dist_ranges_.push_back(50000000);
-//	dist_ranges_.push_back(5625000);
-//	dist_ranges_.push_back(62500000);
-//	dist_ranges_.push_back(6875000);
-//	dist_ranges_.push_back(7500000);
-//	dist_ranges_.push_back(8125000);
-//	dist_ranges_.push_back(87500000);
-//	dist_ranges_.push_back(9375000);
-//	dist_ranges_.push_back(7500);
-//	dist_ranges_.push_back(10000);
 
 	for(int i=0; i<CPU_CORE; i++) {
 #ifndef MULTI_PARTITION
@@ -83,8 +69,6 @@ bool Sort::prelude() {
 #endif
 #ifdef MULTI_PARTITION
 		range rg;
-//		range *rg=new range();
-//		pthread_mutex_init(&rg.lock_, 0);
 		SpineLock *sl=new SpineLock();
 		rg.lock_=sl;
 		vector<void *> ranges;
