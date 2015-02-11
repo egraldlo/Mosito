@@ -54,6 +54,8 @@ using namespace std;
 
 /* 256*1024 histogram is 1 MB */
 #define HIST_SIZE 262144
+/* the whole data tuple number. */
+#define DATAVOLUME 50000000
 
 /* configure log type. */
 #define LOGGER error

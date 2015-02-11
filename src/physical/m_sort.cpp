@@ -58,10 +58,26 @@ bool Sort::prelude() {
 			temp_cur_++;
 		}
 	}
-	dist_ranges_.push_back(12500000);
-	dist_ranges_.push_back(25000000);
-	dist_ranges_.push_back(37500000);
-	dist_ranges_.push_back(50000000);
+
+	ShuffleUpper1 *su1=(ShuffleUpper1 *)(sort_ser_obj_->child_);
+	int th=0;
+	string ip=Configuration::getInstance()->get_worker_ip();
+	for(int i=0; i<su1->shuffle_ser_obj_->lower_seqs_.size(); i++) {
+		if(ip==su1->shuffle_ser_obj_->lower_seqs_[i]) {
+			th=i;
+			break;
+		}
+	}
+
+	for(int i=0; i<CPU_CORE; i++) {
+		int value=th*DATAVOLUME/su1->shuffle_ser_obj_->lower_seqs_.size()+
+				(i+1)*DATAVOLUME/(su1->shuffle_ser_obj_->lower_seqs_.size()*CPU_CORE);
+		dist_ranges_.push_back(value);
+	}
+//	dist_ranges_.push_back(12500000);
+//	dist_ranges_.push_back(25000000);
+//	dist_ranges_.push_back(37500000);
+//	dist_ranges_.push_back(50000000);
 
 	for(int i=0; i<CPU_CORE; i++) {
 #ifndef MULTI_PARTITION

@@ -35,7 +35,7 @@ bool ShuffleLower1::prelude() {
 	/* create a thread to send the block into the upper. */
 	Logging::getInstance()->log(trace, "enter the shuffle lower open function.");
 	senders_=new Sender*[shuffle_ser_obj_->seqs_.size()];
-	buffers_=new Block*[shuffle_ser_obj_->seqs_.size()];
+	buffers_=new Block*[CPU_CORE];
 
 	/* todo: modify here, the port_base is for testing. */
 	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
@@ -44,7 +44,6 @@ bool ShuffleLower1::prelude() {
 //		cout<<"the sender socket is: "<<PORT_BASE+shuffle_ser_obj_->exchange_id_<<endl;
 //		Logging::getInstance()->log(error, shuffle_ser_obj_->seqs_[i].c_str());
 		senders_[i]->m_connect(shuffle_ser_obj_->seqs_[i].c_str());
-		buffers_[i]=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
 	}
 
 	buffer_=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
@@ -53,11 +52,17 @@ bool ShuffleLower1::prelude() {
 	debug_count_=0;
 	count_child_=0;
 
-	ranges_1_.push_back(50000000);
-	ranges_2_.push_back(12500000);
-	ranges_2_.push_back(25000000);
-	ranges_2_.push_back(37500000);
-	ranges_2_.push_back(50000000);
+	ranges_1_.push_back(DATAVOLUME);
+	for(int i=0; i<CPU_CORE; i++) {
+		ranges_2_.push_back((i+1)*DATAVOLUME/CPU_CORE);
+		buffers_[i]=new Block(BLOCK_SIZE, shuffle_ser_obj_->ns_.get_bytes());
+	}
+
+//	ranges_1_.push_back(50000000);
+//	ranges_2_.push_back(12500000);
+//	ranges_2_.push_back(25000000);
+//	ranges_2_.push_back(37500000);
+//	ranges_2_.push_back(50000000);
 
 	/* pthread a send thread to send the blocks out in the pcbuffer. */
 	if(pthread_create(&send_p_, 0, send_route, this)==0) {
@@ -78,6 +83,7 @@ bool ShuffleLower1::execute(Block *block) {
 	 * this function will get the data from the lower pipeline and
 	 * store the blocks into pcbuffer.
 	 * */
+	int mul=CPU_CORE/shuffle_ser_obj_->seqs_.size();
 	while(true) {
 		int range_=0;
 		void *tuple=0;
@@ -97,7 +103,7 @@ bool ShuffleLower1::execute(Block *block) {
 				else {
 					if(shuffle_ser_obj_->exchange_id_!=10) {
 						buffers_[range_]->assembling(BLOCK_SIZE, shuffle_ser_obj_->ns_.totalsize_);
-						while(!pcbuffer_->put(buffers_[range_], range_));
+						while(!pcbuffer_->put(buffers_[range_], range_/mul));
 					}
 					buffers_[range_]->reset();
 				}

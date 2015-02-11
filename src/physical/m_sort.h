@@ -16,6 +16,7 @@
 #include "../common/m_logging.h"
 #include "../common/m_schema.h"
 #include "../common/m_timer.h"
+#include "m_shuffle_upper1.h"
 #include "m_query_plan.h"
 
 #include <vector>

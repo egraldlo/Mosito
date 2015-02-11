@@ -68,6 +68,7 @@ public:
 	 * */
 	bool deseriliaze();
 
+	ShuffleUpper1SerObj *shuffle_ser_obj_;
 private:
 	bool gather_all();
 	bool send_gather();
@@ -77,7 +78,6 @@ private:
 
 private:
 	Merger *merger_;
-	ShuffleUpper1SerObj *shuffle_ser_obj_;
 
 private:
 	pthread_t receive_p_;

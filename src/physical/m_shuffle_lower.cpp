@@ -36,7 +36,7 @@ bool ShuffleLower::prelude() {
 	/*******************************sort************************************/
 	void *tuple=0;
 	temp_cur_=0;
-	buffers_=new Block*[shuffle_ser_obj_->seqs_.size()];
+	buffers_=new Block*[CPU_CORE];
 	buffer0_=new Block(BLOCK_SIZE, (shuffle_ser_obj_->ns_).get_bytes());
 	schema_=new Schema(&(shuffle_ser_obj_->ns_));
 	while(shuffle_ser_obj_->child_->execute(buffer0_)) {
@@ -58,11 +58,11 @@ bool ShuffleLower::prelude() {
 	/* blocks_ is the vector of the data in memory. */
 	startTimer(&time_);
 
-	ranges_1_.push_back(50000000);
-	ranges_2_.push_back(12500000);
-	ranges_2_.push_back(25000000);
-	ranges_2_.push_back(37500000);
-	ranges_2_.push_back(50000000);
+	ranges_1_.push_back(DATAVOLUME);
+	for(int i=0; i<CPU_CORE; i++) {
+		buffers_[i]=new Block(BLOCK_SIZE, (shuffle_ser_obj_->ns_).get_bytes());
+		ranges_2_.push_back((i+1)*DATAVOLUME/CPU_CORE);
+	}
 
 	for(int i=0; i<blocks_.size(); i++) {
 		BufferIterator *bi=blocks_[i]->createIterator();
@@ -97,16 +97,9 @@ bool ShuffleLower::prelude() {
 	Logging::getInstance()->log(trace, "enter the shuffle lower open function.");
 	senders_=new Sender*[shuffle_ser_obj_->seqs_.size()];
 
-//	ranges_1_.push_back(50000000);
-//	ranges_2_.push_back(12500000);
-//	ranges_2_.push_back(25000000);
-//	ranges_2_.push_back(37500000);
-//	ranges_2_.push_back(50000000);
-
 	/* todo: modify here, the port_base is for testing. */
 	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
 		/* here exchange_id_+i is for m_shuffle_upper.cpp:57 line. */
-		buffers_[i]=new Block(BLOCK_SIZE, (shuffle_ser_obj_->ns_).get_bytes());
 		senders_[i]=new Sender(PORT_BASE+shuffle_ser_obj_->exchange_id_);
 		senders_[i]->m_connect(shuffle_ser_obj_->seqs_[i].c_str());
 	}
@@ -135,9 +128,29 @@ bool ShuffleLower::execute(Block *block) {
 	Logging::getInstance()->log(trace, "enter the shuffle lower next function.");
 	Logging::getInstance()->log(trace, "send blocks one by one to the upper nodes.");
 	vector<bool> oks;
-	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
+	for(int i=0; i<CPU_CORE; i++) {
 		oks.push_back(false);
 	}
+
+	unsigned long long new_timer;
+	startTimer(&new_timer);
+	int mul=CPU_CORE/shuffle_ser_obj_->seqs_.size();
+	vector<vector<void *> > new_ranges_;
+	for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
+		vector<void *> new_range;
+		void *tuple=0;
+		for(int j=(1+i)*mul-1; j>=i*mul; j--) {
+			for(vector<void *>::iterator itr=ranges_[j].begin(); itr!=ranges_[j].end(); itr++) {
+				new_range.push_back(*itr);
+			}
+		}
+		new_ranges_.push_back(new_range);
+	}
+	for(int i=0; i<new_ranges_.size(); i++) {
+		cout<<"new range: "<<new_ranges_[i].size()<<endl;
+	}
+	cout<<"the combine time consume: "<<getSecond(new_timer)<<" total "<<endl;
+
 	/*
 	while(true) {
 		int range_=0;
@@ -208,14 +221,14 @@ bool ShuffleLower::execute(Block *block) {
 		void *tuple=0;
 		void *desc=0;
 		for(int i=0; i<shuffle_ser_obj_->seqs_.size(); i++) {
-			if(buffers_[i]->empty()&&!ranges_[i].empty()) {
+			if(buffers_[i]->empty()&&!new_ranges_[i].empty()) {
 				while((desc=buffers_[i]->allocateTuple())!=0) {
-					tuple=*(ranges_[i].end()-1);
+					tuple=*(new_ranges_[i].end()-1);
 					buffers_[i]->storeTuple(desc, tuple);
-					ranges_[i].pop_back();
+					new_ranges_[i].pop_back();
 					--temp_cur_;
-					if(ranges_[i].empty()) {
-						if(++emptys_==CPU_CORE) {
+					if(new_ranges_[i].empty()) {
+						if(++emptys_==shuffle_ser_obj_->seqs_.size()) {
 							one_empty_=true;
 						}
 						break;
