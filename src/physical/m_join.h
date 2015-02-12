@@ -17,6 +17,8 @@ enum JoinType{inner, left, right, full};
 #include "../common/m_logging.h"
 #include "../common/m_schema.h"
 #include "../common/m_timer.h"
+#include "m_shuffle_upper1.h"
+#include "m_sort.h"
 #include "m_query_plan.h"
 
 #include <vector>
@@ -73,6 +75,8 @@ private:
 		ar & output_schema_ & right_schema_ & left_schema_ & left_ & right_;
 	}
 };
+
+#ifdef SYN_JOIN
 
 class MergeJoin: public QueryPlan {
 public:
@@ -150,6 +154,98 @@ private:
 	}
 
 };
+#endif
+
+#ifndef SYN_JOIN
+class MergeJoin: public QueryPlan {
+public:
+	MergeJoin(vector<Expression *> leftKeys,
+				  vector<Expression *> rightKeys,
+				  vector<Expression *> conditions,
+				  QueryPlan *left,
+				  QueryPlan *right,
+				  JoinType join_type);
+	MergeJoin(MergeJoinSerObj *mjso)
+	:merge_join_ser_obj_(mjso){}
+	virtual ~MergeJoin();
+
+	MergeJoin(){};
+
+	bool prelude();
+	bool execute(Block *);
+	bool postlude();
+
+	NewSchema *newoutput();
+
+	vector<Expression *> output();
+
+	struct JoinArgu {
+		MergeJoin *mj_;
+		int i_;
+	};
+
+private:
+	int compare(void *, void *);
+	bool combine(void *&, void *, void *);
+	static void* gather_left(void *);
+	static void* gather_right(void *);
+	static void* gather_merge(void *);
+	unsigned tablesize_left[CPU_CORE];
+	unsigned tablesize_right[CPU_CORE];
+
+	vector<int> dist_ranges_;
+
+	int compare_start_end(unsigned long value);
+
+private:
+	/* these can be omitted in this experiments. */
+	vector<Expression *> left_keys_;
+	vector<Expression *> right_keys_;
+	vector<Expression *> conditions_;
+
+	/* two side left and right child. */
+	QueryPlan *left_;
+	QueryPlan *right_;
+
+	JoinType join_type_;
+
+	/* it's the schema of the left and right. */
+	Schema *left_schema_;
+	Schema *right_schema_;
+	Schema *output_schema_;
+
+	/* this is the temp blocks which can store the block the pipeline generate. */
+	Block *left_block_;
+	Block *right_block_;
+
+	/* two blocks which will store the whole data. */
+	FlexBlock **left_flex_block_;
+	FlexBlock **right_flex_block_;
+
+	BufferIterator *lb_itr_;
+	BufferIterator *rb_itr_;
+
+	BufferIterator **lfb_itr_;
+	BufferIterator **rfb_itr_;
+
+	unsigned count_[CPU_CORE];
+	unsigned count_o_[CPU_CORE];
+	bool over_;
+
+public:
+	MergeJoinSerObj *merge_join_ser_obj_;
+
+private:
+	friend class boost::serialization::access;
+	template <class Archive>
+	void serialize(Archive &ar, const unsigned int version) {
+		ar & boost::serialization::base_object<QueryPlan>(*this)
+				& merge_join_ser_obj_;
+	}
+
+};
+#endif
+
 
 class NestLoopJoinSerObj {
 public:

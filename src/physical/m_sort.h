@@ -147,6 +147,11 @@ private:
 
 	vector<int> dist_ranges_;
 
+public:
+#ifndef SYN_JOIN
+	int th;
+#endif
+
 private:
 	unsigned count_;
 	unsigned long long time_;

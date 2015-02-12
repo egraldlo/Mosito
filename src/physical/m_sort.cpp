@@ -60,7 +60,12 @@ bool Sort::prelude() {
 	}
 
 	ShuffleUpper1 *su1=(ShuffleUpper1 *)(sort_ser_obj_->child_);
+#ifndef SYN_JOIN
+	th=0;
+#endif
+#ifdef SYN_JOIN
 	int th=0;
+#endif
 	string ip=Configuration::getInstance()->get_worker_ip();
 	for(int i=0; i<su1->shuffle_ser_obj_->lower_seqs_.size(); i++) {
 		if(ip==su1->shuffle_ser_obj_->lower_seqs_[i]) {
