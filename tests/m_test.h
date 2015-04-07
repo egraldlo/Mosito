@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
 //	main_rwlock();
 
 	/* for KM algorithm test. */
-//	main_km();
+	main_km();
 
 	/* for join test. */
 //	string path1="table.left";
@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
 //	physical::main_shuffle_3();
 
 	/* for deploy test. */
-	main_coordinator(argc, argv);
+//	main_coordinator(argc, argv);
 
 	/* for producer-consumer buffer test. */
 //	main_pcbuffer();

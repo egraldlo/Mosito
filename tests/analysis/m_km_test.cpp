@@ -10,7 +10,7 @@
 
 int main_km() {
 	KM *km=new KM();
-	km->eval();
+//	km->eval();
 //	km->LM();
 
 	ParStrategy *ps=new ParStrategy();

@@ -14,8 +14,8 @@ using namespace std;
 
 #include <limits.h>
 
-#define N 20
-#define P 4
+#define N 10
+#define P 3
 
 class ParStrategy {
 public:
@@ -34,6 +34,7 @@ private:
 	int b_expect;
 
 	int state[N][P];
+	int new_state[N][P];
 };
 
 #endif /* M_PAR_STRATEGY_H_ */
