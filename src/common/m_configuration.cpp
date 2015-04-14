@@ -15,7 +15,7 @@ Configuration::Configuration() {
 		cfg_.readFile(config_file);
 	}
 	catch(libconfig::FileIOException &e) {
-		e.what();
+//		e.what();
 	}
 
 	initilize();
@@ -41,7 +41,7 @@ string Configuration::read_coordinator_ip() {
 		return ret;
 	}
 	catch(libconfig::SettingNotFoundException &e) {
-		e.what();
+//		e.what();
 	}
 }
 
@@ -56,7 +56,7 @@ string Configuration::read_worker_ip() {
 		return ret;
 	}
 	catch(libconfig::SettingNotFoundException &e) {
-		e.what();
+//		e.what();
 	}
 }
 
@@ -71,7 +71,7 @@ int Configuration::read_theron_worker_port() {
 		return ret;
 	}
 	catch(libconfig::SettingNotFoundException &e) {
-		e.what();
+//		e.what();
 	}
 }
 

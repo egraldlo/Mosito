@@ -25,4 +25,6 @@ libcommon_a_SOURCES = \
 	m_rb_tree.cpp					m_rb_tree.h \
 									m_timer.h \
 	m_message.cpp					m_message.h \
-	m_pc_buffer.cpp					m_pc_buffer.h
+	m_pc_buffer.cpp					m_pc_buffer.h \
+	m_bplus_tree.cpp				m_bplus_tree.h \
+	m_skip_list.cpp					m_skip_list.h

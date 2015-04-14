@@ -9,7 +9,7 @@
 
 BufferIterator::BufferIterator(Buffer *buffer)
 :buffer_(buffer), current_(0) {
-
+  
 }
 
 BufferIterator::~BufferIterator() {

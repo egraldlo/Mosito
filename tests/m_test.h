@@ -27,6 +27,8 @@
 #include "physical/m_shuffle_lower_test.cpp"
 #include "common/m_configuration_test.cpp"
 #include "common/m_pc_buffer_test.cpp"
+#include "common/m_bplus_tree_test.cpp"
+#include "common/m_skip_list_test.cpp"
 
 #include <arpa/inet.h>
 
@@ -83,7 +85,7 @@ int main(int argc, char** argv) {
 //	main_rwlock();
 
 	/* for KM algorithm test. */
-	main_km();
+//	main_km();
 
 	/* for join test. */
 //	string path1="table.left";
@@ -105,7 +107,7 @@ int main(int argc, char** argv) {
 //	physical::main_shuffle_3();
 
 	/* for deploy test. */
-//	main_coordinator(argc, argv);
+	main_coordinator(argc, argv);
 
 	/* for producer-consumer buffer test. */
 //	main_pcbuffer();
@@ -124,6 +126,8 @@ int main(int argc, char** argv) {
 //	sort_intern_test();
 
 //	sql();
+
+//	btree_main();
 	return 0;
 }
 

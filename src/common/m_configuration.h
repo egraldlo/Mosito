@@ -104,7 +104,7 @@ public:
 			cfg_.readFile(config_file);
 		}
 		catch(libconfig::FileIOException &e) {
-			e.what();
+//			e.what();
 		}
 
 		initilize();
