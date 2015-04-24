@@ -21,7 +21,6 @@ void Affinitizer::affinitize(int threadid) {
 	int offset=threadid;
 	cpu_set_t mask;
 
-
 	CPU_ZERO(&mask);
 	CPU_SET(offset,&mask);
 
